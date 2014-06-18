@@ -1,0 +1,702 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%											  %%
+%%  ImpedanceWake2D: codes to compute the longitudinal and transverse beam coupling 	  %%
+%%  impedances and wake functions of infinitely long multilayer structures, cylindrical	  %% 
+%%  or flat and infinitely large.										  %%
+%%											  %%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Author: Nicolas Mounet, CERN BE, Geneva
+
+Last modifications: 16/01/2014
+
+Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch
+
+
+CONTENTS OF THE MANUAL:
+
+1. INTRODUCTION
+
+2. DESCRIPTION OF THE PACKAGE
+
+3. INSTALLATION
+
+   3.1 Prerequisites
+   3.2 Compilation
+   3.3 How to use the code
+
+4. THE INPUT FILES
+
+   4.1 Input file for the round chamber impedance computation
+   4.2 Input file for the round chamber wake computation
+   4.3 Input file for the flat chamber impedance computation
+   4.4 Input file for the flat chamber wake computation
+
+5. THE OUTPUT FILES
+
+   5.1 Output files for the round chamber impedance computation
+   5.2 Output files for the round chamber wake computation
+   5.3 Output files for the flat chamber impedance computation
+   5.4 Output files for the flat chamber wake computation
+   5.5 How to plot the output files
+
+6. TROUBLESHOOTING
+
+7. LATEST MODIFICATIONS
+
+8. FUTURE DEVELOPMENTS (TO-DO LIST)
+
+9. REFERENCES
+
+
+
+1. INTRODUCTION
+   ============
+
+ImpedanceWake2D is a package containing four different codes that compute the longitudinal and transverse
+beam coupling impedances and wake functions in a multilayer axisymmetric or flat structure that is two dimensional
+(i.e. of infinite length, that is without endings in the longitudinal direction). The number of layers
+can be in principle anything, and each of them can be made of any linear material. For now we use fixed frequency
+dependent expressions for the complex permittivity and permeability, depending
+on 5 parameters (see below), but this limitation can be easily changed, to fit particular needs.
+The last layer has an infinite thickness (no perfectly conducting layer in the end).
+The code relies on the analytic computation of the electromagnetic fields created by a point-charge beam travelling
+at any speed (not necessarily ultrarelativistic) in the whole structure.
+
+For the impedances of a cylindrical structure, the original ideas are from B. Zotter [1-3]. They were previously 
+implemented in code called LAWAT [2], later [4,5] converted to a Mathematica [6] notebook. A full 
+review of the formalism is in [7]. It was also implemented in a Mathematica notebook called ReWall (can be
+found at http://impedance.web.cern.ch/impedance/).
+
+For the impedances of a flat structure, the formalism was developped during N. Mounet's PhD thesis, and is fully 
+described in [8].
+
+The theories on both the cylindrical and flat cases is shortly described in [9].
+
+To compute the wake functions (time domain counterparts of the impedances), an algorithm based on a Filon's kind 
+of method is used, instead of an FFT. The main advantages are the accuracy and the fact that an uneven frequency 
+sampling can be used, which is useful in the case of impedances because they exhibit different features for 
+different frequency ranges, i.e. their details over a large number of decades is needed to compute accurately the
+wakes. The codes automatically refine the frequency sampling until a prescribed accuracy on the wake function is
+reached. The full method is described in N. Mounet's PhD thesis.
+ 
+
+IMPORTANT NOTE: the impedance computed here is the so-called "wall impedance", which is sligthly different from the
+"resistive-wall impedance": the wall impedance contains the indirect space charge term (perfect conducor impedance)
+whereas the resistive-wall one doesn't. This is because the indirect space-charge term is crucial for the 
+low-frequency behaviour (we cannot easily separate its effect from the resistive part). Details on this concept 
+can be found in [10]. The same applies for the wake functions: they also include the indirect space charge. 
+
+NOTE ON PARTICULAR USES: 
+- the codes work for any relativistic mass factor gamma (or equivalently for any relativistic 
+velocity factor beta). If one wants to use the code in the ultrarelativistic limit, the only possibility is to put a 
+very large gamma in the input file. Note anyway that above a certain frequency, the computation will be probably different
+from the ultrarelativistic case (this frequency limit certainly increases with gamma).
+- there is no perfectly conducting layer (PEC) on the outside. If one wants to put one, one possibility is to put a very
+low resistivity on the last layer (e.g. 10^-15 Ohm.m), but some numerical issues could occur, in which case it is advised
+to increase the precision (see below).
+
+
+2. DESCRIPTION OF THE PACKAGE
+   ==========================
+
+- "roundchamber.cc", "wake_roundchamber.cc", "flatchamber.cc" and "wake_flatchamber.cc": C++ source codes (although
+some parts are still in C),
+
+- "roundchamber.x", "wake_roundchamber.x", "flatchamber.x" and "wake_flatchamber.x": executables that compute resp. 
+the impedances of a cylindrical chamber, the impedances and wake functions of a cylindrical chamber, 
+the impedances of a flat chamber, and the impedances and wake functions of a flat chamber,
+
+- "RoundChamberInputFile.txt", "WakeRoundChamberInputFile.txt", "FlatChamberInputFile.txt" and 
+"WakeFlatChamberInputFile.txt": examples of input files for each of those executables (see below).
+
+- "plot_Imp_flat.py" and "plot_Wake_flat.py": python routines to plot the impedances and wake functions in output.
+
+- "Makefile": makefile to compile the codes.
+
+- "mpfr.h": header file used to replace the one of the ALGLIB library (see below).
+
+
+
+3. INSTALLATION AND USE
+   ====================
+   
+   The following instructions should be valid for a Linux operating system. They were checked only under Ubuntu.
+   
+   For other operating systems, the user is welcome to share his/her installation experience with the author by
+   sending an email to nicolas.mounet@cern.ch .
+   
+   For CERN users under lxplus, note that the GMP, MPFR and GSL libraries are already installed, only ALGLIB
+   needs to be installed manually (see 3.1).
+     
+   
+   3.1 Prerequisites
+       -------------
+       
+       The codes require four libraries:
+       - GMP (http://gmplib.org/), 
+       - MPFR (http://www.mpfr.org/),
+       - GSL (http://www.gnu.org/software/gsl/),
+       - ALGLIB (http://www.alglib.net/).
+       All those libraries are free and under the GNU General Public License.
+       
+       To check if GMP, MPFR and GSL are already installed, check for the existence of "libgmp", "libmpfr", "libgsl"
+       and "libgslcblas" (with extensions .a, .la and/or .so) in /usr/lib/ or /usr/lib64/ or /usr/local/lib/,
+       as well as the existence of "gmp.h", "mpfr.h" and the "gsl" directory in /usr/include/ or /usr/local/include/.
+       Otherwise follow the instructions in the websites indicated above to install the libraries.
+       
+       For ALGLIB:
+        - download the mpfr version of ALGLIB (2.6) from http://www.alglib.net/translator/re/alglib-2.6.0.mpfr.zip
+	- after extraction (with e.g. unzip), compile the library: from the "mpfr" directory of ALGLIB do
+	chmod +x build
+	./build gcc "-fPIC"
+	(-fPIC option is to enable the compilation of a shared library)
+	(note: I don't know if other compilers than gcc are supported)
+	(full instructions in http://www.alglib.net/translator/man/manual.mpfr.html)
+	- check that "mpfr/out/" contains now many .h files and "libmpalglib.a"
+	- replace "mpfr.h" in "mpfr/out/" by the one given with this package:
+	cp {ImpedanceWake2Ddirectory}/mpfr.h {ALGLIBdirectory}/mpfr/out/
+	
+	
+   3.2 Compilation
+       -----------
+       
+       - Edit the file "Makefile" and change the variable PATH_ALGLIB to the local directory where you installed
+       ALGLIB (do not forget /mpfr/out/),
+       - type "make" (or "make all"),
+       - to erase the executables: "make clean".
+       
+       
+   3.3 How to use the code
+       -------------------
+       
+       On the command line, simply type e.g.
+       
+       ./wake_flatchamber.x < WakeFlatChamberInputFile.txt
+       
+       if your input file is in WakeFlatChamberInputFile.txt
+       (and similar commands for the three other codes).
+       
+       NOTE: the wake computations codes take much more time than the impedance ones, in general (depending on the
+       paramters, of course).
+       
+       
+
+4. THE INPUT FILES
+   ===============
+
+IMPORTANT NOTE: there must ALWAYS be a tab between the parameter description and its value, and more generally the exact 
+sentences of the parameter description should be kept identical.
+
+If there are more layers described in the input file than indicated at the 
+beginning of it, the additional ones are ignored.
+
+   4.1 Input file for the round chamber impedance computation
+       ------------------------------------------------------
+       
+* Input file example:
+
+Machine:	LHC
+Relativistic Gamma:	479.6
+Impedance Length in m:	1
+Number of layers:	2
+Layer 1 inner radius in mm:	4
+Layer 1 DC resistivity (Ohm.m):	5.4e-8
+Layer 1 relaxation time for resistivity (ps):	0.005
+Layer 1 real part of dielectric constant:	1
+Layer 1 magnetic susceptibility:	0
+Layer 1 relaxation frequency of permeability (MHz):	Infinity
+Layer 1 thickness in mm:	25
+Layer 2 DC resistivity (Ohm.m):	7.2e-7
+Layer 2 relaxation time for resistivity (ps):	0
+Layer 2 real part of dielectric constant:	1
+Layer 2 magnetic susceptibility:	0
+Layer 2 relaxation frequency of permeability (MHz):	Infinity
+Layer 2 thickness in mm:	Infinity
+start frequency exponent (10^) in Hz:	0
+stop  frequency exponent (10^) in Hz:	15
+linear (1) or logarithmic (0) or both (2) frequency scan:	0
+sampling frequency exponent (10^) in Hz (for linear):	8
+Number of points per decade (for log):	20
+when both, fmin of the refinement (in THz):	1
+when both, fmax of the refinement (in THz):	10
+when both, number of points in the refinement:	500
+added frequencies [Hz]:	1e-5 1e16
+Yokoya factors long, xdip, ydip, xquad, yquad:	1 0.411233516712057 0.822467033424113 -0.411233516712057 0.411233516712057
+Comments for the output files names:	_some_element
+
+
+* Description of each parameter:
+
+ - Machine: name of the machine in which the element is located. It's used
+only in the output files names.
+ - Relativistic Gamma: gamma=1/sqrt(1-beta^2) for the point-charge creating the
+electromagnetic fields and impedances.
+ - Impedance Length in m: length (along the beam orbit) of the element
+considered.
+ - Number of layers: number of layers in the multilayer cylindrical structure
+considered. For example 1 layer means that around the vacuum region only
+one layer of material is considered, with infinite thickness. Typically,
+a pipe wall made of a coated material and surrounded by vacuum will have
+three layers (coating + main wall material + vacuum). Any number of layers can be treated.
+ - Layer 1 inner radius in mm: inner radius of the structure.
+ - Layer n DC resistivity (Ohm.m):	DC resistivity rho of the layer considered
+(can be Infinity. e.g. for vacuum).
+ - Layer n relaxation time for resistivity (ps): relaxation time tau in
+picoseconds (BEWARE OF THE UNITS), for the AC conductivity (or
+resistivity). 0 for vacuum.
+ - Layer n real part of dielectric constant: eps_b (1 for vacuum or metals).
+ - Layer n magnetic susceptibility: it is chi_m=mu_r-1 if the permeability is
+real. 0 for vacuum.
+ - Layer n relaxation frequency of permeability (MHz): f_mu, cut-off frequency for the
+frequency-dependent complex permeability. Usually Inifinity (vacuum,
+metals, and others).
+ - Layer n thickness in mm: thickness of the layer n. Can be Infinity (actually it
+has to be Infinity for the last layer).
+
+The 6 previous items are repeated for all the layers, changing the number
+n from 1 to "Number of layers" (specified at the beginning). There can be 
+more layers than needed (i.e. than "Number of layers") in the input file, 
+it is not a problem.
+In summary, the total complex permittivity in each layer is:
+eps_c = eps_0 * eps_b + 1/(j*rho*2*pi*f*(1+j*2*pi*f*tau))
+and the permeability is:
+mu = mu_0 * (1 + chi_m/(1+j*f/f_mu) )
+where f is the frequency, eps_0 the vacuum permittivity and mu_0 its
+permeability.
+
+ - start frequency exponent (10^) in Hz: fmin: the scan (see flag below) in 
+frequency for the impedance calculation begins at 10^fmin Hz
+ - stop  frequency exponent (10^) in Hz: fmax: the scan (see flag below) in 
+frequency for the impedance calculation ends at 10^fmax Hz
+ - linear (1) or logarithmic (0) or both (2) frequency scan: flag for the 
+frequency sampling to be used: if it's 1, a linear (evenly spaced) scan is performed,
+if it's 0 it's a logarithmically spaced scan, if it's 2, we use
+both (a logarithmic scan plus a linear refinement, usually to sample
+accurately the high-frequency peak).
+ - sampling frequency exponent (10^) in Hz (for linear): when option 1 is
+selected above, the scan goes from 10^fmin to 10^fmax with a spacing of
+10^"sampling frequency exponent".
+ - Number of points per decade (for log): when option 0 or 2 is selected
+above, the scan goes from 10^fmin to 10^fmax with this number of points
+per decades.
+ - when both, fmin of the refinement (in THz):	fminref
+ - when both, fmax of the refinement (in THz):	fmaxref
+ - when both, number of points in the refinement:	nref
+When the option above is 2, the last three parameters define an additional
+linear scan of nref points from fminref to fmaxref (BEWARE of UNITS:
+THZ). It is added to the log scan previously defined, sorting all the 
+frequencies in ascending order (also, if some frequencies
+appear twice, the redundant ones are erased).
+ - added frequencies [Hz]:	several individual frequencies (separated by 
+spaces in the input file) to be added to all the previously defined scan.
+It can be empty.
+ - Yokoya factors long, xdip, ydip, xquad, yquad: 5 values (separated by
+spaces) giving the factors to apply to get the final impedances and wakes.
+Basically, the code computes the longitudinal and transverse dipolar impedance
+of a cylindrical geometry, and apply those factors to get the long., dip. and quad. impedance
+for another geometry. First value is for the longitudinal term, second one for the dipolar x
+transverse term, third one for the dipolar y transverse term,
+fourth one for the quadrupolar x transverse term, and fifth one for the
+quadrupolar y transverse terms. NOTE: in the cylindrical case (Yokoya factors="1 1 1 0 0"), we take into
+account the non-ultrarelativistic axisymmetric quadrupolar impedance (new
+quadrupolar impedance, see [7]), such that the quadrupolar impedance is not zero.
+ - Comments for the output files names: additional string
+that will be added at the end of the output file name. It can be empty.
+
+
+   4.2 Input file for the round chamber wake computation
+       -------------------------------------------------
+       
+* Input file example:
+
+Machine:	LHC
+Relativistic Gamma:	7460.52
+Impedance Length in m:	1
+Number of layers:	2
+Layer 1 inner radius in mm:	18.375
+Layer 1 DC resistivity (Ohm.m):	7.7e-10
+Layer 1 relaxation time for resistivity (ps):	0.5
+Layer 1 real part of dielectric constant:	1
+Layer 1 magnetic susceptibility:	0
+Layer 1 relaxation frequency of permeability (MHz):	Infinity
+Layer 1 thickness in mm:	0.05
+Layer 2 DC resistivity (Ohm.m):	6.e-7
+Layer 2 relaxation time for resistivity (ps):	0
+Layer 2 real part of dielectric constant:	1
+Layer 2 magnetic susceptibility:	0
+Layer 2 relaxation frequency of permeability (MHz):	Infinity
+Layer 2 thickness in mm:	Infinity
+linear (1) or logarithmic (0) or both (2) scan in z for the wake:	2
+sampling distance in m for the linear sampling:	0.5e-5
+zmin in m of the linear sampling:	0.5e-5
+zmax in m of the linear sampling:	0.01
+Number of points per decade for the logarithmic sampling:	100
+exponent (10^) of zmin (in m) of the logarithmic sampling:	-2
+exponent (10^) of zmax (in m) of the logarithmic sampling:	6
+added z [m]:	
+Yokoya factors long, xdip, ydip, xquad, yquad:	1 0.651 0.898 -0.238 0.241
+factor weighting the longitudinal impedance error:	1.
+tolerance (in wake units) to achieve:	1.e11
+frequency above which the mesh bisecting is linear [Hz]:	1.e11
+Comments for the output files names:
+
+
+* Description of each parameter:
+
+ - The first parameters, up to the last layer thickness, are the same as for the round chamber
+imepdance (see 4.1),
+ - linear (1) or logarithmic (0) or both (2) scan in z for the wake: same
+kind of flag as above: we can perform either a purely linear scan (1), a
+purely logarithmic scan (0), or both (2). Note that the scan is over z, the
+distance (in m) BEHIND the travelling point-charge. Negative values can
+be entered in principle (meaning that we look for the wake in front of the beam).
+ - sampling distance in m for the linear sampling:     distance between two
+points for the linear sampling.
+ - zmin in m of the linear sampling: first point of the linear sampling.
+ - zmax in m of the linear sampling: last point of the linear sampling.
+ - Number of points per decade for the logarithmic sampling: self
+explanatory.
+ - exponent (10^) of zmin (in m) of the logarithmic sampling: the log
+scan begins at 10^"this value".
+ - exponent (10^) of zmax (in m) of the logarithmic sampling: the log
+scan ends at 10^"this value".
+ - added z [m]: as above for frequencies: individual z values to be
+entered in the scan.
+As for the frequency scan, the final scan is sorted and duplicates are
+erased.
+ - Yokoya factors long, xdip, ydip, xquad, yquad: see above in 4.1
+ - factor weighting the longitudinal impedance error: to reach convergence
+on the wake functions, an error between the analytical impedances and its
+interpolation is integrated over the frequency range. This parameter is a factor
+weighting the error on the longitudinal impedance in the total error computation. It's useful to put a high value
+(100 or even 1000) if one wants to get an accurate longitudinal wake, because otherwise,
+since the transverse impedances are numerically usually much higher than the longitudinal one,
+the error on the longitudinal impedance is rather negligible in the integration, and therefore
+in the convergence process.
+ - tolerance (in wake units) to achieve: this is the absolute error one wants to reach
+for the wake calculation. The code refines the frequency mesh used to compute the impedance
+until the error is less than this. Note that this is approximate only, the final wake functions
+error may still be above this parameter. Nevertheless, the lower it is, the more accurate will be the wake,
+and the longer it will take the code to reach convergence. A rule of thumb is to choose
+a few times below the minimum value the wake is likely to reach on the chosen z mesh. 
+ - frequency above which the mesh bisecting is linear [Hz]: above this frequency, the refinement
+procedure bisects linearly the frequency intervals, whereas below it bisects them
+logarithmically. Changing this parameter does not matter too much. For ceramic structures, or more
+generally structures having lots of resonant peaks, one can try to put it lower (e.g. 1e9) because
+the resonant peaks are usually with equal frequencies between them.
+ - Comments for the output files names: see above in 4.1.
+
+
+   4.3 Input file for the flat chamber impedance computation
+       -----------------------------------------------------
+       
+* Input file example:
+
+Machine:	LHC
+Relativistic Gamma:	3730.26
+Impedance Length in m:	1.
+Number of upper layers in the chamber wall:	2
+Layer 1 inner half gap in mm:	1.5
+Layer 1 DC resistivity (Ohm.m):	5.e-6
+Layer 1 relaxation time for resistivity (ps):	4.2
+Layer 1 real part of dielectric constant:	1
+Layer 1 magnetic susceptibility:	0
+Layer 1 relaxation frequency of permeability (MHz):	Infinity
+Layer 1 thickness in mm:	25
+Layer 2 DC resistivity (Ohm.m):	7.2e-7
+Layer 2 relaxation time for resistivity (ps):	0
+Layer 2 real part of dielectric constant:	1
+Layer 2 magnetic susceptibility:	0
+Layer 2 relaxation frequency of permeability (MHz):	Infinity
+Layer 2 thickness in mm:	Infinity
+Top bottom symmetry (yes or no):	yes
+start frequency exponent (10^) in Hz:	2
+stop frequency exponent (10^) in Hz:	9
+linear (1) or logarithmic (0) or both (2) frequency scan:	0
+sampling frequency exponent (10^) in Hz (for linear):	8
+Number of points per decade (for log):	20
+when both, fmin of the refinement (in THz):	5.5
+when both, fmax of the refinement (in THz):	7
+when both, number of points in the refinement:	100
+added frequencies (Hz):
+Comments for the output files names:
+
+
+* Description of each parameter:
+
+See the round case above (4.1), except for:
+ - Number of upper layers in the chamber wall: number of layers in the upper part of the chamber.
+ - Layer 1 inner half gap in mm: position on the vertical axis of the chamber first upper layer, 
+ with respect to the beam orbit.
+ - Top bottom symmetry (yes or no): if "yes", the lower part of the chamber is exactly the same as
+the upper part, defined as in the round case (see 4.1) with the lines "Layer n ...". If "no", the
+chamber is asymetrical and one needs to define the lower part of the chamber, with the following
+lines:
+ - Number of lower layers in the chamber wall: number of layers in the lower part of the chamber.
+ - Layer -1 inner half gap in mm: position (in absolute value, i.e. >=0) on the vertical axis of the 
+chamber first lower layer, with respect to the beam orbit.
+ - Layer -n DC resistivity (Ohm.m): DC resistivity rho of the n^th layer in the lower part 
+of the chamber (can be Infinity. e.g. for vacuum).
+ - Layer -n relaxation time for resistivity (ps): relaxation time tau in
+picoseconds (BEWARE OF THE UNITS), for the AC conductivity (or
+resistivity). 0 for vacuum.
+ - Layer -n real part of dielectric constant: eps_b (1 for vacuum or metals).
+ - Layer -n magnetic susceptibility: it is chi_m=mu_r-1 if the permeability is
+real. 0 for vacuum.
+ - Layer -n relaxation frequency of permeability (MHz): f_mu, cut-off frequency for the
+frequency-dependent complex permeability. Usually Inifinity (vacuum,
+metals, and others).
+ - Layer -n thickness in mm: thickness (positive) of the n^th layer in the lower part 
+ of the chamber. Can be Infinity (actually it has to be Infinity for the last layer).
+
+Layer -1 to -n are working the same way as layers 1 to n (note that layers 1 and -1 are the closest
+to the beam, and layers n and -n the farthest).
+Note that the number of layers in the upper or lower part can be zero.
+
+
+
+   4.4 Input file for the flat chamber wake computation
+       ------------------------------------------------
+       
+* Input file example:
+
+Machine:	LHC
+Relativistic Gamma:	3730.26
+Impedance Length in m:	3.
+Number of upper layers in the chamber wall:	2
+Layer 1 inner half gap in mm:	6.5
+Layer 1 DC resistivity (Ohm.m):	1.5e-5
+Layer 1 relaxation time for resistivity (ps):	1.3
+Layer 1 real part of dielectric constant:	1
+Layer 1 magnetic susceptibility:	0
+Layer 1 relaxation frequency of permeability (MHz):	Infinity
+Layer 1 thickness in mm:	25
+Layer 2 DC resistivity (Ohm.m):	7.2e-7
+Layer 2 relaxation time for resistivity (ps):	0
+Layer 2 real part of dielectric constant:	1
+Layer 2 magnetic susceptibility:	0
+Layer 2 relaxation frequency of permeability (MHz):	Infinity
+Layer 2 thickness in mm:	Infinity
+Number of lower layers in the chamber wall:	0
+Top bottom symmetry (yes or no):	no
+linear (1) or logarithmic (0) or both (2) scan in z for the wake:	2
+sampling distance in m for the linear sampling:	0.5e-5
+zmin in m of the linear sampling:	0.5e-5
+zmax in m of the linear sampling:	0.01
+Number of points per decade for the logarithmic sampling:	100
+exponent (10^) of zmin (in m) of the logarithmic sampling:	-2
+exponent (10^) of zmax (in m) of the logarithmic sampling:	6
+added z [m]:	
+factor weighting the longitudinal impedance error:	1.
+tolerance (in wake units) to achieve:	1.e12
+frequency above which the mesh bisecting is linear [Hz]:	1.e10
+Comments for the output files names:	
+
+
+* Description of each parameter:
+
+See the three sections above (in particular, section 4.3 for the parameters related to the 
+flat chamber properties, and section 4.2 for the z sampling parameters and the parameters related
+to the wake computation).
+
+
+5. THE OUTPUT FILES
+   ================
+
+The output files (ascii files) are put in the directory from which the code is launched.
+In each case, one of the output file (name begins with "InputData") is a repetition of the input file.
+The first line of the impedance or wake output files contains columns headers with the description and unit
+of each column. All units are SI units. The output files have all the .dat extension.
+ 
+NOTE: the impedances (resp. wakes) are sorted with respect to ascending frequencies (resp. distances).
+it is possible that some duplicate points remain in the output files (this can cause problems later when using
+the files, for instance in a python or matlab interpolation routine).
+
+For the wake computation, the code prints on the standard output the iterations to get the prescribed accuracy on
+the wake functions. This can be quite long.
+
+
+   5.1 Output files for the round chamber impedance computation
+       --------------------------------------------------------
+       
+       There are 5 output files, with three columns each: frequency, impedance real part,
+       impedance imaginary part.
+       
+       Files are: longitudinal (begins with Zlong), x dipolar (Zxdip), y dipolar (Zydip), x quadrupolar
+       (Zxquad) and y quadrupolar (Zyquad) impedances.
+       
+
+   5.2 Output files for the round chamber wake computation
+       ---------------------------------------------------
+       
+       There are 10 impedances output files, with three columns each: frequency, impedance real part,
+       impedance imaginary part. 5 files are with the (supposedly) converged frequency mesh,
+       and 5 files (with "_precise.dat" in the end) are with a finer mesh (twice more frequencies).
+       
+       There are also 10 wake functions output files, with two columns each: distance behind
+       the source, and wake function. 5 files are computed with the (supposedly) converged frequency mesh,
+       and 5 files (with "_precise.dat" in the end) with a finer mesh (twice more frequencies).
+       
+       For the impedances, the files are: longitudinal (Zlong), x dipolar (Zxdip), y dipolar (Zydip), 
+       x quadrupolar (Zxquad) and y quadrupolar (Zyquad) impedances.
+       
+       For the wakes, the files are: longitudinal (Wlong), x dipolar (Wxdip), y dipolar (Wydip), 
+       x quadrupolar (Wxquad) and y quadrupolar (Wyquad) wakes.
+       
+       
+   5.3 Output files for the flat chamber impedance computation
+       -------------------------------------------------------
+       
+       There are 6 output files, with three columns each: frequency, impedance real part,
+       impedance imaginary part.
+       
+       Files are: longitudinal (Zlong), x dipolar (Zxdip), y dipolar (Zydip), x quadrupolar
+       (Zxquad), y quadrupolar (Zyquad), and y contant (Zycst) impedances (the last one is non zero for 
+       an asymmetrical structure).
+       
+
+   5.4 Output files for the flat chamber wake computation
+       --------------------------------------------------
+
+       There are 12 impedances output files, with three columns each: frequency, impedance real part,
+       impedance imaginary part. 6 files are with the (supposedly) converged frequency mesh,
+       and 6 files (with "_precise.dat" in the end) are with a finer mesh (twice more frequencies).
+       
+       There are also 12 wake functions output files, with two columns each: distance behind
+       the source, and wake function. 6 files are computed with the (supposedly) converged frequency mesh,
+       and 6 files (with "_precise.dat" in the end) with a finer mesh (twice more frequencies).
+       
+       For the impedances, the files are: longitudinal (Zlong), x dipolar (Zxdip), y dipolar (Zydip), 
+       x quadrupolar (Zxquad), y quadrupolar (Zyquad) impedances, and y contant impedances (Zycst).
+       
+       For the wakes, the files are: longitudinal (Wlong), x dipolar (Wxdip), y dipolar (Wydip), 
+       x quadrupolar (Wxquad) and y quadrupolar (Wyquad), and y contant (Wycst) wakes.
+       
+       
+   5.5 How to plot the output files
+       ----------------------------
+
+       You can use the python routines provided to plot the impedances and wakes.
+       python2.6 with numpy and pylab need to be isntalled. The routines can be launched in the
+       command line.
+       
+       Examples:
+       
+       ./plot_Imp_flat.py -f ZlongWLHC_2layersup_0layersdown6.50mm_precise.dat -g "first case" 
+       -f ZlongWLHC_2layers18.38mm_precise.dat -g "second case" -l
+       
+       This will plot in log-log scale all the impedances ending with "WLHC_2layersup_0layersdown6.50mm_precise.dat"
+       (long., x dip, y dip, x quad, y quad) , and all
+       ending with "WLHC_2layers18.38mm_precise.dat", putting on the same plot the longitudinal
+       impedances together, the x dipolar impedances together, etc., with the legends "first case" and 
+       "second case" on the graphs.
+       
+       ./plot_Wake_flat.py -f WlongWLHC_2layersup_0layersdown6.50mm_precise.dat -g "first case" 
+       -f WlongWLHC_2layers18.38mm_precise.dat -g "second case" -l
+       
+       This will plot in log-log scale all the wakes ending with "WLHC_2layersup_0layersdown6.50mm_precise.dat"
+       (long., x dip, y dip, x quad, y quad, and y cst if -c option is present) , and all
+       ending with "WLHC_2layers18.38mm_precise.dat", putting on the same plot the longitudinal
+       wakes together, the x dipolar wakes together, etc., with the legends "first case" and "second case" on
+       the graphs.
+       
+
+       Short description of the options:
+       -l (optional): plot in log-log scale (instead of semilogx for impedances and semilogy for wakes)
+       -m (optional): units on the y axis are divided by meter (i.e. impedances & wakes are given per meter length)
+       -c (optional): also plots the constant term (for flat asymmetrical chamber)
+       -f: longitudinal file to be plotted (needs to begin by Zlong for plot_Imp_flat.py, or Wlong for
+       plot_Wake_flat.py). There can be as many files as desired. The transverse impedances and wakes are loaded
+       automatically (replacing e.g. Zlong by Zxdip, Zydip, etc.)
+       -g (optional): legend to be associated with each file above (otherwise the name of the file is put 
+       in the legends).
+       
+       When computing the wakes, it is usually a good idea to compare the converged wake functions with the
+       "precise" ones (ending with "_precise.dat"), to check the accuracy of the convergence: if there is not
+       too much difference between the two wakes, it's OK. Typically one would need to launch:
+       
+       ./plot_Wake_flat.py -f WlongWLHC_2layersup_0layersdown6.50mm_precise.dat -g "more precise wake" 
+       -f WlongWLHC_2layersup_0layersdown6.50mm.dat -g "converged wake" -l
+       
+       
+              
+
+6. TROUBLESHOOTING
+   ===============
+ 
+   The codes use floating point number s with higher precision than doubles or even quadruple precision numbers.
+   This is required by the field matching problem resolution where very small and very high numbers appear.
+   This is also why we had to use the ALGLIB library (linear algebra with high precision floating point numbers).
+   
+   In the round chamber computations, problems can arise due to the lack of accuracy when computing the 4*4
+   matrices, in particular due to a lack of precision of the modified Bessel functions.
+   In the flat case, some problems might arise when performing the numerical integration (with GSL).
+   
+   In both cases, this is most often solved by increasing the precision of all the calculations. To do so, in
+   the code that you use, you can change the line beginning with
+   
+   #define  Precision
+   
+   by increasing the number after "Precision" (this is the number of bits for the mantissa of all numbers).
+   Please note that putting a too high value will slow down a lot the code, and can also create other problems.
+   
+   
+   Note that the longitudinal wake function is often quite noisy (because it is quite small), as well as the 
+   quadrupolar wake functions for round chambers (when putting the Yokoya factors to "1 1 1 0 0"). Try to decrease
+   the tolerance on the wake convergence, in case this is an issue (see input files description).
+ 
+  
+7. LATEST MODIFICATIONS
+   ====================
+
+
+8. FUTURE DEVELOPMENTS (TO-DO LIST)
+   ================================
+   
+   - Round chamber impedances and wakes: better implementation of the modified Bessel functions computation: now we use simply the
+   Taylor series for small arguments, and the asymptotic expansion for large arguments. A Chebyshev approximation
+   would be better in the intermediate range.
+   
+   - More modular programs (putting common subroutines in a separate module, instead of repeating them in each 
+   code).
+   
+   - Include the possibility to have the "perfect conductor" and "perfect magnet" kinds of boundary conditions
+   for the last layer.
+
+
+9. REFERENCES
+   ==========
+
+[1] B. Zotter. Longitudinal instabilities of charged particle beams inside cylindrical walls of finite thickness.
+Part. Accel., 1:311–326, 1970.
+
+[2] E. Keil and B. Zotter. The impedance of layered vacuum chambers. In 2nd European Particle Accelerator
+Conference, Stockholm, Sweden, pages 963–965, 1998.
+
+[3] B. Zotter. New results on the impedance of resistive metal walls of finite thickness, 2005. Report No.
+CERN-AB-2005-043.
+
+[4] E. Métral, B. Zotter, and B. Salvant. Resistive-wall impedance of an infinitely long multi-layer cylindrical
+beam pipe. In 22nd Particle Accelerator Conference, Albuquerque, 2007.
+
+[5] B. Salvant. Impedance model of the CERN SPS and aspects of LHC single-bunch stability, 
+EPFL PhD Thesis 4585 (2010).
+
+[6] Mathematica®, 2010. ©Wolfram Research, Inc., Champaign, Illinois , USA.
+
+[7] N. Mounet and E. Métral. Electromagnetic Fields Created by a Beam in an
+Infinitely Long and Axisymmetric Multilayer Resistive Pipe, Report No. CERN-BE-2009-039 (2009).
+
+[8] N. Mounet and E. Métral. Electromagnetic fields and beam coupling impedances in a multilayer flat chamber,
+CERN-ATS-Note-2010-056 TECH. (2010).
+
+[9] N.Mounet and E.Métral. Impedances of two dimensional multilayer cylindrical and flat chambers
+in the non-ultrarelativistic case. In HB2010, 46th ICFA Advanced Beam Dynamics Workshop on
+High-Intensity and High-Brightness Hadron Beams, Morschach, Switzerland, pages 353-357, 2010.
+
+[10] F. Roncarolo, F. Caspers, T. Kroyer, E. M´etral, N. Mounet, B. Salvant, and B. Zotter. Comparison between
+laboratory measurements, simulations and analytical predictions of the transverse wall impedance at low
+frequencies. Phys. Rev. ST Accel. Beams, 12(084401), 2009.
