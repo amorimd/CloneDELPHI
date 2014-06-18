@@ -1,0 +1,17 @@
+Impedance filename	Z.dat
+Output filename	out
+Total bunch length [seconds]	2.48895004e-08
+Number of particles per bunch	1.13000000e+12
+Machine circumference [m]	6.28000000e+02
+Relativistic gamma	6.07800000e+00
+Transverse tune	6.22000000e+00
+Synchrotron tune	4.80000000e-05
+Longitudinal distribution	gaussiancut
+Type of particle	proton
+Chromaticity (DeltaQ*p/Q*Deltap)	0.00000000e+00
+Momentum compaction factor	2.70000000e-02
+Number of bunches	1
+Maximum headtail mode considered	2
+Maximum number of eigenvalues	3
+Minimum coupled-bunch mode number to consider	0
+Maximum coupled-bunch mode number to consider	-1
