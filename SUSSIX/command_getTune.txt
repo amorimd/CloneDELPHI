@@ -1,0 +1,8 @@
+./getTuneSussixNM.py -f /media/b47b52a4-e1bb-4c0a-83cf-48aca3c6ec91/DATA_HEADTAIL/LHC_50ns_3500GeV/csi0_1782b_9cm_dip/LHC_36b_50ns_prt.dat -q .31 .32 0.0028911 -r 0 -i 0.02 -b 65.976 71.538 -n 1782 -t 8192 -k1 -k900 -k1782
+
+./getTuneSussixNM.py -f /media/b47b52a4-e1bb-4c0a-83cf-48aca3c6ec91/DATA_HEADTAIL/LHC_50ns_3500GeV/csi0_1batch_36b_9cm/LHC_36b_50ns_prt.dat -q .31 .32 0.0028911 -r 0 -i 0.02 -b 65.976 71.538 -n 36 -t 8192 -k1 -k15 -k36
+
+./getTuneSussixNM.py -f /media/b47b52a4-e1bb-4c0a-83cf-48aca3c6ec91/DATA_HEADTAIL/LHC_50ns_450GeV/csi0_1782b_dip/LHC_36b_50ns_prt.dat -q 0.28 0.31 0.0057 -r 0 -i 0.02 -b 66.006 71.538 -n 1782 -t 1024 -k1 -k100 -k900 -k1782
+
+./getTuneSussixNM.py -f ~/Documents/DATA_HEADTAIL/LHC_50ns_3500GeV_tight/csi0_1404b_2p5e11/LHC_1404b_50ns_prt.dat -q .31 .32 0.0028911 -r 0 -i 0.02 -b 65.976 71.538 -n 1404 -t 8192 -k1400 -k700 -k10
+
