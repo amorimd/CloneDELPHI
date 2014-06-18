@@ -1,0 +1,25 @@
+# to plot directly from file under iython (here: two plots on the same figure)
+
+plotfile('TestPart1DH_Acc_Naked.dat',(4,5),delimiter=' ',newfig=True,marker='x',lw=0);
+plotfile('TestPart3DH_Acc_Naked.dat',(4,5),delimiter=' ',newfig=False,marker='x',lw=0);
+
+######################################
+# single particle tests with PTC-ORBIT
+######################################
+
+string='Naked';
+string='Pert';
+string='CompPart';
+string='CompAll';
+
+plotfile('TestPart1DH_Acc_'+string+'.dat',(0,1),delimiter=' ',marker='x',lw=0);
+plotfile('TestPart2DH_Acc_'+string+'.dat',(0,1),delimiter=' ',newfig=False,marker='x',lw=0);
+plotfile('TestPart3DH_Acc_'+string+'.dat',(0,1),delimiter=' ',newfig=False,marker='x',lw=0);
+plotfile('TestPart1DH_Acc_'+string+'.dat',(2,3),delimiter=' ',marker='x',lw=0);
+plotfile('TestPart2DH_Acc_'+string+'.dat',(2,3),delimiter=' ',newfig=False,marker='x',lw=0);
+plotfile('TestPart3DH_Acc_'+string+'.dat',(2,3),delimiter=' ',newfig=False,marker='x',lw=0);
+plotfile('TestPart1DH_Acc_'+string+'.dat',(4,5),delimiter=' ',marker='x',lw=0);
+plotfile('TestPart2DH_Acc_'+string+'.dat',(4,5),delimiter=' ',newfig=False,marker='x',lw=0);
+plotfile('TestPart3DH_Acc_'+string+'.dat',(4,5),delimiter=' ',newfig=False,marker='x',lw=0);
+
+
