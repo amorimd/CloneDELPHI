@@ -1,0 +1,25 @@
+Impedance filename	Z.dat
+Longitudinal distribution filename	no
+Damper impedance filename	no
+Output filename	out
+Total bunch length [seconds]	1.25000003e-09
+Number of particles per bunch	1.50000000e+11
+Machine circumference [m]	2.66588830e+04
+Relativistic gamma	4.26315613e+03
+Transverse tune	6.43100000e+01
+Synchrotron tune	2.34243000e-03
+Type of particle	proton
+Chromaticity (DeltaQ*p/Q*Deltap)	0.00000000e+00
+Momentum compaction factor	3.22500000e-04
+Number of bunches	1
+Maximum number of eigenvalues	1
+Minimum coupled-bunch mode number to consider	0
+Maximum coupled-bunch mode number to consider	-1
+Coupled-bunch modes added	
+Maximum damper gain (inverse of number of damping turns)	2.00000000e-02
+Frequency cutoff of damper in MHz	2.00000000e+01
+Damper phase w.r.t. pi/2 (rad)	0.00000000e+00
+Parameter a	8.00000000e+00
+Parameter b	8.00000000e+00
+Use trapz method	yes
+Convergence criterion	5.00000000e-02
