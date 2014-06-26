@@ -145,7 +145,16 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
        To check if GMP, MPFR and GSL are already installed, check for the existence of "libgmp", "libmpfr", "libgsl"
        and "libgslcblas" (with extensions .a, .la and/or .so) in /usr/lib/ or /usr/lib64/ or /usr/local/lib/,
        as well as the existence of "gmp.h", "mpfr.h" and the "gsl" directory in /usr/include/ or /usr/local/include/.
-       Otherwise follow the instructions in the websites indicated above to install the libraries.
+       
+       Otherwise, or if you are experiencing troubles with some already installed gmp or mpfr libraries
+       (apparently it is the case with latest versions and/or under Ubuntu 12.04, due to some TLS problem...):
+       
+       - go in ../External_libs and follow the instructions in README_compile_GMP_MPFR, to install gmp and mpfr
+       locally (remember to do it preferrably outside of this git repository)
+       (note: you can also download them from the web; for gmp you need 'lunzip' to be able to extract the archive -
+       under Ubuntu simply do "sudo apt-get install lunzip")
+       - later (see below), use the Makefile called "Makefile_local_GMP_MPFR"
+       
        
        For ALGLIB:
         - download the mpfr version of ALGLIB (2.6) from http://www.alglib.net/translator/re/alglib-2.6.0.mpfr.zip
@@ -163,10 +172,26 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
    3.2 Compilation
        -----------
        
-       - Edit the file "Makefile" and change the variable PATH_ALGLIB to the local directory where you installed
-       ALGLIB (do not forget /mpfr/out/),
-       - type "make" (or "make all"),
-       - to erase the executables: "make clean".
+       - If you are under lxplus or if you did not need to install locally GMP and MPFR:
+	   * type
+	   cp Makefile_lxplus Makefile
+	   * edit the file "Makefile" and change the variable PATH_ALGLIB to the local directory where you
+	   installed ALGLIB (do not forget /mpfr/out/).
+	   
+       - If you had to install locally GMP and MPFR (see above):
+	   * type
+	   cp Makefile_local_GMP_MPFR Makefile
+	   * edit the file "Makefile" and
+	   	- change the variable PATH_ALGLIB to the local directory where you
+	   	installed ALGLIB (do not forget /mpfr/out in the end),
+	   	- change the variable PATH_GMP to the local directory where you
+	   	installed GMP,
+	   	- change the variable PATH_MPFR to the local directory where you
+	   	installed MPFR (do not forget /src in the end).
+	
+	- Finally:
+	   * Type "make" (or "make all"),
+	   * to erase all the executables and libraries: "make clean".
        
        
    3.3 How to use the code
