@@ -19,3 +19,7 @@ cd mpfr-3.1.2/
 # then change all options -O3 into -O2 in files "libtool", "Makefile" and "config.status"
 # and finally do
 make
+
+
+Note: you might need to install something called 'm4' during the process. Under Ubuntu you can install it via:
+sudo apt-get install m4

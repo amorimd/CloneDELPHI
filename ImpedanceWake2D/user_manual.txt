@@ -150,7 +150,7 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
        (apparently it is the case with latest versions and/or under Ubuntu 12.04, due to some TLS problem...):
        
        - go in ../External_libs and follow the instructions in README_compile_GMP_MPFR, to install gmp and mpfr
-       locally (remember to do it preferrably outside of this git repository)
+       locally (remember to do it preferrably outside of this git repository).
        (note: you can also download them from the web; for gmp you need 'lunzip' to be able to extract the archive -
        under Ubuntu simply do "sudo apt-get install lunzip")
        - later (see below), use the Makefile called "Makefile_local_GMP_MPFR"
