@@ -10,9 +10,10 @@
 
 Author: Nicolas Mounet, CERN BE, Geneva
 
-Last modifications: 16/01/2014
+Last modifications: 01/07/2014
 
-Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch
+Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org,
+or imp-inst@cern.ch
 
 
 CONTENTS OF THE MANUAL:
@@ -123,10 +124,11 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
 3. INSTALLATION AND USE
    ====================
    
-   The following instructions should be valid for a Linux operating system. They were checked only under Ubuntu.
+   The following instructions should be valid for a Linux operating system. They were checked under lxplus at CERN (in 2014)
+   and under Ubuntu (10.04 & 12.04), with gcc/g++ compilers.
    
-   For other operating systems, the user is welcome to share his/her installation experience with the author by
-   sending an email to nicolas.mounet@cern.ch .
+   For other operating systems and/or compilers, the user is welcome to share his/her installation experience by
+   sending an email to imp-inst@cern.ch .
    
    For CERN users under lxplus, note that the GMP, MPFR and GSL libraries are already installed, only ALGLIB
    needs to be installed manually (see 3.1).
@@ -207,13 +209,26 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
        NOTE: the wake computations codes take much more time than the impedance ones, in general (depending on the
        paramters, of course).
        
+
+   3.4 How to use the library
+       ----------------------
+       
+       The library "libIW2D.so" is used in the Python programs located in 
+       ../PYTHON_codes_and_scripts/Impedance_lib_Python/
+       In order for those to work, you need to add a line to your .bashrc file to add the DELPHI path
+       to your LD_LIBRARY_PATH.
+       This can be simply done by running once the script given in this directory: type
+       
+       ./script_configure_bashrc.sh
+       
+       But still double-check your .bashrc afterwards, in case ...
        
 
 4. THE INPUT FILES
    ===============
 
 IMPORTANT NOTE: there must ALWAYS be a tab between the parameter description and its value, and more generally the exact 
-sentences of the parameter description should be kept identical.
+sentence of the parameter description should be kept identical.
 
 If there are more layers described in the input file than indicated at the 
 beginning of it, the additional ones are ignored.
@@ -652,7 +667,7 @@ the wake functions. This can be quite long.
 6. TROUBLESHOOTING
    ===============
  
-   The codes use floating point number s with higher precision than doubles or even quadruple precision numbers.
+   The codes use floating point numbers with higher precision than doubles or even quadruple precision numbers.
    This is required by the field matching problem resolution where very small and very high numbers appear.
    This is also why we had to use the ALGLIB library (linear algebra with high precision floating point numbers).
    

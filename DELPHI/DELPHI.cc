@@ -1,9 +1,9 @@
 /* 
  *
  * DELPHI.cc
- * Discrete Expansion over Laguerre Polynomials and HeadtaIl modes
+ * Discrete Expansion over Laguerre Polynomials and Headtail modes for Instabilities computation
  *
- * by Nicolas Mounet (Nicolas.Mounet@cern.ch)
+ * by Nicolas Mounet (nicolas.mounet@cern.ch, nicolas.mounet@m4x.org, followed by imp-inst@cern.ch)
  *
  *
  * For a given impedance and damper gain, solve eigenvalue problem  in transverse, with mode coupling,
@@ -74,7 +74,7 @@ Some explanatations for the input file:
  - Damper impedance filename: either "no" (no filename, bunch-by-bunch damper assumed), or name of the file containing the damper impedance (i.e. frequency dependent gain) (3 columns, without headers: frequency - NOT ANGULAR, real part and imag. part of the impedance). It should be sorted in ascending order of frequencies. Frequencies should span both positive and negative domain.
  - Output filename: eigenvalues are put in [this_filename]_val.dat, eigenvectors in [this_filename]_vec.dat.
  - Type of particle: proton or electron.
- - Maximum number of eigenvalues: kmax: total number of eigenvalues that are kept and accurate within 0.1% (choose the ones with lowest imaginary part)
+ - Maximum number of eigenvalues: kmax: total number of eigenvalues that are kept and accurate within "Convergence criterion" below(choose the ones with lowest imaginary part)
  - Minimum coupled-bunch mode number to consider: nxmin: we compute modes of number between nxmin and M-1 (total number of bunches minus one)
  - Maximum coupled-bunch mode number to consider: nxmax: we also compute modes of number between 0 and nxmax
  - Coupled-bunch modes added: we also compute those modes
@@ -1671,8 +1671,14 @@ main ()
 
      // construction of the final matrix, and old coupling and damper matrices
      
-     // normalization factor for damper matrix
-     dfactor=2.*pi*dampersum(nx, M, 0, omega0, tunefrac, 0, 0, 0, 0, aovertaub2, bovertaub2, taub, g, ng, d, freqd, nd, abseps);
+     // normalization factor for damper matrix (at zero chromaticity)
+     if (flagdamperfile==1) {
+       dfactor=2.*pi*dampersum(nx, M, 0., omega0, tunefrac, 0, 0, 0, 0, aovertaub2, bovertaub2, taub, g, ng, d, freqd, nd, abseps);
+     } else {
+       I_lprimenprime=Iln(0,0,0.,aovertaub2,bovertaub2,taub);
+       G_ln=Gln(0,0,0.,aovertaub2,taub,ng,g);
+       dfactor=2.*pi*I_lprimenprime*G_ln;
+     }
      // if normalize at the current chromaticity:
      //dfactor=2.*pi*damper[0+lmax+0*sizel+(0+lmax+0*sizel)*size];
      printf("damper matrix norm. factor = %13.8e %13.8e\n",dfactor.real(),dfactor.imag());

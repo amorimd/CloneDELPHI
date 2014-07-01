@@ -666,7 +666,7 @@ if __name__ == "__main__":
 
 		tuneshiftQp_2012[iQp,:,:,:,:,:],tuneshiftnx=eigenmodesDELPHI_converged_scan_lxplus([Qp],
 		    nxscan,[damp],[Nb],[omegas],[dphase],M_2012,omega0,eval('Q'+plane),
-		    gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=0,flag_trapz=flag_trapz,
+		    gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=flagnorm,flag_trapz=flag_trapz,
 		    flagdamperimp=0,d=None,freqd=None,kmax=kmax,kmaxplot=kmaxplot,crit=5.e-2,
 		    abseps=1.e-4,flagm0=False,lxplusbatch='retrieve',
 		    comment=machine+'_2012_v2_'+float_to_str(round(E_2012/1e9))+'GeV_'+str(M_2012)+'b_Qp'+str(Qp)+'_'+plane,
