@@ -4,14 +4,15 @@
 %%  DELPHI: Discrete Expansion over Laguerre Polynomials and Headtail modes for Instabilities computation	%%
 %%  														%%
 %%  Semi-analytic Vlasov solver, computing eigenfrequencies (tuneshifts and growth rates) of modes for a 	%%
-%%  coupling-impedance/damper system , in mode-coupling regime (azimuthal and radial modes considered).		%%
+%%  coupling-impedance/damper system , in transverse, in mode-coupling regime (azimuthal and radial modes	%%
+%%  considered).												%%
 %%											  			%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 01/07/2014
+Last modifications: 07/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 or imp-inst@cern.ch
@@ -28,6 +29,7 @@ CONTENTS OF THE MANUAL:
    3.1 Prerequisites
    3.2 Compilation
    3.3 How to use the code
+   3.4 How to use the library
 
 4. THE INPUT FILE
 
@@ -64,11 +66,16 @@ written as an eigenvalue problem:
 	- using a decomposition over orthogonal Laguerre polynomials of the radial function
 	(idea originally from Besnier [2], used then by Y. Chin in code MOSES [3]),
 	- including azimuthal & radial modes, and mode coupling (like MOSES),
-	- including generalization to any kind of impedance and to multibunch effects
+	- including a generalization to any kind of impedance and to multibunch effects
 	(equidistant bunches only - see Ref.[4]),
+	- including a generalization in principle to any longitudinal distribution that can be decomposed
+	over Laguerre polynomials,
 	- including the effect of a damper, either bunch-by bunch or with a
 	frequency dependent gain, as was also done in Refs.[5-6],
 	- not including Landau damping.
+
+This code automatically checks convergence with respect to the matrix size (number of 
+radial and azimuthal modes included) - see description of the input file.
 
 More information on the theory behind the DELPHI code can be found in Ref.[7].
 
@@ -79,7 +86,7 @@ IMPORTANT NOTICE:
 	which have been used and benchmarked quite significantly. So it should be reliable.
 	
 	- BUT the stand-alone you will also compile (DELPHI.x) is much more hazardous
-	since it has not been use for a while and might well be BUGGY.
+	since it has not been used for a while and might well be BUGGY.
 	
 	So please be cautious using the stand-alone. If you find bugs or problems, please 
 	report them to imp-inst@cern.ch
@@ -102,7 +109,7 @@ IMPORTANT NOTICE:
    For the latter, original plot (from W. Hofle, CERN/RF), digitized plot and csv file from digitization,
    are in files with same name but with respectively the .jpg, .dig and .csv extension.
 
-   - "Makefile": makefile to compile the executable and the library.
+   - "Makefile": makefile to compile the executable DELPHI.x and the library libDELPHI.so.
 
 
 
@@ -265,6 +272,9 @@ Maximum azimuthal mode number	2
 
  - Coupled-bunch modes added: we also compute those additional modes
 
+NOTE: to compute all coupled-bunch modes, one can choose nxmin=0 and nxmax=-1.
+
+
  - Maximum damper gain in 1/nturns units: dmax: gain of the damper, expressed as a 
  damping rate=1/(nb damping turns), 
  for mode 0 at 0 chromaticity. Note: this is used to normalize the damper matrix also when using a
@@ -308,7 +318,7 @@ But trapz method is about 6 times faster (for the same precision in impedancesum
 The output files (ascii files) are put in the directory from which the code is launched.
 
 The code also prints on the standard output a repetition of the input file, then the number of
-coupled_bunch modes computed, then the iterations on the matrix sizeto get 
+coupled_bunch modes computed, then the iterations on the matrix size to get 
 to the prescribed accuracy on the eigenvalues (or to the maximum number of modes
 indicated in nbrad & max_azim, see above). Convergence can be quite long in some cases
 (in particular with damper).
@@ -331,7 +341,7 @@ indicated in nbrad & max_azim, see above). Convergence can be quite long in some
    5.2 Output files for the eigenvectors
        ---------------------------------
        
-  - [output_filename]_vect.dat: complex eigenvectors for each eigenvalue above, array of size 
+  - [output_filename]_vec.dat: complex eigenvectors for each eigenvalue above, array of size 
   Mc*kmax*(2*mmax+1)*nmax
  (component on nth radial mode of the mth headtail mode of the kth most unstable 
  eigenvalue of the Mth multibunch mode).
@@ -341,8 +351,8 @@ indicated in nbrad & max_azim, see above). Convergence can be quite long in some
  	precision reached (max. relative difference between 2 last steps on the imag. part of the kmax
  	converged eigenvalues). 
 	* the kmax most unstable eigenvalues are given (most unstable first). For each of them, an array
-	of size (2*mmax+1)*nmax is provided (first the 6 radial components of the -mmax azimuthal component,
-	then the 6 radial components of the -mmax+1 azimuthal component, etc.)
+	of size (2*mmax+1)*nmax is provided (first the radial components of the -mmax azimuthal component,
+	then the radial components of the -mmax+1 azimuthal component, etc.)
        
        
               
@@ -350,7 +360,7 @@ indicated in nbrad & max_azim, see above). Convergence can be quite long in some
 6. TROUBLESHOOTING
    ===============
  
-   If the size of the matrix to diagonalize become too bg, the code will crash. Try to decrease the
+   If the size of the matrix to diagonalize become too big, the code will crash. Try to decrease the
    number of converged eigenvalues, or to increase the convergence criterion. 
   
 
@@ -364,8 +374,8 @@ indicated in nbrad & max_azim, see above). Convergence can be quite long in some
    - Check the code vs. the python library, just in case...
 
    - Do some Python plotting routines to plot the modes (in a "HEADTAIL way", with the nodes...). 
-   There is Hankel transform to do or something like that (Laclare [4], as well as Elias 
-   Metral 2009 USPAS courses, might be useful for that...).
+   There is Hankel transform to do or something like that (Laclare [4], as well as 
+   Ref.[8], will useful for that - see also the Laclare directory in this repository).
 
 
 9. REFERENCES
@@ -389,3 +399,6 @@ instability in an Electron Storage ring). CERN/LEP-TH/88-05, 1988.
 [7] N. Mounet. DELPHI: an analytic Vlasov solver for impedance-driven modes. Talk at the CERN BE/ABP/HSC 
 Section meeting, 07/05/2014 (https://espace.cern.ch/be-dep/ABP/HSC/Meetings/DELPHI-expanded_Part2.pdf).
 
+[8] E. Metral. Bunched beams transverse coherent instabilities. Lecture on Collective Effects in Beam Dynamics for Particle Accelerators,
+given at the US Particle Accelerator School, Albuquerque, New Mexico, USA, June 2009,
+http://impedance.web.cern.ch/impedance/USPAS/BunchedBeamTransverseCoherentInstabilities.pdf

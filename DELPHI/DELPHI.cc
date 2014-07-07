@@ -1495,7 +1495,7 @@ main ()
  /*strcpy (outputfilenamecoupl,outputfilename) ;
  strcpy (outputfilenamedamp,outputfilename) ;*/
  strcat (outputfilenameval,"_val.dat") ;
- strcat (outputfilenamevect,"_vect.dat") ;
+ strcat (outputfilenamevect,"_vec.dat") ;
  /*strcat (outputfilenamecoupl,"_coupl.dat") ;
  strcat (outputfilenamedamp,"_damper.dat") ;*/
  // open files

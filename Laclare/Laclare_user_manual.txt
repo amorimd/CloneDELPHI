@@ -1,0 +1,319 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%											  			%%
+%%  Laclare: implementation of Laclare formalism to compute impedance-driven transverse instabilities at			%%
+%%  low intensity in synchrotrons										%%
+%%  														%%
+%%  Semi-analytic Vlasov solver, computing eigenfrequencies (tuneshifts and growth rates) of modes		%%
+%%  due to coupling-impedance, far below mode-coupling regime (azimuthal modes all independent, radial modes	%%
+%%  considered).												%%
+%%											  			%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
+
+Last modifications: 07/07/2014
+
+Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
+or imp-inst@cern.ch
+
+
+CONTENTS OF THE MANUAL:
+
+1. INTRODUCTION
+
+2. DESCRIPTION OF THE PACKAGE
+
+3. INSTALLATION
+
+   3.1 Prerequisites
+   3.2 Compilation
+   3.3 How to use the code
+
+4. THE INPUT FILE
+
+5. THE OUTPUT FILES
+
+   5.1 Eigenvalues
+   5.2 Eigenvectors
+
+6. TROUBLESHOOTING
+
+7. LATEST MODIFICATIONS
+
+8. FUTURE DEVELOPMENTS (TO-DO LIST)
+
+9. REFERENCES
+
+
+
+1. INTRODUCTION
+   ============
+
+Instabilites in circular machines (synchrotrons, colliders, accelerators, storage rings, etc.)
+due to beam-coupling impedance can be a strong limit to their operation.
+
+This code computes eigenfrequencies (equivalently, complex tuneshifts) of modes that
+can develop in circular machines under the action of a beam-coupling impedance, in the
+"weak headtail" regime i.e. far from the mode coupling regime where different azimuthal 
+mode become coupled. This means it can work only at low intensity.
+
+Modes exhibiting a tune shift with a negative imaginary part are unstable, their growth rate 
+being proportional to this imaginary part.
+
+The code is a Vlasov solver, actually trying to solve Sacherer integral equation (See Ref.[1], Eq. 6.179)
+written as an eigenvalue problem following the formalism from Laclare [2]:
+	- using a decomposition over betatron sidebands,
+	- for given azimuthal modes assumed to be all independent,
+	- including radial modes,
+	- including a generalization to several kind of longitudinal distribution,
+	- including a generalization to any kind of impedance and to multibunch effects
+	(equidistant bunches only - see Ref.[2]),
+	- not including Landau damping.
+
+The complete theory behind the code can be found in Ref.[2].
+
+This code automatically checks convergence with respect to the matrix size (number of radial modes)
+within a criterion that is hard-coded (0.5%) - see also description of the input file.
+
+
+
+
+2. DESCRIPTION OF THE PACKAGE
+   ==========================
+
+   - "laclare.cc": C++ source code (although some parts are still in C).
+
+   - "laclare.m": Matlab® function to encapsulate the C++ code, to easily launch the code from 
+   Matlab® (commercial software, http://www.mathworks.com/products/matlab/). See description
+   of inputs and outputs at the beginning of the function.
+
+   - "signallaclare.m": Matlab® function to compute the signal at a pick-up (the one
+   you would observe at a BPM in the ring, or in the HEADTAIL hdtl file), from the eigenvectors provided
+   by the previous function. See description of inputs and outputs at the beginning of the function.
+
+   - "input.dat" and "input_PS.dat": examples of input file.
+
+   - "Z.dat": example of impedance files.
+
+   - "Makefile": makefile to compile the executable laclare.x.
+
+
+
+3. INSTALLATION AND USE
+   ====================
+   
+   The following instructions should be valid for a Linux operating system. They were checked under lxplus at CERN (in 2014)
+   and under Ubuntu (10.04 & 12.04), with gcc/g++ compilers .
+   
+   For other operating systems and/or compilers, the user is welcome to share his/her installation experience by
+   sending an email to imp-inst@cern.ch .
+   
+   For CERN users under lxplus, note that the LAPACK, BLAS and GSL libraries are already installed.
+     
+   
+   3.1 Prerequisites
+       -------------
+       
+       The codes require four libraries:
+       - LAPACK (http://www.netlib.org/lapack), 
+       - BLAS (http://www.netlib.org/blas),
+       - GSL (http://www.gnu.org/software/gsl/),
+       All those libraries are free.
+       
+       To check if LAPACK, BLAS and GSL are already installed, check for the existence of "liblapack",
+       "libblas", "libgsl" and "libgslcblas" (with extensions .a, .la and/or .so) in /usr/lib/ or /usr/lib64/ or /usr/local/lib/,
+       as well as the existence of the "gsl" directory in /usr/include/ or /usr/local/include/.
+       
+       Otherwise, follow installation instructions in each of the missing library website (see above).
+       Note that under Ubuntu, you can simply do:
+       		*for GSL:
+       		sudo apt-get install gsl-bin libgsl0-dev
+       		*for BLAS/LAPACK:
+       		sudo apt-get install liblapack-dev
+		
+      
+	
+   3.2 Compilation
+       -----------
+       
+       - Type "make" (or "make all"),
+       - to erase all the executables and libraries: "make clean".
+       
+       
+   3.3 How to use the code
+       -------------------
+       
+       On the command line, simply type e.g.
+       
+       ./laclare.x < input.dat
+       
+       if your input file is in input.dat
+       
+       NOTE: the code can be instantaneous or take hours, depending on the number of bunches / number of
+       coupled-bunch modes / number of converged eigenvalues / bunch length or distribution, etc.
+       
+
+       
+
+4. THE INPUT FILES
+   ===============
+
+IMPORTANT NOTE: there must ALWAYS be a tab between the parameter description and its value, and more generally the exact 
+sentence of the parameter description should be kept identical. On the other hand, the order of the lines
+does not matter.
+       
+* Input file example:
+
+Impedance filename	Z.dat
+Output filename	out
+Total bunch length [seconds]	2.5e-9
+Number of particles per bunch	5e10
+Machine circumference [m]	6911
+Relativistic gamma	27.7
+Transverse tune	26.129
+Synchrotron tune	7.25e-3
+Longitudinal distribution	parabolicline
+Type of particle	proton
+Chromaticity (DeltaQ*p/Q*Deltap)	0.1
+Momentum compaction factor	1.92e-3
+Number of bunches	924
+Maximum headtail mode considered	1
+Maximum number of eigenvalues	5
+Minimum coupled-bunch mode number to consider	800
+Maximum coupled-bunch mode number to consider	10
+ 
+ 
+* Description of each parameter:
+
+ - Impedance filename: name of the file containing the dipolar impedance (3 columns, without header: 
+ frequency - NOT ANGULAR, real part of the impedance and imaginary part). It should be sorted in 
+ ascending order of frequencies. Frequencies should be positive.
+
+ - Output filename: eigenvalues are put in [this_filename]_val.dat, eigenvectors in [this_filename]_vec.dat.
+
+ - Total bunch length: bunch length ins seconds (for Gaussian bunches, this is 4*RMS)
+
+ - Number of particles per bunch: bunch intensity,
+
+ - Machine circumference: circumference in m (2*pi*machine_radius),
+
+ - Relativistic gamma: relativistic mass factor,
+
+ - Transverse tune: unperturbed tune in the plane considered. Note that DELPHI assumes
+ beta=machine_radius/Q (to be taken into account when normalizing the impedance, before launching DELPHI)
+
+ - Synchrotron tune: Qs,
+ 
+ - Longitudinal distribution: type of longitudinal distribution (see Ref.[2]):
+ 	* waterbag (water bag bunch): very rough but the fastest to compute (analytical formulas),
+	* parabolicline (parabolic line density - usually good for protons),
+ 	* parabolicamp (parabolic amplitude density),
+	* gaussiancut (gaussian with a cut at the bunch length - assumed to be at 4 sigmas, useful for 
+	comparison with HEADTAIL for instance),
+	* gaussian (gaussian with infinite tails - usually good for electrons).
+
+ - Type of particle: proton or electron.
+
+ - Chromaticity (DeltaQ*p/Q*Deltap): xi (not Q') -> DeltatQ=xi*Q*Deltap/p
+
+ - Momentum compaction factor: alpha_p=1:gamma_transition^2
+
+ - Number of bunches: M: there are M equidistant bunches in the ring,
+ 
+ - Maximum headtail mode considered: mmax: modes considered are from -mmax to mmax.
+
+ - Maximum number of eigenvalues: kmax: total number of eigenvalues that are kept and accurate within 
+ 0.5% (the code chooses the ones with the highest absolute norm)
+
+ - Minimum coupled-bunch mode number to consider: nxmin: we compute modes of number between nxmin 
+ and M-1 (total number of bunches minus one)
+
+ - Maximum coupled-bunch mode number to consider: nxmax: we also compute modes of number between 0 
+ and nxmax
+
+
+NOTE: to compute all coupled-bunch modes, one can choose nxmin=0 and nxmax=-1.
+
+
+
+
+5. THE OUTPUT FILES
+   ================
+
+The output files (ascii files) are put in the directory from which the code is launched.
+
+The code also prints on the standard output a repetition of the input file, then the initial
+estimate of the number of betatron sidebands (giving the size of the matrix to diagonalize), then for each
+coupled_bunch mode and each azimuthal mode, the error and number of betatron sidebands at each iteration
+on the matrix size to get to the prescribed accuracy on the eigenvalues. Convergence can be quite
+long in some cases (in particular in single-bunch for a short bunch), or even can fail (if matrix size
+becomes too big -> Segmentation fault - see Troubleshooting section below).
+
+
+   5.1 Output files for the eigenvalues
+       --------------------------------
+       
+  - [output_filename]_val.dat: eigenvalues Deltaomega (complex betatron 
+ angular frequency shift w.r.t. the unperturbed tune), array of size Mc*(2*mmax+1)*kmax
+ (Mc multibunch modes, mmax max azimuthal mode considered, kmax converged eigenvalues).
+ It is an ascii file with the array written in "blocks": 
+ 	* for each coupled-bunch mode
+		~ for each azimuthal mode
+ 			> real and imag. parts of the kmax largest (in abs. value) eigenvalues (largest first).
+       
+
+   5.2 Output files for the eigenvectors
+       ---------------------------------
+       
+  - [output_filename]_vec.dat: complex eigenvectors for each eigenvalue above, array of size 
+  Mc*(2*mmax+1)*kmax*(2*plmax+1) (plmax: number of betatron sidebands).
+ (component on nth betatron sideband of the kth largest mode of the mth headtail mode 
+ of the Mth multibunch mode).
+ It is an ascii file with the array written in "blocks". 
+ It is an ascii file with the array written in "blocks": 
+ 	* for each coupled-bunch mode
+		~ for each azimuthal mode
+			"plmax" (number of betatron sidebands included -> the matrix size is 2*plmax+1)
+			Then:
+			    > for each of the kmax largest eigenvalues
+			    	& Gives each of the 2*plmax+1 components of the eigenvector (real & imag. parts). 
+		
+ 			& real and imag. parts of the kmax largest (in abs. value) eigenvalues (largest first).
+       
+              
+
+6. TROUBLESHOOTING
+   ===============
+ 
+   "Segmentation fault" -> If the size of the matrix to diagonalize become too big, the code will crash 
+   Try to decrease the number of eigenvalues to be kept; then if this fails, you can also decrease the accuracy
+   required on the eigenvalues (it is hard-coded in the code, line 621 "[...] while (err >= 5e-3)" -> you
+   can change this 5e-3 to something higher, and re-compile the code with "make").
+   
+   Still, this is a hard limit of the approach: in some cases (short bunches, single bunch, large rings 
+   with close-by betatron sidebands, impedance spanning lots of decades) Laclare's formalism will require
+   in any case too large matrices to get anything reliable. In such cases, an approach
+   with orthogonal polynomials works better (see DELPHI code in this repository).
+  
+
+7. LATEST MODIFICATIONS
+   ====================
+
+
+8. FUTURE DEVELOPMENTS (TO-DO LIST)
+   ================================
+   
+   - Convert the Matlab® code (encapsulation + computation of the pickup signal) into PYTHON routines.
+
+   - Do some Python plotting routines to plot the pickup signal.
+
+
+9. REFERENCES
+   ==========
+
+[1] A. W. Chao. Physics of Collective Beam Instabilities in High Energy Accelerators, John Wiley & Sons (1993), chap. 6.
+
+[2] J. L. Laclare. Bunched Beam Coherent Instabilities. CERN-87-03-V-1, p. 264, 1987.
+

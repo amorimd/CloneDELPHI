@@ -11,7 +11,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 01/07/2014
+Last modifications: 07/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 and/or imp-inst@cern.ch
@@ -26,9 +26,8 @@ CONTENTS OF THE MANUAL:
 3. INSTALLATION
 
    3.1 Prerequisites
-   3.2 Compilation
-   3.3 How to use the code
-
+   3.2 Installation
+   3.3 How to use the codes
 
 
 
@@ -39,6 +38,9 @@ Instabilites in circular machines (synchrotrons, colliders, accelerators, storag
 due to beam-coupling impedance can be a strong limit to their operation.
 This package provides a rather self-consistent set of tools to study beam coupling impedances
 and their effects in such rings.
+The C++ codes DELPHI, ImpedanceWake2D and Laclare are independent from
+each other, but the Python codes are at the end of the chain and use most 
+of the C++ codes and external libraries provided here (except Laclare).
  
 
 2. DESCRIPTION OF THE PACKAGE
@@ -87,7 +89,7 @@ written in PYTHON and C++, in particular:
 	Salvant. It is used in particular by the data analysis scripts and the HEADTAIL 
 	postprocessing scripts (see above).
 
-	- Getting_LHC_beta_functions: a collection of madx and matlab scripts to easily 
+	- Getting_LHC_beta_functions: a collection of MAD-X and Matlab® scripts to easily 
 	extract (from optics files in the official repositories) and compute beta functions
 	for all elements defined in the LHC & HL-LHC impedance models (used to obtain beta 
 	functions in files contained in 
@@ -127,16 +129,22 @@ written in PYTHON and C++, in particular:
        
        Each part of the package has its own installation procedure: 
        
-	- DELPHI: follow the instructions in DELPHI/user_manual.txt
+	- DELPHI: follow the instructions in DELPHI/DELPHI_user_manual.txt
 		
-	- ImpedanceWake2D: follow the instructions in ImpedanceWake2D/user_manual.txt
+	- ImpedanceWake2D: follow the instructions in ImpedanceWake2D/IW2D_user_manual.txt
 
-	- Laclare: 
+	- Laclare: follow the instructions in Laclare/Laclare_user_manual.txt
 
 	- External_libs: 
-		* External python modules (numpy, scipy and matplotlib) in a version compatible with the content of the repository,
-		* External GMP and MPFR libraries for the ImpedanceWake2D code (used by ALGLIB, see below).
-		* External ALGLIB library for the ImpedanceWake2D code (C++ library for computations with high precision numbers).
+		* Python modules (numpy, scipy and matplotlib):
+		
+		* GMP and MPFR (used by ImpedanceWake2D):
+			- see first in ImpedanceWake2D/IW2D_user_manual.txt if they are needed,
+			- if they are needed follow the instructions in External_libs/README_compile_GMP_MPFR.
+		
+		* ALGLIB (used by ImpedanceWake2D):
+			- install first GMP and MPFR if needed (check in ImpedanceWake2D/IW2D_user_manual.txt)
+			- follow the instructions in ImpedanceWake2D/IW2D_user_manual.txt
 
 	- SUSSIX: 
 
@@ -151,19 +159,18 @@ written in PYTHON and C++, in particular:
 		* Other machines 
 		* Other python tools,
 	
-	- External_libs: 
-		* External python modules (numpy, scipy and matplotlib) in a version compatible with the content of the repository,
-		* External GMP and MPFR libraries for the ImpedanceWake2D code (used by ALGLIB, see below).
-		* External ALGLIB library for the ImpedanceWake2D code (C++ library for computations with high precision numbers).
-
 	- Getting_LHC_beta_functions: nothing to install, but in case one wants to run matlab (*.m)
 	files, one needs obviously Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
 	while for madx scripts one would need MAD-X (free, http://madx.web.cern.ch/madx/)
        
        
-   3.3 How to use the code
-       -------------------
+   3.3 How to use the codes
+       --------------------
        
+       The main codes of the repository are in the subdirectories DELPHI, 
+       ImpedanceWake2D, Laclare and in PYTHON_codes_and_scripts.
        
+       For each of them, go in each subdirectory and follow the user
+       manual (if present).
 
    

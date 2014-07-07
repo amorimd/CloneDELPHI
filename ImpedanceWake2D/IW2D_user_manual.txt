@@ -27,6 +27,7 @@ CONTENTS OF THE MANUAL:
    3.1 Prerequisites
    3.2 Compilation
    3.3 How to use the code
+   3.4 How to use the library
 
 4. THE INPUT FILES
 

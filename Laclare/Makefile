@@ -6,7 +6,7 @@ CC = g++ -c
 
 OBJS = laclare.o
 
-COPTS = -O2 -I/usr/local/include/gsl -llapack -lblas -L/usr/lib
+COPTS = -O2 -llapack -lblas
 LOPTS = 
 
 # -Wall -> warning all
@@ -15,4 +15,8 @@ LOPTS =
 	$(CC) $(COPTS) $<
 
 all: $(OBJS) Makefile
-	g++ $(LOPTS) -o laclare.x $(OBJS) -O3 -lm -lgfortran -lgsl -lgslcblas -llapack -lblas -L/usr/lib -L/usr/local/lib/
+	g++ $(LOPTS) -o laclare.x $(OBJS) -O2 -lm -lgfortran -lgsl -lgslcblas -llapack -lblas
+
+clean:
+	rm -f $(OBJS) laclare.x
+

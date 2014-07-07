@@ -1,6 +1,6 @@
 /* 
  *
- * Laclare.cc
+ * laclare.cc
  *
  * by Nicolas Mounet (Nicolas.Mounet@cern.ch)
  *
@@ -570,7 +570,7 @@ main ()
 
 		 if ( ( (status==GSL_EMAXITER)||(status==GSL_EDIVERGE) )||(status==GSL_EROUND) ) {
 		   // try on finite interval with change of variable tauhat=(1-t)/t
-		   printf("Semi-inifite integration failure - try with change of variable instead");
+		   printf("Semi-infinite integration failure - so now we try with change of variable instead");
 		   F.function=&integrand_modif;
 		   status=gsl_integration_qagp(&F, pts, 2, tolintabs, tolint, limit, w, &integ, &errx);
 		   if ( (status)&&(std::abs(err/integ)>tolint) ) printf("Warning: integration: result= %13.8e, rel. error= %13.8e\n",integ,std::abs(errx/integ));

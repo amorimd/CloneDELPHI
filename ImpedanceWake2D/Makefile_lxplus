@@ -44,4 +44,4 @@ clean:
 	rm -f *.o libIW2D.so *.x
 
 lib: wake_roundchamber.o
-	$(CC) ${LOPTS} -shared -Wl -o libIW2D.so wake_roundchamber.o -O2 $(LIBOPTS) 
+	$(CC) ${LOPTS} -shared -o libIW2D.so wake_roundchamber.o -O2 $(LIBOPTS) 
