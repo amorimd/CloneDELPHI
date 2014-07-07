@@ -137,16 +137,33 @@ written in PYTHON and C++, in particular:
 
 	- External_libs: 
 		* Python modules (numpy, scipy and matplotlib):
+			- they might be needed by the Python programs
+			(particularly under lxplus at CERN)
+			- in that case, follow the instructions in External_libs/README_install_pymodules.txt
 		
 		* GMP and MPFR (used by ImpedanceWake2D):
 			- see first in ImpedanceWake2D/IW2D_user_manual.txt if they are needed,
-			- if they are needed follow the instructions in External_libs/README_compile_GMP_MPFR.
+			- if they are needed follow the instructions in External_libs/README_compile_GMP_MPFR.txt
 		
 		* ALGLIB (used by ImpedanceWake2D):
 			- install first GMP and MPFR if needed (check in ImpedanceWake2D/IW2D_user_manual.txt)
 			- follow the instructions in ImpedanceWake2D/IW2D_user_manual.txt
 
-	- SUSSIX: 
+	- SUSSIX:
+		* check that f2py is present in /usr/bin
+		If it is not there or if you have troubles, you can try to use
+		the one provided with numpy:
+			~ install numpy from External_libs (see above)
+			~ in SUSSIX/Sussix/Makefile, replace /usr/bin/f2py by
+			[numpy_install_directory]/bin/f2py[python_version_number]
+			
+			where [numpy_install_directory] is the directory where you installed numpy
+			(e.g. ../../External_libs/numpy-install)
+			and [python_version_number] is your python version number (e.g. 2.6)
+		* do:
+		cd  SUSSIX/Sussix
+		make
+		chmod +x getTuneSussixNM.py
 
 	- PYTHON_codes_and_scripts: 
 	
@@ -172,5 +189,9 @@ written in PYTHON and C++, in particular:
        
        For each of them, go in each subdirectory and follow the user
        manual (if present).
+       
+       For SUSSIX, you can make a test (on the HEADTAIL center of mass output
+       "HEADTAIL_test_prt.dat") with the command-line example in 
+       "example_getTune.txt".
 
    

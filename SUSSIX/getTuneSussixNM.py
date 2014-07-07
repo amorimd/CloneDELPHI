@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
 sys.path.append("Sussix")
@@ -18,11 +18,11 @@ def parsse():
                       help="Specify the tunes: e.g. -q 0.13 0.18 0.07",
                       metavar="TUNES", default=[0.31,0.32,0.07],dest="TUNES")
     parser.add_option("-k", "--bunch",type=int,
-                      help="Specify bunch number",action="append",
+                      help="Specify bunch number to consider (number begins at 1)",action="append",
                       metavar="BNUM", default=None,dest="BNUM")
     parser.add_option("-n", "--nbunch",type=int,
                       help="Specify total number of bunches",
-                      metavar="NB", default=36,dest="NB")
+                      metavar="NB", default=1,dest="NB")
     parser.add_option("-t", "--turns",type=int,
                       help="Specify number of turns to take into account (from the end of data)",
                       metavar="TURNS", default=8192,dest="TURNS")

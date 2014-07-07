@@ -1,8 +1,7 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
-########!#######/afs/cern.ch/eng/sl/lintrack/Python-2.4.3/bin/python2.4
 import sys
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix/")
+sys.path.append("Sussix")
 import sussix4drivexxNoO
 from numpy import *
 from random import gauss

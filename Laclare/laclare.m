@@ -45,13 +45,8 @@ function [eigenval,eigenvect]=laclare(Z,taub,Nb,circum,gamma,tune,tunes, ...
 % see Elias Metral's USPAS 2009 course : Bunched beams transverse coherent
 % instabilities, and J.L. Laclare lectures at CAS (1987, p.264)
 
-path=evalc('!pwd');
-
-if (length(strfind(path,'AFS_sync'))>=1)
-    pathLacl='/home/nicolasmounet/Documents/Desktop_HD_sync/soft/My_prog_C/Laclare';
-else
-    pathLacl='/home/nmounet/Documents/soft/My_prog_C/Laclare';
-end
+%path=evalc('!pwd');
+%pathLacl='~/Documents/Soft/IRIS/Laclare';
 
 eigenval=zeros(M,2*mmax+1,kmax);
 
@@ -89,11 +84,11 @@ fprintf(fid,'Maximum coupled-bunch mode number to consider\t%d\n',nxmax);
 fclose(fid);
 
 dlmwrite('Z.dat',Z,'precision','%20.15g','Delimiter',' ');
-eval(['!cp input.dat ',pathLacl]);
-eval(['!mv Z.dat ',pathLacl]);
-eval(['cd ',pathLacl]);
+%eval(['!cp input.dat ',pathLacl]);
+%eval(['!mv Z.dat ',pathLacl]);
+%eval(['cd ',pathLacl]);
 !./laclare.x < input.dat > out
-eval(['!rm input.dat Z.dat']);
+%eval(['!rm input.dat Z.dat']);
 
 plmax0=-1;
 fid1=fopen('out_val.dat','r');
@@ -141,13 +136,3 @@ end
 fclose(fid2);
 
 %eval(['!rm out out_val.dat out_vec.dat']);
-try eval(['cd ''',path,'''']);
-catch ME1
-    path1=path;
-    path1(1)=''
-    try eval(['cd ''',path1,'''']);
-    catch ME1
-        path(end)=''
-        eval(['cd ''',path,'''']);
-    end
-end
