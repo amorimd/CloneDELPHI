@@ -9,9 +9,9 @@ function [a,qsec]=octupole(twissname);
 % Those are the detuning coefficient with maximum current (550A) in the focusing
 % octupoles and zero in the defocusing ones (with letter F), or zero in the focusing ones and maximum (550A) 
 % in the defocusing octupoles (with letter D).
-% components ax are multiplied by Jx and detuning Qx
-% components ay are multiplied by Jy and detuning Qy
-% components axy are multiplied by Jy (resp. Jx) and detuning Qx (resp. Qy)
+% components ax are multiplied by Jx and detune Qx
+% components ay are multiplied by Jy and detune Qy
+% components axy are multiplied by Jy (resp. Jx) and detune Qx (resp. Qy)
 
 % qsec is a matrix 2*2: [Q''xF Q''xD;
 %                        Q''yF Q''yD]

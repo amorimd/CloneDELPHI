@@ -29,6 +29,8 @@ CONTENTS OF THE MANUAL:
    3.2 Installation
    3.3 How to use the codes
 
+4. FUTURE DEVELOPMENTS (TO-DO LIST)
+
 
 
 1. INTRODUCTION
@@ -94,6 +96,7 @@ written in PYTHON and C++, in particular:
 	for all elements defined in the LHC & HL-LHC impedance models (used to obtain beta 
 	functions in files contained in 
 	PYTHON_codes_and_scripts/LHC_impedance_and_scripts/LHC_elements).
+	There are also functions to get the octupole detuning coefficients (and Q'').
 
 
 3. INSTALLATION AND USE
@@ -177,7 +180,7 @@ written in PYTHON and C++, in particular:
 		* Other python tools,
 	
 	- Getting_LHC_beta_functions: nothing to install, but in case one wants to run matlab (*.m)
-	files, one needs obviously Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
+	files, one needs Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
 	while for madx scripts one would need MAD-X (free, http://madx.web.cern.ch/madx/)
        
        
@@ -187,11 +190,20 @@ written in PYTHON and C++, in particular:
        The main codes of the repository are in the subdirectories DELPHI, 
        ImpedanceWake2D, Laclare and in PYTHON_codes_and_scripts.
        
-       For each of them, go in each subdirectory and follow the user
-       manual (if present).
+       For each of them, go in the corresponding subdirectory and follow the user
+       manual.
        
        For SUSSIX, you can make a test (on the HEADTAIL center of mass output
        "HEADTAIL_test_prt.dat") with the command-line example in 
        "example_getTune.txt".
+       
+       To get beta functions for the LHC or octupole coefficients, have a look at 
+       "Getting_LHC_beta_functions/README.txt". 
 
    
+4. FUTURE DEVELOPMENTS (TO-DO LIST)
+   ================================
+
+- Make nicer (html) user manuals (using sphinx for instance - it should be easy
+to change all .txt files into .rst files).
+	
