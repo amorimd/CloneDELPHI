@@ -1,7 +1,12 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library with tables and lists manipulation routines
 
+import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
 import numpy as np
 
 
@@ -116,10 +121,10 @@ def create_list(a,n=1):
 
 
 def create_list_for_figure(a,n=1):
-    # same as above but done differently, with a test on the length
-    # (because the one above fails for objects like axes and figures)
-    # also, no "deepcopy" (means that if all elements are duplicate, 
-    # any change affecting one of them will affect the others)
+    ''' same as create_list but done differently, with a test on the length
+    (because the one above fails for objects like axes and figures)
+    also, no "deepcopy" (means that if all elements are duplicate, 
+    any change affecting one of them will affect the others)'''
     
     try:
     	l=len(a); # to check if it's already a list
@@ -132,12 +137,12 @@ def create_list_for_figure(a,n=1):
 
 def select_and_average(data,select_table,select_value,flagmax=False,flagvar=False):
 
-    # select in list 'data' the values according to indices such that select_table(indices)=select_value
-    # then take out nan and compute average along the data lines.
-    # number of elements in list 'data' should be the same as number of elements of array 'select_table'
+    ''' select in list 'data' the values according to indices such that select_table(indices)=select_value
+    then take out nan and compute average along the data lines.
+    number of elements in list 'data' should be the same as number of elements of array 'select_table'
 
-    # if flagmax=True, also compute the maximum of the absolute value (along the lines)
-    # if flagvar=True, also compute the standard deviation (along the lines)
+    if flagmax=True, also compute the maximum of the absolute value (along the lines)
+    if flagvar=True, also compute the standard deviation (along the lines)'''
     
     # select according to select_value
     ind=pylab.mlab.find(select_table==select_value);

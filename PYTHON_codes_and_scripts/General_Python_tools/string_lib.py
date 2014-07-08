@@ -1,18 +1,25 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library with string manipulation routines
 
+import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
 from string import split, replace
 import numpy as np
 
 
 def fortran_str(numb):
-    # convert a float to a Fortran-like string (with 'D' instead of 'e')
+    ''' convert a float to a Fortran-like string (with 'D' instead of 'e') '''
     return str(numb).replace('e','D');
 
 
 def float_to_str(f):
 
+    ''' convert a float into a string, replacing  '.' by 'p',
+    and taking care of useless '0' '''
     s=str(f);
     if (s.endswith('.0')): s=s.rstrip("0").rstrip('.');
     
@@ -20,7 +27,7 @@ def float_to_str(f):
     
 
 def invert_selection(namestot,namespart):
-    # select all names in namestot (list of strings) that are not in namespart
+    ''' select all names in namestot (list of strings) that are not in namespart '''
     namesnew=[];
     for name in namestot:
         if not (name in namespart): namesnew.append(name);
@@ -30,21 +37,20 @@ def invert_selection(namestot,namespart):
 
 def takeout_common(listname,flagcommon=False,nslash=2):
 
-    # Takes out all the "words" that are common to all the
-    # names in listname:
-    # "words" are defined as being between two underscores "_" (or 
-    # between the beginning and a underscore, or an underscore and the end).
-    # Gives in output a new list of names without those common words.
+    ''' Takes out all the "words" that are common to all the
+    names in listname:
+    "words" are defined as being between two underscores "_" (or 
+    between the beginning and a underscore, or an underscore and the end).
+    Gives in output a new list of names without those common words.
     
-    # Note: if there are "/"  characters, we take into account only the part
-    # of the name that is between the nslash-1 and nslash ones (counting from
-    # the end)
-    # for instance if a name is "blabla/toto/LHC_36b_csi4/data_prt.dat"
-    # and nslash=2, we take only "LHC_36b_csi4"
+    Note: if there are "/"  characters, we take into account only the part
+    of the name that is between the nslash-1 and nslash ones (counting from
+    the end)
+    for instance if a name is "blabla/toto/LHC_36b_csi4/data_prt.dat"
+    and nslash=2, we take only "LHC_36b_csi4"
     
-    # if flagcommon=True, also output the common part of all names
+    if flagcommon=True, also output the common part of all names '''
 
-    # take out only what is between the 2 last "/" (if any)
     listname1=[];
     for iname,name in enumerate(listname):
     	name1=split(name,"/");
@@ -81,8 +87,8 @@ def takeout_common(listname,flagcommon=False,nslash=2):
 
 def split_and_takeout_spaces(name):
 
-    # split (according to spaces) and take out spaces from a string
-    # return a list with each "words"
+    ''' split (according to spaces) and take out spaces from a string
+    return a list with each "words" '''
     s=split(name," ");
     slen=np.array([len(k) for k in s]);
     ind=np.where(slen>0);ind=ind[0];
@@ -92,14 +98,14 @@ def split_and_takeout_spaces(name):
 
 def get_nice_string(listin):
 
-    # to output a string from a list (for printing purposes) 
+   ''' to output a string from a list (for printing purposes) '''
     return " ".join( str(x) for x in listin)
 
 
 def takeout_spaces(listname):
 
-    # take out most of the spaces in each term of a list of strings
-    # (obtained from the 'takeout_common' routine)
+    ''' take out most of the spaces in each term of a list of strings
+    (obtained from the 'takeout_common' routine) '''
     listnew=[];
     for name in listname:
     	split_name=split_and_takeout_spaces(name);
@@ -111,10 +117,10 @@ def takeout_spaces(listname):
     
 
 def find_ind_names(namesref,names):
-    # given 2 lists of strings namesref and names, find the indices ind
-    # such that names[ind]=namesref
-    # '=' means here that the longest of the two strings begins
-    # with the smallest.
+    ''' given 2 lists of strings namesref and names, find the indices ind
+    such that names[ind]=namesref
+    '=' means here that the longest of the two strings begins
+    with the smallest.'''
     
     ind=-np.ones(len(namesref),dtype=int);
     for inamer,namer in enumerate(namesref):

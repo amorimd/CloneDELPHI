@@ -12,7 +12,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 07/07/2014
+Last modifications: 08/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 or imp-inst@cern.ch
@@ -177,6 +177,9 @@ IMPORTANT NOTICE:
        This can be simply done by running once the script given in this directory: type
        
        ./script_configure_bashrc.sh
+       
+       and then logout and log in again, or do
+       source ~/.bashrc
        
        But still double-check your .bashrc, afterwards, in case...
 

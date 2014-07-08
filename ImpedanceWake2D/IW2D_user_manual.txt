@@ -10,7 +10,7 @@
 
 Author: Nicolas Mounet, CERN BE, Geneva
 
-Last modifications: 01/07/2014
+Last modifications: 08/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org,
 or imp-inst@cern.ch
@@ -221,6 +221,9 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
        This can be simply done by running once the script given in this directory: type
        
        ./script_configure_bashrc.sh
+       
+       and then logout and log in again, or do
+       source ~/.bashrc
        
        But still double-check your .bashrc afterwards, in case ...
        
@@ -654,6 +657,10 @@ the wake functions. This can be quite long.
        automatically (replacing e.g. Zlong by Zxdip, Zydip, etc.)
        -g (optional): legend to be associated with each file above (otherwise the name of the file is put 
        in the legends).
+       -o (option): if used, all plots are directly put into files named e.g. Zlong[this_option].png, 
+       Zlong[this_option].eps, Zxdip[this_option].png, etc., instead of printing them on the screen.
+       This option is particularly useful if you use a local matplotlib without GUI (so without interactive plots)
+       because then the default behaviour (printing on the screen) will fail.
        
        When computing the wakes, it is usually a good idea to compare the converged wake functions with the
        "precise" ones (ending with "_precise.dat"), to check the accuracy of the convergence: if there is not
@@ -661,6 +668,16 @@ the wake functions. This can be quite long.
        
        ./plot_Wake_flat.py -f WlongWLHC_2layersup_0layersdown6.50mm_precise.dat -g "more precise wake" 
        -f WlongWLHC_2layersup_0layersdown6.50mm.dat -g "converged wake" -l
+       
+       Note: when curves are superimposed so undistinguishable, it is easy to change one of the plot pattern
+       to take out the solid line and put instead for instance some crosses ('x') or circles ('o').
+       To do so go in the code of the function plot_Imp_flat.py or plot_Wake_flat.py and change the line
+       
+       color=['b','r','g','m','c','y','k'];
+       
+       into (for example)
+       
+       color=['b','xr','g','m','c','y','k'];
        
        
               
@@ -693,7 +710,12 @@ the wake functions. This can be quite long.
 7. LATEST MODIFICATIONS
    ====================
 
-
+   - Added the compilation of the shared library (to be used by 
+   ../PYTHON_codes_and_scripts/General_Python_tools/fourier_lib.py).
+   
+   - Added option -o in plotting routines, to allow plot in files rather than on the screen.
+   Also improved a bit the plot layout.
+   
 8. FUTURE DEVELOPMENTS (TO-DO LIST)
    ================================
    

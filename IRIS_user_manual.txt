@@ -11,7 +11,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 07/07/2014
+Last modifications: 08/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 and/or imp-inst@cern.ch
@@ -55,41 +55,62 @@ written in PYTHON and C++, in particular:
 	(tuneshifts and growth rates) of modes for a coupling-impedance/damper system 
 	(Vlasov solver), in mode-coupling regime (azimuthal and radial modes considered)
 	
+
 	- ImpedanceWake2D: C++ code (stand-alone and shared library) to compute resistive-wall
 	impedance & wake functions of flat or round multilayer infinitely long ("2D") structures,
+
 
 	- Laclare: C++ code (stand-alone) to compute eigenfrequencies (tuneshifts and growth 
 	rates) from a coupling-impedance alone, in weak headtail (low intensity) regime,
 	using Laclare formalism (see J. L. Laclare, "Bunched Beam Coherent Instabilities", 
 	CERN-87-03-V-1, p. 264, 1987).
 
+
 	- PYTHON_codes_and_scripts: many Python codes and scripts:
 	
-		* Impedance python library: library to compute impedance models, including a 
+		* General_Python_tools: Some general purpose python modules used in many of the functions and 
+		scripts here,
+		
+		* Impedance_lib_Python: Impedance python library: library to compute impedance models, including a 
 		wrapper for ImpedanceWake2D,
-		* DELPHI python library: library to compute instabilities for a 
+		
+		* DELPHI_Python: DELPHI python library: library to compute instabilities for a 
 		coupling-impedance/damper system (wrapper of DELPHI) (also contains a wrapper 
 		for the MOSES code of Y. Chin, and several other functions),
-		* Some general purpose python modules used in many of the functions and scripts here,
-		* HEADTAIL pre and postprocessing scripts (compatible with HEADTAIL 
+		
+		* LHC_impedance_and_scripts: LHC & HL-LHC impedance model generation (including data files 
+		with parameters and beta functions), and scripts for complex tuneshifts computation,
+		
+		* HEADTAIL_pre_and_post_processing: HEADTAIL pre and postprocessing scripts (compatible with HEADTAIL 
 		multibunch version) ,
-		* Data analysis scripts (particularly adapted to LHC Timber data, but also to PS & 
+		
+		* Data_analysis: Data analysis scripts (particularly adapted to LHC Timber data, but also to PS & 
 		PSB matlab files obtained in a "Guido Sterbini" way),
-		* LHC & HL-LHC impedance model generation (including data files with parameters and 
-		beta functions), and scripts for complex tuneshifts computation,
-		* Other machines (SPS, LEP, TLEP, VHE-LHC, ALBA, VEPP) scripts to compute 
-		complex tuneshifts, and sometimes impedance models
-		* Other python tools,
+		
+		* SPS_impedance_and_scripts: SPS impedance models (from Carlo Zannini) and scripts,
+		
+		* Lepton_machines_scripts: scripts to compute complex tuneshifts, and sometimes impedance models,
+		for several lepton machines (LEP, TLEP, VEPP, ALBA - model obtained from E. Koukovini Platia),
+		
+		* Other_machines_scripts: Other machines scripts (now only VHE-LHC, actually),
+		
+		* Other_Python_tools: some other python tools,
 	
+
 	- External_libs: 
+		
 		* External python modules (numpy, scipy and matplotlib) in a version compatible with the content of the repository,
+		
 		* External GMP and MPFR libraries for the ImpedanceWake2D code (used by ALGLIB, see below).
+		
 		* External ALGLIB library for the ImpedanceWake2D code (C++ library for computations with high precision numbers).
+
 
 	- SUSSIX: Sussix code (see R. Bartolini - F. Schmidt, CERN SL/Note 98-017 (AP) - 1998)
 	for high accuracy spectral analysis, with python wrappers from Rogelio Tomas & Benoit
 	Salvant. It is used in particular by the data analysis scripts and the HEADTAIL 
 	postprocessing scripts (see above).
+
 
 	- Getting_LHC_beta_functions: a collection of MAD-X and Matlab® scripts to easily 
 	extract (from optics files in the official repositories) and compute beta functions
@@ -166,18 +187,31 @@ written in PYTHON and C++, in particular:
 		* do:
 		cd  SUSSIX/Sussix
 		make
+		cd ../
 		chmod +x getTuneSussixNM.py
 
 	- PYTHON_codes_and_scripts: 
 	
-		* Impedance python library:
-		* DELPHI python library: 
-		* Some general purpose python modules used in many of the functions and scripts here,
-		* HEADTAIL pre and postprocessing scripts 
-		* Data analysis scripts 
-		* LHC & HL-LHC impedance model generation 
-		* Other machines 
-		* Other python tools,
+		Generally speaking, you need numpy, scipy and matplotlib (see above if they were not 
+		already available on your system).
+		
+		* General_Python_tools: to be installed first,
+			~ you need to have installed ImpedanceWake2D (with its library) first (see above)
+			DO NOT FORGET TO PUT IN YOUR .bashrc the corresponding LD_LIBRARY_PATH
+			(use ../ImpedanceWake2D/script_configure_bashrc.sh)
+			~ nothing particular to install
+			
+		* Impedance_lib_Python: Impedance python library:
+			~ you need to have installed ImpedanceWake2D first (see above)
+			
+		* DELPHI_Python: 
+		* LHC_impedance_and_scripts:  
+		* HEADTAIL_pre_and_post_processing:
+		* Data_analysis:
+		* SPS_impedance_and_scripts:
+		* Lepton_machines_scripts: 
+		* Other_machines_scripts: 
+		* Other_Python_tools:
 	
 	- Getting_LHC_beta_functions: nothing to install, but in case one wants to run matlab (*.m)
 	files, one needs Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
@@ -191,7 +225,9 @@ written in PYTHON and C++, in particular:
        ImpedanceWake2D, Laclare and in PYTHON_codes_and_scripts.
        
        For each of them, go in the corresponding subdirectory and follow the user
-       manual.
+       manual. For the Python scripts and programs, each subdirectory of PYTHON_codes_and_scripts
+       has a file [subdir_name]_doc.txt with a description of the functions and/or scripts in the
+       directory.
        
        For SUSSIX, you can make a test (on the HEADTAIL center of mass output
        "HEADTAIL_test_prt.dat") with the command-line example in 

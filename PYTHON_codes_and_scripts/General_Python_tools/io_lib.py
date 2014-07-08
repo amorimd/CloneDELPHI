@@ -1,15 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library with in/out routines (read, write files)
 
+import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
 from string import split,replace
 import re,glob,os
 import numpy as np
 
 def list_files(files,flagprint=False):
 
-    # list the files to be read. "files" is a list of names that can contain regular expressions
-    # (like *, etc.) from which the list of files to be analysed is constructed
+    ''' list the files to be read. "files" is a list of names that can contain regular expressions
+    (like *, etc.) from which the list of files to be analysed is constructed '''
     
     listname=[];
     for f in files:
@@ -25,11 +30,11 @@ def list_files(files,flagprint=False):
 
 def read_ncol_file(filename,ignored_rows=0,ignored_cols=0,delimiter=None):
 
-    # kind of equivalent of MATLAB dlmread
-    # read a file in columns separated by spaces or tab (if 'delimiter' is None) or
-    # by any kind of delimiter specified in 'delimiter', ignoring a certain
-    # number of initial rows and columns
-    # it stops as soon as it cannot split a line into floats, or if a line is empty
+    ''' kind of equivalent of MATLAB dlmread
+    read a file in columns separated by spaces or tab (if 'delimiter' is None) or
+    by any kind of delimiter specified in 'delimiter', ignoring a certain
+    number of initial rows and columns
+    it stops as soon as it cannot split a line into floats, or if a line is empty '''
     
     s=[];
     for il,line in enumerate(open(filename)):
@@ -47,10 +52,10 @@ def read_ncol_file(filename,ignored_rows=0,ignored_cols=0,delimiter=None):
 
 def write_ncol_file(filename,data,header=None,delimiter="\t",format="%15.10e"):
 
-    # kind of equivalent of MATLAB dlmwrite
-    # write from the 2D array "data" a file in columns separated by 'delimiter',
-    # with the first line given by "header"
-    # format is the data format to use when writing (e.g. %lf, %d, etc.)
+    ''' kind of equivalent of MATLAB dlmwrite
+    write from the 2D array "data" a file in columns separated by 'delimiter',
+    with the first line given by "header"
+    format is the data format to use when writing (e.g. %lf, %d, etc.) '''
     
     fileout=open(filename,'w');
     if (header!=None): print >> fileout, header;
@@ -65,8 +70,8 @@ def write_ncol_file(filename,data,header=None,delimiter="\t",format="%15.10e"):
 
 def write_Timber(t,data,filename,varname):
 
-    # Write in "filename" the data in "data", vs time "t" (in s), in a Timber-like way
-    # The variable name is "varname".
+    ''' Write in "filename" the data in "data", vs time "t" (in s), in a Timber-like way
+    The variable name is "varname".'''
     from io_lib import tb_
 
     fileTimber=open(filename,'a');
@@ -87,8 +92,8 @@ def write_Timber(t,data,filename,varname):
 	
 def read_file_singleline(filename,numline=1):
 
-    # read data of the file (actually take 
-    # only one line, the one of number numline - starting from zero)
+    ''' read data of the file (actually take 
+    only one line, the one of number numline - starting from zero)'''
     
     file1=open(filename);
     N=len([l for l in file1]);
@@ -106,8 +111,8 @@ def read_file_singleline(filename,numline=1):
 
 
 def find_string_in_file(filename,strin):
-    # look for first line containing 'strin' in the file of name 'filename'
-    # return its line number (first line has number zero)
+    ''' look for first line containing 'strin' in the file of name 'filename'
+    return its line number (first line has number zero)'''
     lineres=-1;
 
     f=open(filename,'r')
@@ -159,8 +164,8 @@ def read_ncol_file_identify_header(filename,colheader,dispflag=True):
 
 def test_and_create_dir(name):
 
-    # test if a directory of name 'name' exists in the current directory,
-    # and if not, create it
+    ''' test if a directory of name 'name' exists in the current directory,
+    and if not, create it'''
     if not(os.path.exists(name)): os.makedirs(name);
     
     return;

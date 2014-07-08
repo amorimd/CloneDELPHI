@@ -1,7 +1,13 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library with plotting routines
 
+import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import numpy as np
 import pylab,os
 import matplotlib
@@ -11,11 +17,17 @@ import time as ti
 
 def set_fontsize(obj,size):
 
-    # set all fontsize to 'size' in the (pylab) object 'obj' (can be figure, axes, legend labels...)
+    ''' set all fontsize to 'size' in the (pylab) object 'obj' (can be figure, axes, legend labels...) '''
     for o in obj.findobj(text.Text): o.set_fontsize(size);
 
 
 def init_figure(axes=None,figsize=(16, 12)):
+    ''' initialize a figure and its axes
+    optional arguments:
+    - figsize: total figure size
+    - axes: for instance [0.15,0.15,0.8,0.8]: values between 0 and 1,
+    in units of the total figure size: x & y coordinates of bottom left coorner,
+    then horizontal and vertical sizes '''
 
     pylab.rcParams['xtick.major.pad']='10';
     pylab.rcParams['ytick.major.pad']='10';
@@ -27,12 +39,17 @@ def init_figure(axes=None,figsize=(16, 12)):
     
 
 def sciy(ax):
+    ''' transform vertical tick labels from axes ax, into scientific notation (e.g. 1.5 10^-4)
+    unless they are between 0.01 & 100 (in abs. value) '''
     try:
     	ax.ticklabel_format(style='sci', scilimits=(-2,2),axis='y')
     except AttributeError:
     	pass;
 
 def scix(ax):
+    ''' transform horizontal tick labels from axes ax, into scientific notation (e.g. 1.5 10^-4)
+    unless they are between 0.01 & 100 (in abs. value) '''
+    try:
     try:
     	ax.ticklabel_format(style='sci', scilimits=(-2,2),axis='x')
     except AttributeError:
@@ -40,7 +57,29 @@ def scix(ax):
 
 
 def end_figure(fig,ax,save=None,legpos=0,fontsize=30,grid=True,legfontsize=None):
-
+    ''' finalize a figure fig and its axes ax, to make it look 'nice'.
+    Optional arguments:
+    - save: if not None, should contain the name of the file where to save the plots
+    (then it does not print on the screen but save in files [save].png and [save].eps).
+    Otherwise plots are simply printed on screen,
+    - legpos: position of the legend: from matplotlib help:
+    	best position	0
+    	upper right 	1
+	upper left 	2
+	lower left 	3
+	lower right 	4
+	right 		5
+	center left 	6
+	center right 	7
+	lower center 	8
+	upper center 	9
+	center		10
+    It can also be a tuple with the coordinates of the up-left corner of the legend box.
+    - fontsize: general fontsize of all texts in the plots. If legfontsize is None,
+    legend text is with a fontsize equal to 'fontsize-2*(number of legends)' (but not less than 10),
+    - grid: True or False to switch on/off the grid,
+    - legfontsize: fontsize of legend text. Overrides the rule above if not None. '''
+    
     font = {#'family' : 'normal',
             #'weight' : 'bold',
             'size'   : fontsize}
@@ -78,7 +117,21 @@ def end_figure(fig,ax,save=None,legpos=0,fontsize=30,grid=True,legfontsize=None)
 
 def plot(x,data,leg,patcol,ylab,ax,logflag,lw=3.,xlab="Number of turns",plotevery=1,colr=None,ms=10.):
 
-    # plotting function. plot every "plotevery" turns.
+    ''' plotting function.
+    Arguments (the first 7 ones are mandatory, the others are optional):
+    - x: x data,
+    - data: y data,
+    - leg: label for the legend,
+    - patcol: pattern and/or color for the curve (e.g. '--xb'),
+    - ylab: label for the y-axis,
+    - ax: axes on which to plot (from e.g. init_figure),
+    - logflag: 0 for linear plot, 1 for logarithmic plot in x / linear in y,
+    2 for logarithmic plot in y / linear in x, 3 for log-log plots,
+    - lw: linewidth of the curve,
+    - xlab: label for the x-axis,
+    - plotevery: plot every "plotevery" points,
+    - colr: re-define the color of the curve (rgb format for instance)  ,
+    - ms: size of the markers (crosses, circles, or other), if present. '''
 
     if (len(data)>0):
 	if (colr==None):
@@ -97,6 +150,7 @@ def plot(x,data,leg,patcol,ylab,ax,logflag,lw=3.,xlab="Number of turns",plotever
     
 
 def cmap(kys):
+    ''' define a color map'''
     maps=[]
     for u in range(kys):
         maps.append((round(random.uniform(0,1),1),
@@ -107,6 +161,7 @@ def cmap(kys):
 
 def set_legend_fontsize(fig,ax,font='xx-large'):
 
+    ''' puts a legend in axes 'ax' of figure 'fig', with fontsize 'font' '''
     ax.legend(loc=0);
     set_fontsize(fig,font);
     
@@ -115,25 +170,26 @@ def set_legend_fontsize(fig,ax,font='xx-large'):
 
 def plot2D(data,nxmin,nxmax,nymin,nymax,xlab,ylab,tit,ax,colorlabel=None,colorlim=None,fig=None):
 
-    import matplotlib.pyplot as plt;
-    cmap=plt.get_cmap('jet');
+    ''' 2D color plot of data between nxmin, nxmax, nymin, nymax.
+    xlab and ylab are the axes labels, tit the title,
+    ax the axes to do the plot on.
     
-    # 2D color plot of data between nxmin, nxmax, nymin, nymax.
-    # xlab and ylab are the axes labels, tit the title,
-    # ax the axes to do the plot on.
+    NOTE: data is of the format [iy,ix] (i.e. y axis in first dimension)
     
-    # NOTE: data is of the format [iy,ix] (i.e. y axis in first dimension)
-    
-    # if colorlabel or colorlim is not None, the color scale is shown.
-    # colorlabel is a label to put next to the color scale, colorlim a list
-    # with 2 floats giving the limits of the scale.
+    if colorlabel or colorlim is not None, the color scale is shown.
+    colorlabel is a label to be put next to the color scale, colorlim a list
+    with 2 floats giving the limits of the scale (if None it is automatic). '''
     
     # NOTE 2: imshow plots the matrix "as it looks like when you read it" ->
     # this means that the lines with higher indices are at the BOTTOM of the graph
     # (contrary to what would be more logical, i.e. higher indices at the top). Columns
-    # follow a more logical behaviour, i.e. higher indices at the top.
-    # Therefore, one needs to flip "upside-down" the date in the vertical directions,
-    # to reverse the orders of the lines -> flipud command applied below.
+    # follow a more logical behaviour, i.e. higher indices on the right.
+    # Therefore, one needs to flip "upside-down" the data in the vertical direction,
+    # to reverse the orders of the lines -> this is done by the flipud command applied below. 
+
+    import matplotlib.pyplot as plt;
+    cmap=plt.get_cmap('jet');
+    
     
     im=ax.imshow(np.flipud(data), aspect='auto', extent=[nxmin,nxmax,nymin,nymax],cmap=cmap)
     # Plotting contour lines
@@ -152,7 +208,9 @@ def plot2D(data,nxmin,nxmax,nymin,nymax,xlab,ylab,tit,ax,colorlabel=None,colorli
 
 def build_colors(ncol,randomize=False):
 
-    # define ncol different colors for plots
+    ''' define ncol different colors (rgb format, for plots).
+    If randomize==True, they are randomized (always in the same way, random permutation is hard-coded)'''
+    
     if ncol==1: n=1;
     else: n=int(np.ceil((ncol+1)**(1./3.)));#print "build_colors: ncol=",ncol,", n=",n
     cl=np.linspace(0,0.9,n);col=[];
@@ -182,8 +240,10 @@ def build_colors(ncol,randomize=False):
 
 def make_movie(filename,rootname,flagrm=True):
 
-    # make a movie (animated gif) from files rootname*.png
-    # movie is entitled filename
+    ''' make a movie (animated gif) from files rootname*.png
+    The movie is entitled filename 
+    If flgrm==True, rm all files rootname*.png and rootname*.eps afterwards '''
+    
     print 'Making movie ',filename,' - this may take a while'
     os.system("convert "+rootname+"*.png "+filename)
     # then erase all initial files
@@ -192,12 +252,24 @@ def make_movie(filename,rootname,flagrm=True):
 	os.system("rm -f "+rootname+"*.eps")
 
 
-def plot_save_hist(bunches,pos,leg,ax,fig,i,xlim=None,ylim=None,tit='',ylab="Bunch position",legposition='lower right'):
+def plot_save_hist(x,data,leg,ax,fig,i,xlim=None,ylim=None,tit='',ylab="Bunch position",legposition='lower right',xlab="25ns-slot number"):
 
-    # plot and save an histogram of the positions vs. bunches
-    ax.cla()
-    ax.bar(bunches,pos,facecolor='k',label=leg,edgecolor='k')
-    ax.set_xlabel("25ns-slot number");
+    ''' plot and save the histogram of data vs. x (save in '_tmp'+str(i)+'.png' and '_tmp'+str(i)+'.eps')
+    - leg: label for the legend,
+    - ax: axes where to plot,
+    - fig: figure objectto which ax belongs,
+    - i: integer to be put in the filename, 
+    - xlim: 2 numbers with x-axis limits (default=automatic),
+    - ylim: 2 numbers with y-axis limits (default=automatic),
+    - tit: title of the graph,
+    - ylab: label for the y-axis,
+    - legposition: position of the legend (see function end_figure),
+    - xlab: label for the x-axis.
+    '''
+    
+    ax.cla() # clear the plot
+    ax.bar(x,data,facecolor='k',label=leg,edgecolor='k')
+    ax.set_xlabel(xlab);
     ax.set_ylabel(ylab);
     ax.set_title(tit);
     if (xlim!=None): ax.set_xlim(xlim);
@@ -207,8 +279,10 @@ def plot_save_hist(bunches,pos,leg,ax,fig,i,xlim=None,ylim=None,tit='',ylab="Bun
 
 
 def fillplot_percent(x,y1,y2,lab,leg,col,ax):
-    # fill plot of percentages between y1 and y2, with labels, legend and color
-    # ax are the axes to plot on
+    ''' fill plot of percentages between y1 and y2, with x-label in 'lab', legend 
+    label in 'leg', and color 'col'.
+    ax are the axes to plot on. '''
+    
     ax.fill_between(x,y1*100,y2*100,where=(y2<=y1),color=col,label=leg,lw=2.5)
     ax.set_xlabel(lab);
     ax.set_ylabel("Percent of the total");

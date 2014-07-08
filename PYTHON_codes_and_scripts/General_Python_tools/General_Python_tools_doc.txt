@@ -1,0 +1,20 @@
+no Python documentation found for 'C_complex.py'
+
+no Python documentation found for 'datetime_lib.py'
+
+problem in ./elliptic.py - <type 'exceptions.SyntaxError'>: Non-ASCII character '\xae' in file ./elliptic.py on line 196, but no encoding declared; see http://www.python.org/peps/pep-0263.html for details (elliptic.py, line 195)
+
+no Python documentation found for 'fourier_lib.py'
+
+no Python documentation found for 'io_lib.py'
+
+no Python documentation found for 'parser.py'
+
+problem in plot_lib - <type 'exceptions.IndentationError'>: expected an indented block (plot_lib.py, line 53)
+
+problem in solve_lib - <type 'exceptions.IndentationError'>: expected an indented block (plot_lib.py, line 53)
+
+problem in string_lib - <type 'exceptions.IndentationError'>: unexpected indent (string_lib.py, line 102)
+
+no Python documentation found for 'tables_lib.py'
+

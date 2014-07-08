@@ -1,6 +1,11 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
 import numpy as np
 from scipy import special as sp
 from scipy import sqrt,arcsin,sin,cos # generalized functions for complex numbers
@@ -9,10 +14,10 @@ from scipy import sqrt,arcsin,sin,cos # generalized functions for complex number
 # library for generalized elliptic functions and integrals
 
 def ellipkinc_gen(phi,m):
-    # extension of scipy incomplete elliptic integral of the first kind for:
-    #  - any complex phi,
-    #  - any real m.
-    # Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    ''' extension of scipy incomplete elliptic integral of the first kind for:
+    - any complex phi,
+    - any real m.
+    Uses formulas from Abramowitz-Stegun (pp. 592-593)'''
     
     if (m>=0):
 
@@ -36,10 +41,10 @@ def ellipkinc_gen(phi,m):
 	
 
 def ellipeinc_gen(phi,m):
-    # extension of scipy incomplete elliptic integral of the second kind for:
-    #  - any complex phi,
-    #  - any real m.
-    # Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    '''extension of scipy incomplete elliptic integral of the second kind for:
+    - any complex phi,
+    - any real m.
+    Uses formulas from Abramowitz-Stegun (pp. 592-593)'''
 
     if (m>=0):
 
@@ -66,10 +71,10 @@ def ellipeinc_gen(phi,m):
 	
 	
 def ellipj_comp(u,m):
-    # extension of scipy Jacobian elliptic functions for:
-    #  - any complex u
-    #  - still 0<=m<=1.
-    # Uses formulas from Abramowitz-Stegun (pp. 575 - section 16.21)
+    '''extension of scipy Jacobian elliptic functions for:
+    - any complex u
+    - still 0<=m<=1.
+    Uses formulas from Abramowitz-Stegun (pp. 575 - section 16.21)'''
     
     x=np.real(u);y=np.imag(u);
     
@@ -99,9 +104,9 @@ def ellipj_comp(u,m):
 	
 
 def ellipj_correct(u,m):
-    # correction of scipy Jacobian elliptic functions for real u
-    # and 0<=m<=1.
-    # Uses formulas from Abramowitz-Stegun (pp. 569 - section 16.1.5)
+    '''correction of scipy Jacobian elliptic functions for real u
+    and 0<=m<=1.
+    Uses formulas from Abramowitz-Stegun (pp. 569 - section 16.1.5)'''
     
     if (m<0)or(m>1):
     	print " ellipj_correct does not support parameter m outside [0,1] !";sys.exit()
@@ -117,10 +122,10 @@ def ellipj_correct(u,m):
 
 
 def ellipkinc_comp(phi,m):
-    # extension of scipy incomplete elliptic integral of the first kind for:
-    #  - any complex phi,
-    #  - still 0<=m<=1.
-    # Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    '''extension of scipy incomplete elliptic integral of the first kind for:
+     - any complex phi,
+     - still 0<=m<=1.
+    Uses formulas from Abramowitz-Stegun (pp. 592-593)'''
 
     if (m<0)or(m>1):
     	print " ellipkinc_comp does not support parameter m outside [0,1]; use ellipkinc_gen instead.";sys.exit()
@@ -145,10 +150,10 @@ def ellipkinc_comp(phi,m):
 	
 
 def ellipeinc_comp(phi,m):
-    # extension of scipy incomplete elliptic integral of the second kind for:
-    #  - any complex phi,
-    #  - still 0<=m<=1.
-    # Uses formulas from Abramowitz-Stegun (pp. 592-593)
+    '''extension of scipy incomplete elliptic integral of the second kind for:
+     - any complex phi,
+     - still 0<=m<=1.
+    Uses formulas from Abramowitz-Stegun (pp. 592-593)'''
 
     if (m<0)or(m>1):
     	print " ellipeinc_comp does not support parameter m outside [0,1]; use ellipeinc_gen instead.";sys.exit()
@@ -183,13 +188,13 @@ def ellipeinc_comp(phi,m):
 	
     
 def solve_cot2lambda(phi,psi,m):
-    # solve second order equation to get cot^2(lambda), then lambda and mu
-    # useful to compute complex amplitude case of incomplete elliptic integrals
-    # (Abram-Stegun top of p. 593, 17.4.11 and 17.4.12)
-    #
-    # NOTE: some modifications w.r.t. Abramowitz, to get same as Mathematica:
-    #  - sign of mu is the same sign as psi,
-    #  - case phi=pi/2 developped separately (I did a Taylor expansion to solve the equations)
+    '''solve second order equation to get cot^2(lambda), then lambda and mu
+    useful to compute complex amplitude case of incomplete elliptic integrals
+    (Abram-Stegun top of p. 593, 17.4.11 and 17.4.12)
+    
+    NOTE: some modifications w.r.t. Abramowitz, to get same as Mathematica®:
+     - sign of mu is the same sign as psi,
+     - case phi=pi/2 developped separately (I did a Taylor expansion to solve the equations)'''
 
     if (phi==0): print "Pb in solve_cot2lambda: phi cannot be zero (purely imaginary amplitude of elliptic integral)!";sys.exit();
     

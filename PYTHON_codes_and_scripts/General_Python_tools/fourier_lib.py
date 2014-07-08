@@ -1,6 +1,11 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
 from string import *
 import numpy as np
 from numpy import fft

@@ -1,7 +1,12 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library to emulate the standard complex C type (C99)
 
+import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
 import numpy as np
 from ctypes import *
 

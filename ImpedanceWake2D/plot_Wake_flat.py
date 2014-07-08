@@ -1,6 +1,11 @@
 #!/usr/bin/python
 
 import sys
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import pylab
 import numpy as np
 import math,cmath
@@ -12,21 +17,24 @@ from optparse import OptionParser
 
 def parsse():
     parser = OptionParser()
+    parser.add_option("-c", "--constant",action="store_true",
+                      help="Specify if we should plot the constant term Wycst",
+                      metavar="CST", default=False,dest="CST")
     parser.add_option("-f", "--file",action="append",
-                      help="Specify the file name (longitudinal impedance, flat case)",
+                      help="Specify the file name (beginning with Wlong - the other wake files Wxdip, Wydip, etc. are selected automatically)",
                       metavar="FILE", default=None,dest="FILE")
     parser.add_option("-g", "--legend",action="append",
                       help="Specify the legend for each file",
                       metavar="LEG", default=None,dest="LEG")
-    parser.add_option("-m", "--meter",action="store_true",
-                      help="Specify if the wakes are per meter length",
-                      metavar="METER", default=False,dest="METER")
-    parser.add_option("-c", "--constant",action="store_true",
-                      help="Specify if we should plot the constant term Wycst",
-                      metavar="CST", default=False,dest="CST")
     parser.add_option("-l", "--loglog",action="store_true",
                       help="Specify if loglog plot (semilogy by default)",
                       metavar="LOG", default=False,dest="LOG")
+    parser.add_option("-m", "--meter",action="store_true",
+                      help="Specify if the wakes are per meter length",
+                      metavar="METER", default=False,dest="METER")
+    parser.add_option("-o", "--outfile",
+                      help="Specify the output file name if you want to output the plots in files (will create Wlong[this_option].png, Wxdip[this_option].png, etc. and the same in .eps format) (by default: print plots on screen -> CANNOT WORK IF YOU USE MATPLOTLIB WITH GUI DISABLED)",
+                      metavar="OUT", default=None,dest="OUT")
     (opt, args) = parser.parse_args()
     #print "Selected Files:", opt.FILE
     return opt, args
@@ -41,7 +49,7 @@ def set_fontsize(fig,size):
 def init_figure():
 
     fig=pylab.figure(facecolor='w', edgecolor=None)
-    #pylab.axes([0.03,0.05,0.96,0.9])
+    pylab.axes([0.12,0.12,0.85,0.85])
     ax=fig.gca()
     
     return fig,ax
@@ -85,6 +93,7 @@ if __name__ == "__main__":
     for i in range(nfig): init_figure();
     
     color=['b','r','g','m','c','y','k'];
+    comp=["Wlong","Wxdip","Wydip","Wxquad","Wyquad","Wycst"];
 
     for j,fil in enumerate(opt.FILE):
 
@@ -139,10 +148,21 @@ if __name__ == "__main__":
     	    semilogplot(z1,W1,lab,"$W_x^{quad}$, "+leg,color[j]);
     	    pylab.figure(5);semilogplot(z2,W2,lab,"$W_y^{quad}$, "+leg,color[j]);
     
-    for i in range(5):
-    	pylab.figure(i+1);
-    	pylab.legend(loc=0);
-	set_fontsize(pylab.figure(i+1),'xx-large');
-	
-    pylab.show();sys.exit()
+    for i in range(nfig):
+    	fig=pylab.figure(i+1);ax=fig.gca();
+	set_fontsize(pylab.figure(i+1),'x-large');
+    	ax.legend(loc=0);
+    	l=ax.get_legend_handles_labels();
+	set_fontsize(ax.get_legend(),max(18-2*len(l[0]),10));
+	ax.grid();
+    
+	if opt.OUT!=None:
+	    fig.savefig(comp[i]+opt.OUT+".png")
+	    fig.savefig(comp[i]+opt.OUT+".eps",format='eps')
+	    pylab.close(fig);
+
+	    	
+    if opt.OUT==None: pylab.show();
+    
+    sys.exit()
 

@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 # library with parser routines (for command line options)
 
@@ -7,6 +7,7 @@ from string import split, replace
 
 def bunch_parse(option, opt_str, value, parser):
 
+    ''' special bunch numbers parser (parse things like -b 1 -b 5 -b 7:9 -b 12:18:2) '''
     #print parser.rargs;
     value=getattr(parser.values,option.dest);
     #print value;
@@ -25,7 +26,7 @@ def bunch_parse(option, opt_str, value, parser):
 
 def multistring_parse(option, opt_str, value, parser):
 
-    # parse an option (variable number of string inputs)
+    ''' parse an option (variable number of string inputs) '''
     value=[];
     #print parser.rargs
     l=0;
@@ -41,7 +42,7 @@ def multistring_parse(option, opt_str, value, parser):
 
 def multifloatint_parse(option, opt_str, value, parser):
 
-    # parse an option (variable number of float or integer inputs)
+    ''' parse an option (variable number of float or integer inputs) '''
     value=[];
     #print parser.rargs
     l=0;
