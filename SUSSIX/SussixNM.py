@@ -1,8 +1,15 @@
 #!/usr/bin/python
 
+# python wrapper for Sussix
+
 import sys
-sys.path.append("Sussix")
+import commands
+pwd=commands.getoutput("pwd");
+sys.path.append(pwd+"/Sussix")
 import sussix4drivexxNoO
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
 from numpy import *
 from random import gauss
 from string import *

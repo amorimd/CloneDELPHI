@@ -98,7 +98,7 @@ def split_and_takeout_spaces(name):
 
 def get_nice_string(listin):
 
-   ''' to output a string from a list (for printing purposes) '''
+    ''' to output a string from a list (for printing purposes) '''
     return " ".join( str(x) for x in listin)
 
 

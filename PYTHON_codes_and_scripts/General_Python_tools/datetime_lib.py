@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# library to use dates & times
+
 import sys
 import commands
 pymod=commands.getoutput("echo $PYMOD");
@@ -12,7 +14,6 @@ from string import split, replace
 import matplotlib
 import matplotlib.dates
 
-# library to use dates & times
 
 def tt(f1): return datetime.strptime(f1,"%Y-%m-%d %H:%M:%S")
 

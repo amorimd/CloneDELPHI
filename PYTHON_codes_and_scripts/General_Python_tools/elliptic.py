@@ -1,5 +1,7 @@
 #!/usr/bin/python
 
+# library for generalized elliptic functions and integrals
+
 import sys
 import commands
 pymod=commands.getoutput("echo $PYMOD");
@@ -10,8 +12,6 @@ import numpy as np
 from scipy import special as sp
 from scipy import sqrt,arcsin,sin,cos # generalized functions for complex numbers
 
-
-# library for generalized elliptic functions and integrals
 
 def ellipkinc_gen(phi,m):
     ''' extension of scipy incomplete elliptic integral of the first kind for:
@@ -192,7 +192,7 @@ def solve_cot2lambda(phi,psi,m):
     useful to compute complex amplitude case of incomplete elliptic integrals
     (Abram-Stegun top of p. 593, 17.4.11 and 17.4.12)
     
-    NOTE: some modifications w.r.t. Abramowitz, to get same as Mathematica®:
+    NOTE: some modifications w.r.t. Abramowitz, to get same as Mathematica:
      - sign of mu is the same sign as psi,
      - case phi=pi/2 developped separately (I did a Taylor expansion to solve the equations)'''
 

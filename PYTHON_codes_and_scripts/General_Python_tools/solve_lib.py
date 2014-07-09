@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# library to try to find all roots of complex functions in the complex plane
+# (in a given region)
+
 import sys
 import commands
 pymod=commands.getoutput("echo $PYMOD");
@@ -13,9 +16,6 @@ from numpy import fft
 import pylab,re,os
 from tables_lib import *
 from plot_lib import *
-
-# library to try to find all roots of complex functions in the complex plane
-# (in a given region)
 
 
 def eqplane(A,B,C):
@@ -49,7 +49,7 @@ def intersect_two_planes_z0(p1,p2):
     
     else:
     
-    	x= (p2[1]*p1[3]-p2[3]*p1[1])/det;
+ 	x= (p2[1]*p1[3]-p2[3]*p1[1])/det;
 	y= (-p2[0]*p1[3]+p2[3]*p1[0])/det;
     
     	return x,y;

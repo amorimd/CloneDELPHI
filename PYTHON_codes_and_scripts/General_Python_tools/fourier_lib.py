@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+# library to compute Fourier integrals of smooth functions
+# with a non-equidistant mesh
+
 import sys
 import commands
 pymod=commands.getoutput("echo $PYMOD");
@@ -13,8 +16,6 @@ import pylab,re,os
 from tables_lib import *
 from C_complex import *
 from ctypes import *
-
-# library to compute Fourier integrals of smooth functions
 
 def fourier_integral_asympt_correction(flaginf,tscan,omegai_end,fi_end,df_end=0.):
 

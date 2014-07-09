@@ -196,10 +196,16 @@ written in PYTHON and C++, in particular:
 		already available on your system).
 		
 		* General_Python_tools: to be installed first,
-			~ you need to have installed ImpedanceWake2D (with its library) first (see above)
+			~ if you want to use the Fourier library (fourier_lib.py), you need first to have
+			installed ImpedanceWake2D (with its library) (see above)
 			DO NOT FORGET TO PUT IN YOUR .bashrc the corresponding LD_LIBRARY_PATH
 			(use ../ImpedanceWake2D/script_configure_bashrc.sh)
-			~ nothing particular to install
+			
+			~ you need to add the path to this directory to your PYTHONPATH. The best
+			is do to it in your .bashrc file. For this you can type in a terminal
+
+			    cd PYTHON_codes_and_scripts/General_Python_tools
+			    ./script_configure_bashrc.sh
 			
 		* Impedance_lib_Python: Impedance python library:
 			~ you need to have installed ImpedanceWake2D first (see above)
@@ -224,8 +230,10 @@ written in PYTHON and C++, in particular:
        The main codes of the repository are in the subdirectories DELPHI, 
        ImpedanceWake2D, Laclare and in PYTHON_codes_and_scripts.
        
-       For each of them, go in the corresponding subdirectory and follow the user
-       manual. For the Python scripts and programs, each subdirectory of PYTHON_codes_and_scripts
+       For the first three (DELPHI, IW2D, Laclare), go in the corresponding subdirectory and follow the user
+       manual.
+       
+       For the Python scripts and programs, each subdirectory of PYTHON_codes_and_scripts
        has a file [subdir_name]_doc.txt with a description of the functions and/or scripts in the
        directory.
        
@@ -236,7 +244,7 @@ written in PYTHON and C++, in particular:
        To get beta functions for the LHC or octupole coefficients, have a look at 
        "Getting_LHC_beta_functions/README.txt". 
 
-   
+
 4. FUTURE DEVELOPMENTS (TO-DO LIST)
    ================================
 

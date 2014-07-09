@@ -50,7 +50,6 @@ def scix(ax):
     ''' transform horizontal tick labels from axes ax, into scientific notation (e.g. 1.5 10^-4)
     unless they are between 0.01 & 100 (in abs. value) '''
     try:
-    try:
     	ax.ticklabel_format(style='sci', scilimits=(-2,2),axis='x')
     except AttributeError:
     	pass;
