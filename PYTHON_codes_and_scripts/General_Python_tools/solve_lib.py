@@ -221,7 +221,7 @@ def roots_complex_list(f,list_pot_roots,tolf=1e-12,tolx=1e-14):
 	#f_2d=(lambda x: (f((1+x[0])*x0[0]+1j*(1+x[1])*x0[1]).real,f((1+x[0])*x0[0]+1j*(1+x[1])*x0[1]).imag));
 	f_2d=(lambda x: (f(x[0]+1j*x[1]).real,f(x[0]+1j*x[1]).imag));
     
-	xsol=fsolve(f_2d, x0, warning=False);
+	xsol=fsolve(f_2d, x0);#, warning=False);
 	#sol=root(f_2d, (0.,0.), method='hybr');xsol=sol.x;
 	#xsol_comp=(1+xsol[0])*x0[0]+1j*(1+xsol[1])*x0[1];
 	xsol_comp=xsol[0]+1j*xsol[1];#print "fsolve:",x0,xsol_comp,np.abs(f(xsol_comp));
@@ -279,13 +279,13 @@ if __name__ == "__main__":
 	print p1,p2,intersect_two_planes_z0(p1,p2);
 	#OK (tested different combinations)
     
-    if False:
+    if True:
 	f=(lambda z: np.cos(z))
 	f=(lambda z: np.cos(z.real)+1j*j0(z.imag))
 	if True:
 	    list1=potential_roots_complex(f,-10,10,-10,10,npts=20,meshkind='lin');
-	    print list1;
-	    print f(np.array(list1)[:,0]+1j*np.array(list1)[:,1]);
+	    #print list1;
+	    #print f(np.array(list1)[:,0]+1j*np.array(list1)[:,1]);
 	    list2=roots_complex_list(f,list1,tolf=1e-10);
 	    #print list2;
 	    #print f(list2);
@@ -297,11 +297,13 @@ if __name__ == "__main__":
     	    imag_range=np.linspace(-10.,10.,npts+1);
 	    ftable_real=np.zeros((npts+1,npts+1));
 	    ftable_imag=np.zeros((npts+1,npts+1));
+	    invftable=np.zeros((npts+1,npts+1));
 
 	    for ir,r in enumerate(real_range):
 		for im,m in enumerate(imag_range):
 		    ftable_real[im,ir]=f(r+1j*m).real;
 		    ftable_imag[im,ir]=f(r+1j*m).imag;
+		    invftable[im,ir]=1./np.abs(f(r+1j*m));
 
 	    fig,ax=init_figure();
 	    plot2D(ftable_real,-10,10,-10,10,'Re','Im','',ax,colorlabel='');
@@ -309,8 +311,16 @@ if __name__ == "__main__":
 	    plot(np.real(list2),np.imag(list2),'zeros','xk','Im',ax,0,xlab='Re',ms=15);
 	    ax.set_xlim([-10,10]);ax.set_ylim([-10,10]);
 	    end_figure(fig,ax);
+	    
 	    fig,ax=init_figure();
 	    plot2D(ftable_imag,-10,10,-10,10,'Re','Im','',ax,colorlabel='');
+	    plot(np.array(list1)[:,0],np.array(list1)[:,1],'potential zeros','ow','Im',ax,0,xlab='Re',ms=15);
+	    plot(np.real(list2),np.imag(list2),'zeros','xk','Im',ax,0,xlab='Re',ms=15);
+	    ax.set_xlim([-10,10]);ax.set_ylim([-10,10]);
+	    end_figure(fig,ax);
+	    
+	    fig,ax=init_figure();
+	    plot2D(invftable,-10,10,-10,10,'Re','Im','',ax,colorlabel='');
 	    plot(np.array(list1)[:,0],np.array(list1)[:,1],'potential zeros','ow','Im',ax,0,xlab='Re',ms=15);
 	    plot(np.real(list2),np.imag(list2),'zeros','xk','Im',ax,0,xlab='Re',ms=15);
 	    ax.set_xlim([-10,10]);ax.set_ylim([-10,10]);
@@ -320,7 +330,7 @@ if __name__ == "__main__":
 
 	list3=roots_complex(f,-10,10,-10,10,npts=100,tolf=1e-10);
 	ind=np.argsort(list3.imag);
-	print list3[ind];
+	#print list3[ind];
 	#print f(list3[ind])
 	list_fin=np.conjugate(-1j*np.sort_complex(1j*np.conjugate(list3)));
 	print list_fin;
@@ -398,7 +408,7 @@ if __name__ == "__main__":
 	# - m=0 (long.): f[THz]= 0.74513117+0.00950448j
 	# - m=1 (trans.): f[THz]=7.44436724e-01 +9.52548055e-03j
 
-    if True:
+    if False:
     	# same as above but change a bit the perspective: solve in k and use omega=Re[k]*beta*c
     	# BUT IT DOES NOT WORK...
 	gamma=479.6;sigmaDC=2e5;b=2e-3;tauAC=0.;tauAC=4.2e-12;

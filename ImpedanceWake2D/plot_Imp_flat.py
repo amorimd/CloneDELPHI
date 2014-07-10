@@ -134,7 +134,7 @@ if __name__ == "__main__":
 
 
 	if not opt.METER: lab=" [$\Omega$ /m]"
-	else: lab=" [$\Omega$ /$m^2$]"
+	else: lab=" [$\Omega$ /m$^2$]"
 	# read transverse dipolar impedances and plot them    
 	freq1,Z1=read(filefxdip)
 	freq2,Z2=read(filefydip)

@@ -10,7 +10,7 @@
 
 Author: Nicolas Mounet, CERN BE, Geneva
 
-Last modifications: 08/07/2014
+Last modifications: 10/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org,
 or imp-inst@cern.ch
@@ -114,7 +114,8 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
 - "RoundChamberInputFile.txt", "WakeRoundChamberInputFile.txt", "FlatChamberInputFile.txt" and 
 "WakeFlatChamberInputFile.txt": examples of input files for each of those executables (see below).
 
-- "plot_Imp_flat.py" and "plot_Wake_flat.py": python routines to plot the impedances and wake functions in output.
+- "plot_Imp_flat.py" and "plot_Wake_flat.py": python routines to plot the impedances and wake functions in output
+(they work for both round and flat cases).
 
 - "Makefile": makefile to compile the codes.
 
@@ -215,10 +216,15 @@ the impedances of a flat chamber, and the impedances and wake functions of a fla
        ----------------------
        
        The library "libIW2D.so" is used in the Python programs located in 
-       ../PYTHON_codes_and_scripts/Impedance_lib_Python/
-       In order for those to work, you need to add a line to your .bashrc file to add the DELPHI path
+       ../PYTHON_codes_and_scripts/General_Python_tools/fourier_lib.py
+       In order for those to work, you need to add a line to your .bashrc file to add the IW2D path
        to your LD_LIBRARY_PATH.
-       This can be simply done by running once the script given in this directory: type
+       Also, for the Python Impedance library located in
+       ../PYTHON_codes_and_scripts/Impedance_lib_Python/Impedance.py
+       you need to affect the environment variable IW2D_PATH with the path to the current directory
+       (containing all executables needed by Impedance.py)
+       
+       All this can be simply done by running once the script given in this directory: type
        
        ./script_configure_bashrc.sh
        
@@ -623,8 +629,8 @@ the wake functions. This can be quite long.
    5.5 How to plot the output files
        ----------------------------
 
-       You can use the python routines provided to plot the impedances and wakes.
-       python2.6 with numpy and pylab need to be isntalled. The routines can be launched in the
+       You can use the python routines provided to plot the impedances and wakes (round or flat).
+       python2.6 with numpy and pylab need to be installed. The routines can be launched in the
        command line.
        
        Examples:

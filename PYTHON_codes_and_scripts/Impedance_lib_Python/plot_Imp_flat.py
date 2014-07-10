@@ -1,7 +1,11 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import pylab
 import numpy as np
 import math,cmath
@@ -15,21 +19,24 @@ from string_lib import takeout_common
 
 def parsse():
     parser = OptionParser()
+    parser.add_option("-c", "--constant",action="store_true",
+                      help="Specify if we should plot the constant term Zycst",
+                      metavar="CST", default=False,dest="CST")
     parser.add_option("-f", "--file",action="append",
-                      help="Specify the file name (longitudinal impedance, flat case). Several files are possible - either with regular expression (using *, [], etc. and BETWEEN QUOTES \"\") or with several -f options.",
+                      help="Specify the file name (beginning with Zlong - the other impedance files Zxdip, Zydip, etc. are selected automatically). Several files are possible - either with regular expression (using *, [], etc. and BETWEEN QUOTES \"\") or with several -f options.",
                       metavar="FILE", default=None,dest="FILE")
     parser.add_option("-g", "--legend",action="append",
                       help="Specify the legend for each file",
                       metavar="LEG", default=None,dest="LEG")
-    parser.add_option("-m", "--meter",action="store_true",
-                      help="Specify if the impedance are per meter length",
-                      metavar="METER", default=False,dest="METER")
-    parser.add_option("-c", "--constant",action="store_true",
-                      help="Specify if we should plot the constant term Zycst",
-                      metavar="CST", default=False,dest="CST")
     parser.add_option("-l", "--loglog",action="store_true",
                       help="Specify if loglog plot (semilogx by default)",
                       metavar="LOG", default=False,dest="LOG")
+    parser.add_option("-m", "--meter",action="store_true",
+                      help="Specify if the impedance are per meter length",
+                      metavar="METER", default=False,dest="METER")
+    parser.add_option("-o", "--outfile",
+                      help="Specify the output file name if you want to output the plots in files (will create Zlong[this_option].png, Zxdip[this_option].png, etc. and the same in .eps format) (by default: print plots on screen -> CANNOT WORK IF YOU USE MATPLOTLIB WITH GUI DISABLED)",
+                      metavar="OUT", default=None,dest="OUT")
     (opt, args) = parser.parse_args()
     #print "Selected Files:", opt.FILE
     return opt, args
@@ -84,7 +91,6 @@ if __name__ == "__main__":
         listleg=opt.LEG;
     else:
         listleg=takeout_common(listname);
-	
     
 
     if (opt.CST): nfig=6;
@@ -93,13 +99,12 @@ if __name__ == "__main__":
     for i in range(nfig): init_figure();
     
     color=['b','r','g','m','c','y','k'];
+    comp=["Zlong","Zxdip","Zydip","Zxquad","Zyquad","Zycst"];
 
     for j,fil in enumerate(listname):
 
 	# string for legend
 	leg=listleg[j].replace(".dat","");
-	#if opt.LEG==None: leg=fil.replace("ZlongW","",1).replace("_"," ");
-	#else: leg=opt.LEG[j];
 	
 	# constructs all the files names (flat chamber impedances)
 	filefxdip=fil.replace("Zlong","Zxdip",1);
@@ -115,11 +120,6 @@ if __name__ == "__main__":
 	pylab.figure(1);
 	if opt.LOG: logplot(freq,Z,lab,"$Z_{\|\|}$",", "+leg,color[j]);
 	else: semilogplot(freq,Z,lab,"$Z_{\|\|}$",", "+leg,color[j]);
-
-	# thin wall
-	#pylab.figure(1);
-	#logplot(freq,1j*4e-7*np.pi*freq*500e-9/(49e-3),lab,"$Z_{\|\|}$",", thin wall, aC 500nm",'g');
-	#logplot(freq,1j*4e-7*np.pi*freq*2e-6/(49e-3),lab,"$Z_{\|\|}$",", thin wall, aC $ 2\mu $ m",'m');
 
 	if opt.CST:
     	    # read constant vertical impedance and plot
@@ -155,15 +155,21 @@ if __name__ == "__main__":
     	    pylab.figure(5);semilogplot(freq2,Z2,lab,"$Z_y^{quad}$",", "+leg,color[j]);
     
 	
-    # thin wall
-    #pylab.figure(2);
-    #logplot(freq1,1j*4e-7*299792458*500e-9/(49e-3**3)*np.ones(len(freq1)),lab,"$Z_x^{dip}$",", thin wall, aC 500nm",'g');
-    #logplot(freq1,1j*4e-7*299792458*2e-6/(49e-3**3)*np.ones(len(freq1)),lab,"$Z_x^{dip}$",", thin wall, aC $ 2\mu $ m",'m');
-	
     for i in range(nfig):
-    	pylab.figure(i+1);
-    	pylab.legend(loc=0);
-	set_fontsize(pylab.figure(i+1),'xx-large');
+    	fig=pylab.figure(i+1);ax=fig.gca();
+	set_fontsize(pylab.figure(i+1),'x-large');
+    	ax.legend(loc=0);
+    	l=ax.get_legend_handles_labels();
+	set_fontsize(ax.get_legend(),max(20-2*len(l[0]),10));
+	ax.grid();
+    
+	if opt.OUT!=None:
+	    fig.savefig(comp[i]+opt.OUT+".png")
+	    fig.savefig(comp[i]+opt.OUT+".eps",format='eps')
+	    pylab.close(fig);
 
-    pylab.show();sys.exit()
+	    	
+    if opt.OUT==None: pylab.show();
+
+    sys.exit()
 

@@ -1,7 +1,11 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import pylab
 import numpy as np
 import math,cmath
@@ -17,15 +21,15 @@ def parsse():
     parser.add_option("-f", "--file",action="append",
                       help="Specify the curve file name (impedance or wake) (several -f options possible)",
                       metavar="FILE", default=None,dest="FILE")
-    parser.add_option("-t", "--totalfile",
-                      help="Specify the file name for the full model (impedance or wake)",
-                      metavar="TFILE", default=None,dest="TFILE")
     parser.add_option("-g", "--legend",action="append",
                       help="Specify the legend for each curve",
                       metavar="LEG", default=None,dest="LEG")
     parser.add_option("-r", "--anchor",type=float,nargs=2,action="append",
                       help="Specify the place to anchor the upper-right corner of the legend (2 -r options possible: real and imaginary parts))",
                       metavar="ANC", default=[],dest="ANC")
+    parser.add_option("-t", "--totalfile",
+                      help="Specify the file name for the full model (impedance or wake)",
+                      metavar="TFILE", default=None,dest="TFILE")
     (opt, args) = parser.parse_args()
     #print "Selected Files:", opt.FILE
     return opt, args

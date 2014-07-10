@@ -4,8 +4,6 @@
 
 import sys
 import commands
-pwd=commands.getoutput("pwd");
-sys.path.append(pwd+"/Sussix")
 import sussix4drivexxNoO
 pymod=commands.getoutput("echo $PYMOD");
 if pymod.startswith('local'):

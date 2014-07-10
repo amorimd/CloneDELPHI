@@ -1,5 +1,11 @@
+#!/usr/bin/python
+
 import sys
-sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
+import commands
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import pylab
 import numpy as np
 import math,cmath
@@ -9,21 +15,21 @@ from optparse import OptionParser
 
 def parsse():
     parser = OptionParser()
-    parser.add_option("-f", "--filef",
-                      help="Specify the file name (longitudinal impedance, flat case)",
-                      metavar="FILEF", default=None,dest="FILEF")
     parser.add_option("-c", "--filec",
                       help="Specify the file name (longitudinal impedance, circular case)",
                       metavar="FILEC", default=None,dest="FILEC")
+    parser.add_option("-f", "--filef",
+                      help="Specify the file name (longitudinal impedance, flat case)",
+                      metavar="FILEF", default=None,dest="FILEF")
+    parser.add_option("-l", "--loglog",action="store_true",
+                      help="Specify if loglog plot (semilogx by default)",
+                      metavar="LOG", default=False,dest="LOG")
     parser.add_option("-m", "--meter",action="store_true",
                       help="Specify if the impedance are per meter length",
                       metavar="METER", default=False,dest="METER")
     parser.add_option("-v", "--vertical",action="store_true",
                       help="Specify if vertical structure (Zydip twice as large as Zxdip)",
                       metavar="VERT", default=False,dest="VERT")
-    parser.add_option("-l", "--loglog",action="store_true",
-                      help="Specify if loglog plot (semilogx by default)",
-                      metavar="LOG", default=False,dest="LOG")
     (opt, args) = parser.parse_args()
     print "Selected Files:", opt.FILEF, ", ", opt.FILEC
     return opt, args

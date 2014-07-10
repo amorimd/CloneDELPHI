@@ -125,7 +125,7 @@ if __name__ == "__main__":
 
 
 	if not opt.METER: lab=" [V / (C.m)]"
-	else: lab=" [V / (C.$m^2$)]"
+	else: lab=" [V / (C.m$^2$)]"
 	# read transverse dipolar impedances and plot them    
 	z1,W1=read(filefxdip)
 	z2,W2=read(filefydip)

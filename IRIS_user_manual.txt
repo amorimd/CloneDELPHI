@@ -11,7 +11,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 08/07/2014
+Last modifications: 10/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 and/or imp-inst@cern.ch
@@ -186,9 +186,11 @@ written in PYTHON and C++, in particular:
 			and [python_version_number] is your python version number (e.g. 2.6)
 		* do:
 		cd  SUSSIX/Sussix
-		make
+		make (* this compiles the fortran SUSSIX code *)
 		cd ../
-		chmod +x getTuneSussixNM.py
+		./script_configure_bashrc.sh (* to add the correct python paths to your .bashrc *)
+		chmod +x getTuneSussixNM.py (* to be able to use getTuneSussixNM.py *)
+
 
 	- PYTHON_codes_and_scripts: 
 	
@@ -209,6 +211,11 @@ written in PYTHON and C++, in particular:
 			
 		* Impedance_lib_Python: Impedance python library:
 			~ you need to have installed ImpedanceWake2D first (see above)
+			~ to be able to use the function 'imp_model_from_IW2D' with lxplusbatch='launch' or 'retrieve'
+			(i.e. to launch parallel jobs on a cluster - typically lxplus at CERN), you need
+			to have the LSF batch system installed (this is the case on lxplus at CERN),
+			with typical commands "bsub", "bjobs", etc.
+			Otherwise you can still use this routine but sequentially, with lxplusbatch=None.
 			
 		* DELPHI_Python: 
 		* LHC_impedance_and_scripts:  

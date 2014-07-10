@@ -1,3 +1,8 @@
+# example of plotting many impedance components on the same plot
+# (from Ascii files coming from the write_imp_wake_mod function in Impedance.py)
+
+# these are ipython (interactive python) commands
+
 Zxd=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zxdip_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
 Zyd=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zydip_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)
 Zyq=read_ncol_file('../DELPHI_results/LHC/LHC_HLLHC_new_comp_BBcutoff50GHz/Zyquad_Allthemachine_4TeV_B1_2012_v2.dat',ignored_rows=1)

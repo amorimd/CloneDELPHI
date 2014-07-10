@@ -1,4 +1,6 @@
 # verification of Stupakov's formulas implementation (PRST-AB 2007)
+# comparing with M. Zobov - O. Frasciello wakes and impedances
+# (ipython commands)
 
 ipython
 from Impedance import *
@@ -57,8 +59,8 @@ kick=np.zeros(len(garray));kickex=np.zeros(len(garray));
 for ig,g in enumerate(garray):
     R=2*broadband_imp_taper_flat_Stupakov(g,g+delta,delta/l,w,fr);
     Rexact=2*broadband_imp_taper_flat_Stupakov(g,g+delta,delta/l,w,fr,approx=False);
-    imp_mod,w=imp_model_resonator(R,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
-    imp_mod_ex,w=imp_model_resonator(Rexact,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
+    imp_mod,wake_mode=imp_model_resonator(R,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
+    imp_mod_ex,wake_mode=imp_model_resonator(Rexact,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
     kick[ig]=transverse_kick_factor(imp_mod,7.5e-2,compname='Zydip')
     kickex[ig]=transverse_kick_factor(imp_mod_ex,7.5e-2,compname='Zydip')
 
@@ -73,7 +75,7 @@ kick=np.zeros(len(garray));
 for ig,g in enumerate(garray):
     R1=2*broadband_imp_taper_flat_Stupakov(g,g+delta1,delta1/l1,w1,fr,approx=False);
     R2=2*broadband_imp_taper_flat_Stupakov(g+delta1,g+delta1+delta2,delta2/l2,w2,fr,approx=False);
-    imp_mod,w=imp_model_resonator(R1+R2,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
+    imp_mod,wake_mode=imp_model_resonator(R1+R2,fr,Q,listcomp=['Zlong', 'Zxdip', 'Zydip', 'Zxquad', 'Zyquad']);
     kick[ig]=transverse_kick_factor(imp_mod,7.5e-2,compname='Zydip')
 
 print kick
@@ -87,12 +89,13 @@ np.trapz(lambdaz*w,zscan)/kick[-1]
 # -1 (due to sign convention in kick factor) -> fine !
 
 # compare Stupakov wake potential to real wake potential from M. Zobov and O. Frasciello
-filename='../Impedances/LHC/Coll_geom_imp_MZobov/GdfidLWakepotential_dip_halfgap5mm1E3_bunchlength2mm_mesh0p2mm_sent27082013.txt'
+filename='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_dip_halfgap5mm_bunchlength2mm_mesh0p2mm.txt'
 s=read_ncol_file(filename)
 pylab.plot(s[:,0],-s[:,1])
 w=resonator_wake_potential(R,5e9,1,2e-3,s[:,0],beta=1)
 pylab.plot(s[:,0],w)
 wmeas=-s[:,1];z=s[:,0]
+pylab.show()
 
 # attempt to fit the real wake potential with resonator
 # 3D
@@ -205,14 +208,14 @@ pylab.plot(z,wmeas-w2)
 
 # some tests with fft
 c=299792458.;sigmaz=0.002;
-fileReZ='../Impedances/LHC/Coll_geom_imp_MZobov/ReZX_halfgap5mm_bunchlength2mm_mesh0p2mm_offset1mm_sent22082013.txt';
-fileImZ='../Impedances/LHC/Coll_geom_imp_MZobov/ImZX_halfgap5mm_bunchlength2mm_mesh0p2mm_offset1mm_sent22082013.txt';
+fileReZ='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/ReZX_halfgap5mm_bunchlength2mm_mesh0p2mm_offset1mm_sent22082013.txt';
+fileImZ='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/ImZX_halfgap5mm_bunchlength2mm_mesh0p2mm_offset1mm_sent22082013.txt';
 ReZ=read_ncol_file(fileReZ,ignored_rows=2)
 ImZ=read_ncol_file(fileImZ,ignored_rows=2)
 pylab.semilogx(ReZ[:,0],ReZ[:,1]*1e3,ImZ[:,0],ImZ[:,1]*1e3); # offset of 1mm for impedance to be taken into account
 f=np.arange(len(z))*c/(len(z)*np.diff(z)[0]);
 Zt=1j*np.fft.fft(wmeas)/c/np.exp(-(2.*np.pi*f)**2*sigmaz**2/(2.*c**2))
-pylab.plot(f,np.real(Zt),f,np.imag(Zt));pylab.axis([0,1e11,0,1e5])
+pylab.plot(f[~np.isinf(Zt)],np.real(Zt[~np.isinf(Zt)]),f[~np.isinf(Zt)],np.imag(Zt[~np.isinf(Zt)]));pylab.axis([0,1e11,0,1e5])
 # it's a big mess
 
 # plot all dipolar wakes
@@ -220,10 +223,12 @@ col=['b','r','g','m','k','c','y'];
 fig,ax=init_figure()
 halfgapscan=[1,3,5,11.5,20];
 for ihg,hg in enumerate(halfgapscan):
-    filename='../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_dip_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
+    filename='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_dip_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
     s=read_ncol_file(filename)
     ax.plot(s[:,0],-s[:,1],'-'+col[ihg])
 
+pylab.show()
+ 
 # compare Stupakov's dip. wake potentials & functions to these
 width=70e-3/2;l=97e-3;delta=17.6e-3;
 fr=5e9;Q=1;sigmaz=2e-3;
@@ -234,14 +239,18 @@ for ig,g in enumerate(np.array(halfgapscan)*1e-3):
     wf=resonator_wake(R[2],fr,Q,s[:,0]*1e9/299792458.);
     ax.plot(s[:,0],wf,':'+col[ig])
 
+pylab.show()
+
 # plot all quadrupolar wakes
 col=['b','r','g','m','k','c','y'];
 fig,ax=init_figure()
 halfgapscan=[1,3,5,11.5,20];
 for ihg,hg in enumerate(halfgapscan):
-    filename='../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_quad_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
+    filename='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_quad_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
     s=read_ncol_file(filename)
     ax.plot(s[:,0],-s[:,1],'-'+col[ihg])
+
+pylab.show()
 
 # compare Stupakov's quad. wake potentials & functions to these
 width=70e-3/2;l=97e-3;delta=17.6e-3;
@@ -253,15 +262,19 @@ for ig,g in enumerate(np.array(halfgapscan)*1e-3):
     wf=resonator_wake(R[4],fr,Q,s[:,0]*1e9/299792458.);
     ax.plot(s[:,0],wf,':'+col[ig])
 
+pylab.show()
+
 
 # plot all longitudinal wakes
 col=['b','r','g','m','k','c','y'];
 fig,ax=init_figure()
 halfgapscan=[1,3,5,11.5];
 for ihg,hg in enumerate(halfgapscan):
-    filename='../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_long_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
+    filename='../../LHC_impedance_and_scripts/Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_long_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt'
     s=read_ncol_file(filename)
     ax.plot(s[:,0],-s[:,1])
+
+pylab.show()
 
 # compare Stupakov's long. wake FUNCTIONS to these
 width=70e-3/2;l=97e-3;delta=17.6e-3;

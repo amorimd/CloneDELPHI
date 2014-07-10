@@ -1,7 +1,23 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
+
+# library for computation of impedance & wake models
 
 import sys
-#from optparse import OptionParser
+import commands
+# define user (for bsub command) (environment variable USER should be previously defined)
+user=commands.getoutput("echo $USER");
+if (len(user)>0): user_option=" -u "+user;
+else: user_option='';
+# define path for Yokoya factors file (environment variable YOK_PATH should be previously defined - see script_configure_bashrc.sh)
+Yokoya_path=commands.getoutput("echo $YOK_PATH");
+# define path for IW2D executables (environment variable IW2D_PATH should be previously defined - see ../../ImpedanceWake2D/script_configure_bashrc.sh)
+IW2D_path=commands.getoutput("echo $IW2D_PATH");
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 from string import *
 import numpy as np
 import pylab,re,os
@@ -12,10 +28,9 @@ from fourier_lib import *
 from string_lib import invert_selection
 from copy import deepcopy
 
-# library for impedance models
 
 class layer(object):
-    '''class for definition of layer properties'''
+    '''class for definition of layer properties (for resistive-wall code)'''
     
     def __init__(self,rhoDC=0.5e-5,tau=4.2e-12,epsb=1,mur=1,fmu=np.inf,thickness=np.inf):
     
@@ -1425,7 +1440,7 @@ def rotate_imp_wake(iw_mod,theta):
     return iw_mod_rotated;
     
 
-def Yokoya_elliptic(small_semiaxis,large_semiaxis,Yokoyafilename='Yokoya_elliptic_from_Elias_USPAS.dat'):
+def Yokoya_elliptic(small_semiaxis,large_semiaxis,Yokoyafilename=Yokoya_path+'/Yokoya_elliptic_from_Elias_USPAS.dat'):
 
     '''compute Yokoya factor for an elliptic shape (semiaxis given in input),
     assuming the small axis is in the vertical direction.'''
@@ -1503,7 +1518,7 @@ def readZ(filename):
     return np.array(freq),Z.reshape((-1,2)); # two columns format for Z
 
 
-def imp_model_from_IW2D(iw_input,wake_calc=False,path='../soft/My_prog_C/ImpedanceWake2D/',
+def imp_model_from_IW2D(iw_input,wake_calc=False,path=IW2D_path,
 	flagrm=True,lxplusbatch=None,queue='1nh',dire=''):
 
     '''create an impedance model (without beta functions weight) from an ImpedanceWake2D (IW2D) computation.
@@ -1563,7 +1578,7 @@ def imp_model_from_IW2D(iw_input,wake_calc=False,path='../soft/My_prog_C/Impedan
 	print >> filejob, "cp *"+iw_input.comment+"*.dat "+here+"/"+dire;
         filejob.close();
 	os.system("chmod 744 batch"+iw_input.comment+".job");
-	os.system("bsub -u nmounet -e error1.out -q "+queue+" batch"+iw_input.comment+".job");
+	os.system("bsub"+user_option+" -e error1.out -q "+queue+" batch"+iw_input.comment+".job");
 	
     if (lxplusbatch==None)or(lxplusbatch.startswith('retrieve')):
 	# extract output suffix

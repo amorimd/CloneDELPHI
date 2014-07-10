@@ -132,6 +132,8 @@ FUNCTIONS
 # with a non-equidistant mesh							#
 #################################################################################
 
+# Note: there is a test inside this module - you can run it by typing in a terminal
+./fourier_lib.py
 
 FILE
     /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/fourier_lib.py
@@ -511,6 +513,9 @@ FUNCTIONS
 # library to try to find all roots of complex functions in the complex plane 	#
 # (in a given region)								#
 #################################################################################
+
+# Note: there is a test inside this module - you can run it by typing in a terminal
+./solve_lib.py
 
 FILE
     /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/solve_lib.py
