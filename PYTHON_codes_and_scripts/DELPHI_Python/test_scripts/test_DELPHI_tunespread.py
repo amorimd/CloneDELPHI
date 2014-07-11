@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
 if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
@@ -8,24 +8,26 @@ print lxplusbatchImp,lxplusbatchDEL;
 
 import commands
 out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 
 from string import *
 import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+sys.path.append("../../LHC_impedance_and_scripts/")
 from plot_lib import plot,init_figure,end_figure,plot2D
 from io_lib import *
 from tables_lib import select_in_table
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from LHC_conv import LHC_param
+from LHC_param import LHC_param
 from LHC_imp import *
 from HLLHC_imp import *
 from LHC_coll_imp import *
@@ -90,7 +92,10 @@ def test_residue(ReQmin,ReQmax,ImQmin,ImQmax,lmax,nmax,matdamper,matZ,coefdamper
 if __name__ == "__main__":
 
     e,m0,c,E0=proton_param();
-
+    root_LHC='../../LHC_impedance_and_scripts';
+    results_dir='../../DELPHI_results/LHC/test';
+    os.system("mkdir -p "+results_dir);
+    
     # fixed parameters
     machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=4e12);
 
@@ -200,13 +205,13 @@ if __name__ == "__main__":
 	avbetax=R/Qx;avbetay=R/Qy; # average beta functions used
 
 	beam='1';
-	param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-	settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	param_filename_coll=root_LHC+'/Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+	settings_filename_coll=root_LHC+'/Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 
 	imp_mod,wake_mod=LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	    beta_filename_coll=None,dire="../LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',lxplusbatch='retrieve',
+	    beta_filename_coll=None,dire=root_LHC+"/LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',lxplusbatch='retrieve',
 	    beam=beam,squeeze='0p6m_3m_0p6m_3m',wake_calc=False,ftypescan=0,nflog=100,zpar=z_param(),
-	    flagplot=False,root_result='../DELPHI_results/LHC/test',commentsave='');
+	    flagplot=False,root_result=results_dir,commentsave='');
 
 	# longitudinal distribution initialization
 	g,a,b=longdistribution_decomp(taub,typelong="Gaussian");
@@ -361,7 +366,7 @@ if __name__ == "__main__":
 		plot(np.real(freqshift_spread)/omega0,np.imag(freqshift_spread)/omega0,'zeros (Landau damping)','ow','Im[Q]',ax1,0,xlab='Re[Q]',ms=10);
 		#plot(freqshift_spread_pot[:,0]/omega0,freqshift_spread_pot[:,1]/omega0,'pot. zeros (Landau damping)','ok','Im[Q]',ax1,0,xlab='Re[Q]',ms=15);
 		ax1.set_xlim([ReQmin,ReQmax]);ax1.set_ylim([ImQmin,ImQmax]);
-		end_figure(fig1,ax1,save='../DELPHI_results/test_tunespread/plot2D_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini));
+		end_figure(fig1,ax1,save=results_dir+'/plot2D_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini));
 	
 	#pylab.show()
 
@@ -511,13 +516,13 @@ if __name__ == "__main__":
 	avbetax=R/Qx;avbetay=R/Qy; # average beta functions used
 
 	beam='1';
-	param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-	settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	param_filename_coll=root_LHC+'/Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+	settings_filename_coll=root_LHC+'/Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 
 	imp_mod,wake_mod=LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	    beta_filename_coll=None,dire="../LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',lxplusbatch='retrieve',
+	    beta_filename_coll=None,dire=root_LHC+"/LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',lxplusbatch='retrieve',
 	    beam=beam,squeeze='0p6m_3m_0p6m_3m',wake_calc=False,ftypescan=0,nflog=100,zpar=z_param(),
-	    flagplot=False,root_result='../DELPHI_results/LHC/test',commentsave='');
+	    flagplot=False,root_result=results_dir,commentsave='');
 
 	# longitudinal distribution initialization
 	g,a,b=longdistribution_decomp(taub,typelong="Gaussian");
@@ -600,7 +605,7 @@ if __name__ == "__main__":
 			    plot(np.real(stabx_Python)+ReQmax,-np.imag(stabx_Python),'Stab. diagram','b','-Im[Q]',ax,0,xlab='Re[Q]');
 			    plot(np.real(freqshift)/omega0,-np.imag(freqshift)/omega0,'zeros (unperturbed)','xk','Im[Q]',ax,0,xlab='Re[Q]',ms=15);
 			    ax.set_xlim([ReQmin,ReQmax]);
-			    end_figure(fig,ax,save='../DELPHI_results/test_tunespread/plot_stab_diagram_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax));
+			    end_figure(fig,ax,save=results_dir+'/plot_stab_diagram_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax));
 		    
 		    if True:
 			# 2D plots
@@ -624,14 +629,14 @@ if __name__ == "__main__":
 			    plot(np.real(freqshift_spread)/omega0,np.imag(freqshift_spread)/omega0,'zeros (Landau damping)','ow','Im[Q]',ax1,0,xlab='Re[Q]',ms=10);
 			    #plot(freqshift_spread_pot[:,0]/omega0,freqshift_spread_pot[:,1]/omega0,'pot. zeros (Landau damping)','ok','Im[Q]',ax1,0,xlab='Re[Q]',ms=15);
 			    ax1.set_xlim([ReQmin,ReQmax]);ax1.set_ylim([ImQmin,ImQmax]);
-			    end_figure(fig1,ax1,save='../DELPHI_results/test_tunespread/plot2D_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini));
-			    os.system("rm -f ../DELPHI_results/test_tunespread/plot2D_lmax"+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini)+'.eps');
+			    end_figure(fig1,ax1,save=results_dir+'/plot2D_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini));
+			    os.system("rm -f "+results_dir+"/plot2D_lmax"+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Qp'+float_to_str(Qp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_oct'+str(-Ioct)+'_l'+str(iRe-lmax)+'_kini'+str(kini)+'.eps');
 
 	    fig,ax=init_figure();
 	    for iIoct,Ioct in enumerate(Ioctscan):
 		plot(Qpscan,-np.imag(Qdet[iIoct,:]),'DELPHI, Ioct='+str(-Ioct)+' A','-'+col[iIoct],'-Im[Q]',ax,0,xlab=" $ Q' $ ");
 		plot(Qpscan,-np.imag(Qstab[iIoct,:]),'Stab. diagram, Ioct='+str(-Ioct)+' A',pat[iIoct]+col[iIoct],'-Im[Q]',ax,0,xlab=" $ Q' $ ",ms=15);
 
-	    end_figure(fig,ax,save='../DELPHI_results/test_tunespread/plot_vs_Qp_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_kini'+str(kini));    
+	    end_figure(fig,ax,save=results_dir+'/plot_vs_Qp_lmax'+str(lmax)+'_nmax'+str(nmax)+'_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1e11)+'e11_'+distribution+'_kini'+str(kini));    
 	    
 	#pylab.show()

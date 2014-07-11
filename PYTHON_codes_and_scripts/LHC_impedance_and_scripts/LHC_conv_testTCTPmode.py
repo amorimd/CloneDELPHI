@@ -1,16 +1,15 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
 from string import *
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from LHC_conv import LHC_param
+from LHC_param import LHC_param
 
 
 def TCTP_modes(scenario=0):

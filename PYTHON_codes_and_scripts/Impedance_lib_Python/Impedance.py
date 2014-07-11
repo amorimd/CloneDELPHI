@@ -2512,8 +2512,8 @@ def plot_compare_imp_model(imp_mod_list,leglist,listcomp=['Zlong','Zxdip','Zydip
     they are converted to distances in the case of a wake (beta is used in 
     that case, for the conversion)
     - If plotpercent is True, we plot (on a single plot per component) the percentages
-    w.r.t to the first model given, in a "filled" manner (see N. Mounet PhD),
-    instead of curves
+    w.r.t to the first model given, in a "filled" manner, instead of curves (i.e. the
+    plot is filled betweeen each individual curves),
     - legpercentpos: position (bbox_to_anchor) of legend for percentage plot.
     - maxpercent: maximum of y-axis for the percentage plot (in percent).
     - markimp: if not None, list of markers  (like 'x') for each curve of impedance plot 

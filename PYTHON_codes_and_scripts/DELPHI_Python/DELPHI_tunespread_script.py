@@ -1,16 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 from string import *
 from DELPHI import *
 import pickle as pick;
 
-# script encapsulating a DELPHI calculation with scans
+# script encapsulating a DELPHI calculation (with tunespread) with scans
 # launched in command line with one argument, the name of the file containing
-# all the paremeters (pickle format)
+# all the parameters (pickle format)
 
 
 if __name__ == "__main__":

@@ -6,23 +6,15 @@ elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
 else: lxplusbatchImp=None;lxplusbatchDEL=None;
 print lxplusbatchImp,lxplusbatchDEL;   
 
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
-
 from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
 from plot_lib import plot,init_figure,end_figure,cmap
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from LHC_conv import LHC_param
+from LHC_param import LHC_param
 from LHC_imp import *
 from LHC_coll_imp import *
 

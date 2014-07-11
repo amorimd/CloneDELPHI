@@ -13,7 +13,7 @@
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/C_complex.py
+    C_complex.py
 
 CLASSES
     _ctypes.Structure(_ctypes._CData)
@@ -43,7 +43,7 @@ FUNCTIONS
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/datetime_lib.py
+    datetime_lib.py
 
 FUNCTIONS
     plotdate(time, data, leg, dat, patcol, ylab, ax, logflag, lw=3.0, plotevery=1, colr=None, ms=10.0)
@@ -79,7 +79,7 @@ FUNCTIONS
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/elliptic.py
+    elliptic.py
 
 FUNCTIONS
     ellipeinc_comp(phi, m)
@@ -136,7 +136,7 @@ FUNCTIONS
 ./fourier_lib.py
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/fourier_lib.py
+    fourier_lib.py
 
 FUNCTIONS
  
@@ -329,7 +329,7 @@ FUNCTIONS
 
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/io_lib.py
+    io_lib.py
 
 FUNCTIONS
     find_string_in_file(filename, strin)
@@ -370,17 +370,14 @@ FUNCTIONS
         with the first line given by "header"
         format is the data format to use when writing (e.g. %lf, %d, etc.)
 
-DATA
-    pymod = ''
 
-
-Help on module parser:
-
-NAME
-    parser - # library with parser routines (for command line options)
+#################################################################################
+#    parser 									#
+# library with parser routines (for command line options)			#
+#################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/parser.py
+    parser.py
 
 FUNCTIONS
     bunch_parse(option, opt_str, value, parser)
@@ -400,7 +397,7 @@ FUNCTIONS
 
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/plot_lib.py
+    plot_lib.py
 
 FUNCTIONS
     build_colors(ncol, randomize=False)
@@ -518,7 +515,7 @@ FUNCTIONS
 ./solve_lib.py
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/solve_lib.py
+    solve_lib.py
 
 FUNCTIONS
     eqplane(A, B, C)
@@ -569,7 +566,7 @@ FUNCTIONS
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/string_lib.py
+    string_lib.py
 
 FUNCTIONS
     find_ind_names(namesref, names)
@@ -621,7 +618,7 @@ FUNCTIONS
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/General_Python_tools/tables_lib.py
+    tables_lib.py
 
 FUNCTIONS
     add_element_in_array(table, i, elem)

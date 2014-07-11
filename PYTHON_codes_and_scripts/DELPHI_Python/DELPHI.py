@@ -1,9 +1,21 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
+
+# library for computation of instabilities from the DELPHI code
 
 import sys
-#from optparse import OptionParser
-from string import *
+import commands
+# define user (for bsub command) (environment variable USER should be previously defined)
+user=commands.getoutput("echo $USER");
+if (len(user)>0): user_option=" -u "+user;
+else: user_option='';
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
 import numpy as np
+from string import *
 import os,re
 from io_lib import read_ncol_file,write_ncol_file
 from string_lib import fortran_str,float_to_str
@@ -26,7 +38,7 @@ laguerre = prototypelag(('Laguerre', libDELPHI));
 
 def compute_impedance_matrix(lmax,nmax,nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,Z,freqZ,flag_trapz=0,abseps=1e-4,lmaxold=-1,nmaxold=-1,couplold=None):
 
-    # function to compute impedance matrix
+    ''' function to compute DELPHI impedance matrix '''
     
     aovertaub2=a/(taub*taub);
     bovertaub2=b/(taub*taub);
@@ -100,7 +112,7 @@ def compute_impedance_matrix(lmax,nmax,nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,
 
 def compute_damper_matrix(lmax,nmax,nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,flagdamperimp=0,d=None,freqd=None,abseps=1e-4,lmaxold=-1,nmaxold=-1,damperold=None):
 
-    # function to compute damper matrix
+    ''' function to compute DELPHI damper matrix '''
     
     aovertaub2=a/(taub*taub);
     bovertaub2=b/(taub*taub);
@@ -202,17 +214,17 @@ def compute_damper_matrix(lmax,nmax,nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,fla
     
 def damper_imp_Karliner_Popov(L0,L1,L2,tauf,R,Q,f0,f):
 
-    # evaluate (to a multiplicative factor) "impedance" of a damper
-    # (Karliner-Popov, Nucl. Inst. Meth. Phys. Res. A 2005)
+    ''' evaluate (to a multiplicative factor) "impedance" of a damper
+    (Karliner-Popov, Nucl. Inst. Meth. Phys. Res. A 2005)
 
-    # L0: distance from pickup to kicker (m),
-    # L1: pickup-length (m),
-    # L2: kicker length (m),
-    # tauf: 1/tauf ~ frequency of low-pass filter,
-    # R: machine radius,
-    # Q: tune,
-    # f0: revolution frequency,
-    # f: array of frequencies at which impedance is evaluated.
+    L0: distance from pickup to kicker (m),
+    L1: pickup-length (m),
+    L2: kicker length (m),
+    tauf: 1/tauf ~ frequency of low-pass filter,
+    R: machine radius,
+    Q: tune,
+    f0: revolution frequency,
+    f: array of frequencies at which impedance is evaluated. '''
 
     c=299792458;
 
@@ -406,10 +418,10 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
 	flag_trapz=0,flagdamperimp=0,d=None,freqd=None,
 	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False):
 	
-    # encapsulate DELPHI calculations, with scans on coupled-bunch modes, damper gain,
-    # nb of particles, synchrotron tune and damper phase.
-    # return tuneshifts (complex) for all these parameters scanned
-    # and also the tuneshifts of the most unstable coupled-bunch modes
+    ''' encapsulate DELPHI calculations, with scans on coupled-bunch modes, damper gain,
+    nb of particles, synchrotron tune and damper phase.
+    return tuneshifts (complex) for all these parameters scanned
+    and also the tuneshifts of the most unstable coupled-bunch modes '''
 
     f0=omega0/(2.*np.pi);
     Qfrac=Q-np.floor(Q);
@@ -507,13 +519,13 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
 	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,
 	lxplusbatch=None,comment='',queue='1nh',dire=''):
 	
-    # same as above with possibility to launch on lxplus
-    # lxplusbatch: if None, no use of lxplus batch system
-    #              if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #              if 'retrieve' -> retrieve outputs
-    # comment is used to identify the batch job name and the pickle filename
-    # dire is the directory where to put/find the result; it should be a path 
-    # relative to the current directory (e.g. '../')
+    ''' same as eigenmodesDELPHI_converged_scan with possibility to launch on lxplus
+    lxplusbatch: if None, no use of any queuing system
+                 if 'launch' -> launch calculation on lxplus (or any LSF batch system) on queue 'queue'
+                 if 'retrieve' -> retrieve outputs
+    comment is used to identify the batch job name and the pickle filename
+    dire is the directory where to put/find the result; it should be a path 
+    relative to the current directory (e.g. '../') '''
     
     import pickle as pick;
     import commands;
@@ -553,21 +565,21 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
             filejob=open('batch'+comment+'.job','w');
             here=os.getcwd()+'/';#print here;
             print >> filejob, "mv "+here+"/"+filename+" .";
-            print >> filejob, "cp "+here+"/DELPHI.py .";
-            print >> filejob, "cp "+here+"/DELPHI_script.py .";
-	    print >> filejob, "cp "+here+"/plot_lib.py .";
-	    print >> filejob, "cp "+here+"/io_lib.py .";
-	    print >> filejob, "cp "+here+"/string_lib.py .";
-	    print >> filejob, "cp "+here+"/tables_lib.py .";
-	    print >> filejob, "cp "+here+"/C_complex.py .";
- 	    print >> filejob, "cp "+here+"/particle_param.py .";
-            print >> filejob, "chmod +x DELPHI_script.py";
-            print >> filejob, "./DELPHI_script.py "+filename+" > out_"+comment;
+            #print >> filejob, "cp "+here+"/DELPHI.py .";
+            #print >> filejob, "cp "+here+"/DELPHI_script.py .";
+	    #print >> filejob, "cp "+here+"/plot_lib.py .";
+	    #print >> filejob, "cp "+here+"/io_lib.py .";
+	    #print >> filejob, "cp "+here+"/string_lib.py .";
+	    #print >> filejob, "cp "+here+"/tables_lib.py .";
+	    #print >> filejob, "cp "+here+"/C_complex.py .";
+ 	    #print >> filejob, "cp "+here+"/particle_param.py .";
+            #print >> filejob, "chmod +x DELPHI_script.py";
+            print >> filejob, "DELPHI_script.py "+filename+" > out_"+comment;
             print >> filejob, "cp out"+filename+" "+here+dire;
             print >> filejob, "cp out_"+comment+" "+here+dire;
             filejob.close();
             os.system("chmod 744 batch"+comment+".job");
-            os.system("bsub -u nmounet -e error1.out -q "+queue+" batch"+comment+".job");
+            os.system("bsub"+user_option+" -e error1.out -q "+queue+" batch"+comment+".job");
 
     	else: # 'retrieve' case
     	    
@@ -599,7 +611,7 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,
 	lxplusbatch=None,comment='',queue='1nh',dire='',flagQpscan_outside=True):
 	
-    ''' wrapper of the above function, with more scans
+    ''' wrapper of eigenmodesDELPHI_converged_scan_lxplus, with more scans
     imp_mod is an impedance or wake model (see Impedance.py)
     from which one extract the planes given in 'planes'
     Mscan is the scan in number of bunches
@@ -1245,13 +1257,13 @@ def eigenmodesDELPHI_tunespread_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbs
 	distribution='gaussian',kini=12,
 	lxplusbatch=None,comment='',queue='1nh',dire=''):
 	
-    # same as above with possibility to launch on lxplus
-    # lxplusbatch: if None, no use of lxplus batch system
-    #              if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #              if 'retrieve' -> retrieve outputs
-    # comment is used to identify the batch job name and the pickle filename
-    # dire is the directory where to put/find the result; it should be a path 
-    # relative to the current directory (e.g. '../')
+    ''' same as eigenmodesDELPHI_tunespread_converged_scan with possibility to launch on lxplus
+    lxplusbatch: if None, no use of lxplus batch system
+                 if 'launch' -> launch calculation on lxplus on queue 'queue'
+                 if 'retrieve' -> retrieve outputs
+    comment is used to identify the batch job name and the pickle filename
+    dire is the directory where to put/find the result; it should be a path 
+    relative to the current directory (e.g. '../') '''
     
     
     import pickle as pick;
@@ -1299,22 +1311,22 @@ def eigenmodesDELPHI_tunespread_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbs
             filejob=open('batch'+comment+'.job','w');
             here=os.getcwd()+'/';#print here;
             print >> filejob, "mv "+here+"/"+filename+" .";
-            print >> filejob, "cp "+here+"/DELPHI.py .";
-            print >> filejob, "cp "+here+"/DELPHI_tunespread_script.py .";
-	    print >> filejob, "cp "+here+"/plot_lib.py .";
-	    print >> filejob, "cp "+here+"/io_lib.py .";
-	    print >> filejob, "cp "+here+"/solve_lib.py .";
-	    print >> filejob, "cp "+here+"/string_lib.py .";
-	    print >> filejob, "cp "+here+"/tables_lib.py .";
-	    print >> filejob, "cp "+here+"/C_complex.py .";
- 	    print >> filejob, "cp "+here+"/particle_param.py .";
-            print >> filejob, "chmod +x DELPHI_tunespread_script.py";
-            print >> filejob, "./DELPHI_tunespread_script.py "+filename+" > out_"+comment;
+            #print >> filejob, "cp "+here+"/DELPHI.py .";
+            #print >> filejob, "cp "+here+"/DELPHI_tunespread_script.py .";
+	    #print >> filejob, "cp "+here+"/plot_lib.py .";
+	    #print >> filejob, "cp "+here+"/io_lib.py .";
+	    #print >> filejob, "cp "+here+"/solve_lib.py .";
+	    #print >> filejob, "cp "+here+"/string_lib.py .";
+	    #print >> filejob, "cp "+here+"/tables_lib.py .";
+	    #print >> filejob, "cp "+here+"/C_complex.py .";
+ 	    #print >> filejob, "cp "+here+"/particle_param.py .";
+            #print >> filejob, "chmod +x DELPHI_tunespread_script.py";
+            print >> filejob, "DELPHI_tunespread_script.py "+filename+" > out_"+comment;
             print >> filejob, "cp out"+filename+" "+here+dire;
             print >> filejob, "cp out_"+comment+" "+here+dire;
             filejob.close();
             os.system("chmod 744 batch"+comment+".job");
-            os.system("bsub -u nmounet -e error1.out -q "+queue+" batch"+comment+".job");
+            os.system("bsub"+user_option+" -e error1.out -q "+queue+" batch"+comment+".job");
 
     	else: # 'retrieve' case
     	    
@@ -1347,7 +1359,7 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
 	distribution='gaussian',kini=12,
 	lxplusbatch=None,comment='',queue='1nh',dire='',flagQpscan_outside=True):
 	
-    ''' wrapper of the above function, with more scans.
+    ''' wrapper of eigenmodesDELPHI_tunespread_converged_scan_lxplus, with more scans.
     imp_mod is an impedance or wake model (see Impedance.py)
     from which one extract the planes given in 'planes'
     Mscan is the scan in number of bunches
@@ -1440,8 +1452,8 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
     
 
 def extract_between_bounds(tuneshifts,lower,upper):
-    # extract in a table of complex tuneshifts the "biggest" mode
-    # that has a real tuneshift between 'lower' and 'upper'
+    ''' extract in a table of complex tuneshifts the "biggest" mode
+    that has a real tuneshift between 'lower' and 'upper' '''
     
     ind=np.where((tuneshifts.real>lower)*(tuneshifts.real<upper))[0];
     #print ind,tuneshifts
@@ -1555,9 +1567,18 @@ def find_intensity_threshold(Nbscan,freqshift,thresgrowth=0.,ninterp=1e4):
     
 	
 def MOSES_wrapper(rootname,Rres,fres,Qres,Qpscan,Nbscan,omegasscan,omega0,E,alphap,sigmaz,avbeta,
-	lmax,nmax,mmin=-3,mmax=3,taumin=-0.5,taumax=0.5,firstline='MOSES input file #',action='launch'):
+	lmax,nmax,mmin=-3,mmax=3,taumin=-0.5,taumax=0.5,firstline='MOSES input file #',action='launch',
+	MOSES_exec='~/DFS/Documents/MOSES4W/MOSES\ application\ for\ Windows/MOSES4W.exe',
+	direname_local='DFS',dirname_remote=r"//cernhomeN.cern.ch/"+user[0]+'/'+user,flag_win=True):
 
-    ''' Depending on 'action', either writes MOSES input files for scanned parameters and write a Windows batch file
+    ''' Wrapper to produce easily input files for MOSES (https://oraweb.cern.ch/pls/hhh/code_website.disp_code?code_name=MOSES), from scanned parameters.
+    MOSES is a code to compute instabilities, written by Y. Chin (Y. H. Chin. User's Guide for New MOSES Version 2.0 ,
+    CERN/LEP-TH/88-05, 1988) that works in a similar way as DELPHI (single-bunch, resonator impedance only, with Landau damping).
+    You need to have installed the executable in the path 'MOSES_exec'. This is specially
+    designed for a MOSES executable working under Windows, in a directory accessible from here (typically, on a mounted
+    DFS file system).
+    
+    This wrapper, depending on 'action', either writes MOSES input files for scanned parameters and write a Windows batch file
     to launch all the calculations (you still have to launch calculations by hand), or 
     retrieve the MOSES output to get tuneshifts.
     Inputs:
@@ -1583,13 +1604,16 @@ def MOSES_wrapper(rootname,Rres,fres,Qres,Qpscan,Nbscan,omegasscan,omega0,E,alph
      - firstline: first line of MOSES input files (some comment),
      - action: 'launch' or 'retrieve': either write input file + Win. bat file to launch 
        all of them easily, or read output and give tuneshifts.
+     - MOSES_exec: local path where to find MOSES' executable (Unix path).
+     - direname_local: local directory name in which the remote file system is mounted (do not include
+     the ~/ or /home/[username]/, just put the bare directory name or path from ~/).
+     - dirname_remote: remote directory name to which direname_local corresponds (NOTE: you can keep
+     the '/' like this, for Windows paths the replacement by '\' will be done automatically - see next flag).
+     - flag_win: True if remote path is a Windows path; then all '/' are replaced by '\'.
     Outputs:
        all modes tuneshifts, tuneshifts of mode 0, and Iscan (arrays)'''
     
     e,m0,c,E0=proton_param();
-    
-    # MOSES executable
-    MOSES_exec='/home/nmounet/DFS/Documents/MOSES4W/MOSES\ application\ for\ Windows/MOSES4W.exe'
     
     if (action=='launch'):
     	# Win. batch file name and directory name to put in it
@@ -1600,10 +1624,11 @@ def MOSES_wrapper(rootname,Rres,fres,Qres,Qpscan,Nbscan,omegasscan,omega0,E,alph
 	os.system("mkdir -p "+rootname[:n]);
 	os.system("cp "+MOSES_exec+" "+rootname[:n]);
 	# directory name to put in it at each line
-	n1=rootname.find('DFS')+3;
-	dirname=r"\\cernhomeN.cern.ch\N\nmounet"+rootname[n1:];
-	n2=dirname.rfind('/');
-	dirname=dirname[:n2].replace("/","\ ").replace(' ','');
+	n1=rootname.find(dirname_local)+len(dirname_local);
+	dirname=dirname_remote+rootname[n1:];
+	if flag_win:
+	    n2=dirname.rfind('/');
+	    dirname=dirname[:n2].replace("/","\ ").replace(' ','');
     
     # generate list of resonators
     Rreslist=create_list(Rres);
@@ -1698,7 +1723,7 @@ def MOSES_wrapper(rootname,Rres,fres,Qres,Qpscan,Nbscan,omegasscan,omega0,E,alph
 			tuneshift[ires,iQp,iNb,iomegas,:]=tuneshiftnew;
 
 
-    if (action=='launch'): fidbat.close();
+    if (action=='launch'): fidbat.close();print " Now you can execute manually the file",batname;
     
     return tuneshift,tuneshiftm0,Iscan*1e-3/(e*f0);
 
@@ -1905,7 +1930,7 @@ def write_CFG_HEADTAIL(cfgname,particle='proton',Nb=1.e11,betax=65.976,betay=71.
     
 
 class DELPHI_calc(object):
-    ''' class for DELPHI computations (unfinished)'''
+    ''' class for DELPHI computations (NOT USED AND NOT FINISHED)'''
      
     def __init__(self,machine='LHC',M=1,nx=0,omegaksi=0.,circ=26658.883,Q=64.31,a=8.,b=8.,
      	taub=1.2e-9,gamma=7460.52,particle='proton',g=None,Z=None,freqZ=None,flag_trapz=0,

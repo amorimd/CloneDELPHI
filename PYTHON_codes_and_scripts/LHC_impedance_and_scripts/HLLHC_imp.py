@@ -1,7 +1,6 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-#from optparse import OptionParser
 from string import *
 import numpy as np
 import pickle as pick

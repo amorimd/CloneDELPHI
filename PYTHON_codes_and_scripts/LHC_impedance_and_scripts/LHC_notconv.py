@@ -1,48 +1,15 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
 from string import *
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-
-def LHC_param(E0,E=7e12):
-
-    # E is the energy in eV
-    if (E==7e12): Qs=0.00204476;Estr='7TeV';taub=1.e-9; # full length in s
-    elif (E==6.5e12): Qs=0.00212194;Estr='6p5TeV';taub=1.e-9; # full length in s
-    elif (E==4e12): Qs=0.00234243;Estr='4TeV';taub=1.25e-9; # full length in s
-    elif (E==3.5e12): Qs=0.0025041;Estr='3p5TeV';taub=1.2e-9; # full length in s
-    elif (E==450e9): Qs=0.00490531;Estr='450GeV';taub=1.3e-9; # full length in s
-    else:
-    	print "LHC energy not recognized; Qs taken as 2.5e-3, taub=1.25ns";
-	Qs=2.5e-3;Estr=float_to_str(E/1e12)+'TeV';taub=1.25e-9; # full length in s
-
-
-    e=1.602176487e-19; # elementary charge
-    c=299792458;
-    # fixed parameters
-    machine='LHC';
-    gamma=E*e/E0
-    beta=np.sqrt(1.-1./(gamma**2))
-    sigmaz=taub*beta*c/4.; # RMS bunch length (m)
-    circ=26658.883; # total circumference in m
-    R=circ/(2.*np.pi) # machine radius
-    Qx=64.31;Qxfrac=Qx-np.floor(Qx);
-    Qy=59.32;Qyfrac=Qy-np.floor(Qy);
-    alphap=3.225e-4; # momentum compaction factor
-    f0=c*beta/circ # rev. frequency
-    omega0=2.*np.pi*f0;
-    omegas=Qs*omega0;
-    eta=alphap-1./(gamma*gamma); # slip factor
-    dphase=0.; # additional damper phase
-
-    return machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr;
+from LHC_param import LHC_param
 
     
 if __name__ == "__main__":

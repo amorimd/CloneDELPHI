@@ -13,7 +13,7 @@
 #################################################################################
 
 FILE
-    /home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_and_scripts/Impedance_lib_Python/Impedance.py
+    Impedance.py
 
 CLASSES
     
@@ -165,7 +165,7 @@ FUNCTIONS
         define a layer of pure tungsten material
         see N. Mounet PhD thesis for references.
     
-    Yokoya_elliptic(small_semiaxis, large_semiaxis, Yokoyafilename='/home/mounet/Documents/PYTHON/IRIS/PYTHON_codes_...e_lib_Python/Yokoya_elliptic_from_Elias_USPAS.dat')
+    Yokoya_elliptic(small_semiaxis, large_semiaxis, Yokoyafilename=Yokoya_path+'/Yokoya_elliptic_from_Elias_USPAS.dat')
         compute Yokoya factor for an elliptic shape (semiaxis given in input),
         assuming the small axis is in the vertical direction.
     
@@ -241,8 +241,6 @@ FUNCTIONS
     freqscan_from_fpar(fpar)
         gives frequency scan associated with a freq_param object
     
-    get_errno(...)
-    
     graphite_layer(thickness=0.025)
         define a layer of graphite, type SGL R4550
         see N. Mounet PhD thesis for references.
@@ -309,7 +307,7 @@ FUNCTIONS
         - same with fl, fxd(ip), etc. for each resonance frequency.
         beta indicates the relativistic velocity factor.
     
-    imp_model_from_IW2D(iw_input, wake_calc=False, path='/home/mounet/Documents/PYTHON/IRIS/ImpedanceWake2D', flagrm=True, lxplusbatch=None, queue='1nh', dire='')
+    imp_model_from_IW2D(iw_input, wake_calc=False, path=IW2D_path, flagrm=True, lxplusbatch=None, queue='1nh', dire='')
         create an impedance model (without beta functions weight) from an ImpedanceWake2D (IW2D) computation.
         input parameters are in iw_input (object of the class impedance_wake_input).
         if wakecalc=True, do a wake+imp calculation  (otherwise computes only imp.)

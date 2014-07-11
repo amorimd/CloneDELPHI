@@ -1,9 +1,11 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
+# some basic physical constants
 
 def electron_param():
 
-    # basic electron parameters
+    ''' gives basic electron parameters
+    Output: e [C], mass [kg], speed of light [m/s], rest energy [J] '''
     
     e=1.602176487e-19; # elementary charge
     m0=9.10938e-31; # electron mass in kg
@@ -15,7 +17,8 @@ def electron_param():
     
 def proton_param():
 
-    # basic proton parameters
+    ''' gives basic proton parameters
+    Output: e [C], mass [kg], speed of light [m/s], rest energy [J] '''
     
     e=1.602176487e-19; # elementary charge
     m0=1.6726216e-27; # proton mass in kg

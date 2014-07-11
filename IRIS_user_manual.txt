@@ -11,7 +11,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 10/07/2014
+Last modifications: 11/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 and/or imp-inst@cern.ch
@@ -216,8 +216,26 @@ written in PYTHON and C++, in particular:
 			to have the LSF batch system installed (this is the case on lxplus at CERN),
 			with typical commands "bsub", "bjobs", etc.
 			Otherwise you can still use this routine but sequentially, with lxplusbatch=None.
+			~ you need to add the path to this directory to your PYTHONPATH, and define
+			the environement variable YOK_PATH for the path to the Yokoya factors file.
+			The simplest is to modify your .bashrc file, typing in a terminal
 			
+			    cd PYTHON_codes_and_scripts/Impedance_lib_Python
+			    ./script_configure_bashrc.sh
+
 		* DELPHI_Python: 
+			~ you need to have installed DELPHI first (see above)
+			~ to be able to use the DELPHI encapsulating functions with lxplusbatch='launch' or 'retrieve'
+			(i.e. to launch parallel jobs on a cluster - typically lxplus at CERN), you need
+			to have the LSF batch system installed (this is the case on lxplus at CERN),
+			with typical commands "bsub", "bjobs", etc.
+			Otherwise you can still use these routines but sequentially, with lxplusbatch=None.
+			~ you need to add the path to this directory to your PYTHONPATH and to your PATH.
+			The simplest is to modify your .bashrc file, typing in a terminal
+			
+			    cd PYTHON_codes_and_scripts/DELPHI_Python
+			    ./script_configure_bashrc.sh
+
 		* LHC_impedance_and_scripts:  
 		* HEADTAIL_pre_and_post_processing:
 		* Data_analysis:
@@ -226,6 +244,10 @@ written in PYTHON and C++, in particular:
 		* Other_machines_scripts: 
 		* Other_Python_tools:
 	
+		
+		Don't forget to reload your bashrc (open a new terminal, or type source ~/.bashrc in the current one).
+
+
 	- Getting_LHC_beta_functions: nothing to install, but in case one wants to run matlab (*.m)
 	files, one needs Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
 	while for madx scripts one would need MAD-X (free, http://madx.web.cern.ch/madx/)
