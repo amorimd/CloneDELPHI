@@ -93,7 +93,7 @@ if __name__ == "__main__":
 
     e,m0,c,E0=proton_param();
     root_LHC='../../LHC_impedance_and_scripts';
-    results_dir='../../DELPHI_results/LHC/test';
+    results_dir='../../../DELPHI_results/LHC/test';
     os.system("mkdir -p "+results_dir);
     
     # fixed parameters

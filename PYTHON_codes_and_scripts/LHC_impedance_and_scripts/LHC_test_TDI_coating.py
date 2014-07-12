@@ -1,4 +1,4 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
 if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
@@ -10,6 +10,7 @@ from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure,cmap
 from particle_param import *
 from Impedance import *
@@ -85,12 +86,12 @@ if __name__ == "__main__":
     sqstr='';
     if E==4e12: sqstr='sq0p6_';
     elif E>=6.5e12: sqstr='sq0p55_';
-    if E<=4e12: param_filename_coll="../Coll_settings/coll_ph1_beta_"+float_to_str(round(E/1e9))+"GeV_"+sqstr+"b1_2012.txt";
-    elif E>=6.5e12: param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat";
+    if E<=4e12: param_filename_coll=path_here+"Coll_settings/coll_ph1_beta_"+float_to_str(round(E/1e9))+"GeV_"+sqstr+"b1_2012.txt";
+    elif E>=6.5e12: param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat";
     beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
     imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
 	beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,
-	lxplusbatch='retrieve',comment=scenario,dire='Coll'+scenario+'/');
+	lxplusbatch=lxplusbatchImp,comment=scenario,dire='Coll'+scenario+'/');
 
     namesref,material,angle,length,halfgap,betax,betay=read_coll_files(param_filename_coll,settings_filename_coll,beta_filename_coll,namesref=['TDI']);
     if (len(material)!=1): print 'Pb: not only one TDI...';sys.exit();
@@ -99,16 +100,17 @@ if __name__ == "__main__":
     if E==450e9: halfgap=[3.79e-3];
     else: halfgap=[55e-3];
     print namesref,material,angle,length,halfgap,betax,betay
-    root_result='../DELPHI_results/'+machine+'/TDI_'+float_to_str(1000*halfgap[0])+'mm_'+Estr;
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/TDI_'+float_to_str(1000*halfgap[0])+'mm_'+Estr;
+    os.system("mkdir -p "+root_result);
 
     # compute the rest
     if E==450e9: sqstr='sq11m_10m_11m_10m';
     elif E==4e12: sqstr='sq0p6m_3m_0p6m_3m';
     elif E>=6.5e12: sqstr='sq0p55m_10m_0p55m_10m';
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
-    beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_"+sqstr+".dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_"+sqstr+".dat"
     imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
-	    wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',comment='_'+Estr,dire='Rest_'+Estr+'/');
+	    wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,comment='_'+Estr,dire='Rest_'+Estr+'/');
 
     # add up
     imp_mod_tot=[];wake_mod_tot=[];

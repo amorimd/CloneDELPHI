@@ -10,6 +10,7 @@ from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure,cmap
 from particle_param import *
 from Impedance import *
@@ -39,7 +40,8 @@ if __name__ == "__main__":
        
     kmax=5; # number of converged eigenvalues (kmax most unstable ones are converged)
     kmaxplot=50; # number of converged eigenvalues (kmax most unstable ones are converged)
-    root_result='../DELPHI_results/'+machine+'/somedeviceIR3';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/somedeviceIR3';
+    os.system("mkdir -p "+root_result);
     suffix='';#suffix='_only_TCSG_IR7' # suffix for output files 
     
     model='_somedeviceIR3';
@@ -71,17 +73,17 @@ if __name__ == "__main__":
     	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param());
 
     # compute model for collimators
-    param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
+    param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
     beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
     imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',
+	beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,
 	comment=scenario,dire='Coll'+scenario+'/');
 
     # compute the rest
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
-    beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
-	    wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',comment='_'+Estr,dire='Rest_'+Estr+'/');
+	    wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,comment='_'+Estr,dire='Rest_'+Estr+'/');
 
     # add up
     imp_mod_tot=[];wake_mod_tot=[];

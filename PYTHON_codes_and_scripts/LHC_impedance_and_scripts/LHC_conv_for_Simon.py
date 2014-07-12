@@ -10,6 +10,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -30,7 +31,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/test_Simon';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/test_Simon';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 

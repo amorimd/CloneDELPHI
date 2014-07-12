@@ -4,6 +4,7 @@ import sys
 from string import *
 import numpy as np
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from particle_param import *
 from Impedance import *
@@ -62,6 +63,7 @@ if __name__ == "__main__":
     beta=np.sqrt(1.-1./(gamma**2));
     
     flagsave=1; # 1 to save figure instead of plotting on screen
+    os.system("mkdir -p ../../../DELPHI_results/"+machine);
 
     col=['b','r','g','m','k','c','y']; # colors
     linetype=['-','--',':'];
@@ -88,7 +90,7 @@ if __name__ == "__main__":
 
     	    # figure, axis and output file name for wake plots
 	    figW,axW=init_figure()
-	    fileoutW='../DELPHI_results/'+machine+'/plot_wake_'+machine+'_'+model+'_'+modestr;
+	    fileoutW=path_here+'../../../DELPHI_results/'+machine+'/plot_wake_'+machine+'_'+model+'_'+modestr;
 
 	    for imode,mode in enumerate(modescan):
 

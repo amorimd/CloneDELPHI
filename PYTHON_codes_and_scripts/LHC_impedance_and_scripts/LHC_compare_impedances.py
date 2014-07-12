@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -32,7 +33,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_compare';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_compare';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -98,27 +100,27 @@ if __name__ == "__main__":
 	print "scenario: ",scenario,commentscenario;
 	
 	if scenario.startswith('_2012')and(E==4e12):
-	    settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	    settings_filename_coll=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 	    sufcoll='_2012.txt';
-	    param_filename_coll='../Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
+	    param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
 	elif scenario.startswith('_2012')and(E==450e9):
-	    settings_filename_coll='../Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_b'+beam+'_2012.txt';
+	    settings_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_b'+beam+'_2012.txt';
 	    param_filename_coll=settings_filename_coll;
 	elif scenario.startswith('_2011'):
-	    settings_filename_coll='../Coll_settings/coll_settings_B'+beam+'_'+float_to_str(round(E/1e9))+'GeV_fill1727.txt';
+	    settings_filename_coll=path_here+'Coll_settings/coll_settings_B'+beam+'_'+float_to_str(round(E/1e9))+'GeV_fill1727.txt';
 	    sufcoll='.txt';
 	    sq=sq[:2]+'5'+sq[3:]; # very dirty (not same optics for collimators - 1.5m squeeze instead of 1m ... but should have little impact)
-	    param_filename_coll='../Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
+	    param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
 	elif scenario.startswith('_2012'):
-	    settings_filename_coll='../Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_b'+beam+'_2012.txt',
+	    settings_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_b'+beam+'_2012.txt',
 	    sufcoll='_2012.txt';
-	    param_filename_coll='../Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
+	    param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+float_to_str(round(E/1e9))+'GeV_sq'+sq[:3]+'_b'+beam+sufcoll;
 	
 	print settings_filename_coll,param_filename_coll
 	
 	# compute imp. model
 	imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-		settings_filename_coll,dire="../LHC_elements/",commentcoll=scenario,direcoll='Coll_2012_v2/',
+		settings_filename_coll,dire=path_here+"LHC_elements/",commentcoll=scenario,direcoll='Coll_2012_v2/',
 		lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 		wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario+commentscenario)
 	

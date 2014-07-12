@@ -4,7 +4,8 @@ import sys
 from string import *
 import numpy as np
 import pickle as pick
-import pylab,re
+import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from string_lib import *
@@ -603,9 +604,9 @@ def compare_imp_vs_zbase(imp_mod,root_zbase="../Impedances/PostLS1/total_impedan
 
 
 def LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	beta_filename_coll=None,dire="../LHC_elements/",commentcoll='',direcoll='Coll/',lxplusbatch=None,
+	beta_filename_coll=None,dire=path_here+"LHC_elements/",commentcoll='',direcoll='Coll/',lxplusbatch=None,
 	beam='1',squeeze='0p6m_3m_0p6m_3m',wake_calc=False,ftypescan=0,nflog=100,zpar=z_param(),
-	flagplot=False,root_result='../DELPHI_results/LHC',commentsave=''):
+	flagplot=False,root_result=path_here+'../../../DELPHI_results/LHC',commentsave=''):
 
     ''' Total LHC impedance model as of 2012 -> oct. 2013
     - E: particle energy in eV
@@ -703,9 +704,9 @@ def LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll,settings_filename_col
     
 
 def LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	beta_filename_coll=None,TDIcoating='preLS1',dire="../LHC_elements/",commentcoll='',direcoll='Coll_v2/',lxplusbatch=None,
+	beta_filename_coll=None,TDIcoating='preLS1',dire=path_here+"LHC_elements/",commentcoll='',direcoll='Coll_v2/',lxplusbatch=None,
 	BPM=False,beam='1',squeeze='0p6m_3m_0p6m_3m',wake_calc=False,ftypescan=0,nflog=100,zpar=z_param(),
-	fcutoffBB=50e9,flagplot=False,root_result='../DELPHI_results/LHC',commentsave='',
+	fcutoffBB=50e9,flagplot=False,root_result=path_here+'../../../DELPHI_results/LHC',commentsave='',
 	assymetry_factor_TCL6=1.):
 
     ''' Total LHC impedance model as of Nov. 2013

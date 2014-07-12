@@ -5,6 +5,7 @@ from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure,cmap
 from particle_param import *
 from Impedance import *
@@ -39,7 +40,8 @@ if __name__ == "__main__":
        
     kmax=1; # number of converged eigenvalues (kmax most unstable ones are converged)
     kmaxplot=10; # number of converged eigenvalues (kmax most unstable ones are converged)
-    root_result='../DELPHI_results/'+machine+'/TCDQ';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/TCDQ';
+    os.system("mkdir -p "+root_result);
     suffix='';#suffix='_only_TCSG_IR7' # suffix for output files 
     
     model='_TCDQ';

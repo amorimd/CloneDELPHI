@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -32,8 +33,7 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    #root_result='../DELPHI_results/'+machine+'/HLLHC_HOM_crab';
-    root_result='../../../../../work/n/nmounet/private/DELPHI_results/'+machine+'/HLLHC_HOM_crab';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/HLLHC_HOM_crab';
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
@@ -63,8 +63,8 @@ if __name__ == "__main__":
     optionCrabscan=np.array(['']);
     optionBBCscan=np.array([0]);
     
-    param_filename_coll_scan=np.array(['../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
-    settings_filename_coll_scan=np.array(['../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
+    param_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
+    settings_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
     
     # HOM parameters scan definitions
     Qscan=np.array([100.,1e3,1e4]);
@@ -110,7 +110,7 @@ if __name__ == "__main__":
 	# compute imp. model
 	collscen='_HLLHC';
 	imp_mod,wake_mod=HLLHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll_scan[subscan[iscenario]],
-		settings_filename_coll_scan[subscan[iscenario]],dire="../LHC_elements/",
+		settings_filename_coll_scan[subscan[iscenario]],dire=path_here+"LHC_elements/",
 		commentcoll=collscen,direcoll='Coll'+collscen+'_v2/',
 		lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 		wake_calc=wake_calc,optionCrab=optionCrabscan[subscan[iscenario]],margin_factor=margin_factor,
@@ -154,7 +154,7 @@ if __name__ == "__main__":
 			
 			    # Crab cavity parameters
 			    namesref=['Crab'];length_ind=1.625; # individual length for 16 Crab cavities
-			    beta_filename="../LHC_elements/HLLHC_beta_length_B"+str(beam)+"_sq"+squeezescan[subscan[iscenario]]+".dat";
+			    beta_filename=path_here+"LHC_elements/HLLHC_beta_length_B"+str(beam)+"_sq"+squeezescan[subscan[iscenario]]+".dat";
 			    names=read_ncol_file_identify_header(beta_filename,'[nN]ame');
 			    betax=read_ncol_file_identify_header(beta_filename,'[bB]etax');
 			    betay=read_ncol_file_identify_header(beta_filename,'[bB]etay');

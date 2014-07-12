@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -33,7 +34,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/HLLHC_triplets_BS';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/HLLHC_triplets_BS';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -49,11 +51,11 @@ if __name__ == "__main__":
     linetype=['-','--',':'];
 
     # coll. files definition
-    param_filename_coll='../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat';
-    settings_filename_coll='../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat';
+    param_filename_coll=path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat';
+    settings_filename_coll=path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat';
     squeeze='0p15m_round';
     ftypescan=0;nflog=100;fcutoffBB=50e9;zpar=z_param();
-    dire="../LHC_elements/"    
+    dire=path_here+"LHC_elements/"    
     
     leg=['Total','RW from triplet & D1 beam-screens','Tapers in triplets','Pumping holes in triplets & D1'];	
 	
@@ -64,7 +66,7 @@ if __name__ == "__main__":
         
     # compute total imp. model
     imp_mod_tot,wake_mod_tot=HLLHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-	    settings_filename_coll,dire="../LHC_elements/",
+	    settings_filename_coll,dire=path_here+"LHC_elements/",
 	    commentcoll='_HLLHC',direcoll='Coll_HLLHC_v2/',
 	    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeeze,
 	    wake_calc=wake_calc,optionCrab='',margin_factor=1,

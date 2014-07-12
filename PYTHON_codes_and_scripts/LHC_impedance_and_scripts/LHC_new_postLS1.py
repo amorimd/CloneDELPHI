@@ -11,7 +11,7 @@ import time# as ti
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_new_postLS1';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_new_postLS1';
     #root_result='../../scratch0/LHC_new_postLS1';
     os.system("mkdir -p "+root_result);
     
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     	'0p55m_10m_0p55m_10m','0p55m_10m_0p55m_10m','0p55m_10m_0p55m_10m','0p55m_10m_0p55m_10m']);
     Escan=np.array([4e12,6.5e12,6.5e12,6.5e12,6.5e12,6.5e12,6.5e12,6.5e12]);
     
-    param_filename_coll_root='../Coll_settings/collgaps_fromRoderik_modifNico_materialnames';
+    param_filename_coll_root=path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames';
    
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=np.array(['_Allthemachine_4TeV_B1_physics_fill_3265.dat','_Allthemachine_4TeV_B1_physics_fill_3265.dat'])
@@ -111,8 +111,8 @@ if __name__ == "__main__":
 	print "scenario: ",scenario
 	
 	if scenario.startswith('_2012'):
-	    param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-	    settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	    param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+	    settings_filename_coll=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 	else:
 	    param_filename_coll=param_filename_coll_root+scenario+'.dat';
 	    settings_filename_coll=param_filename_coll;
@@ -120,7 +120,7 @@ if __name__ == "__main__":
 	# compute imp. model
 	scenariobis=scenario.replace('_feb2014','');
 	imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-		settings_filename_coll,dire="../LHC_elements/",commentcoll=scenariobis,
+		settings_filename_coll,dire=path_here+"LHC_elements/",commentcoll=scenariobis,
 		direcoll='Coll'+dircollscan[subscan[iscenario]]+'/',
 		lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 		wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario)
@@ -483,29 +483,36 @@ if __name__ == "__main__":
 		    #t2=ti.clock();
 		    #print "M=",M,plane,", time for plots vs Nb & TMCI plots [seconds]: ",t2-t1;
 
-	    # plots stabilizing emittance vs Nb for certain Qp
 
-	    # post-LS1 scenarios
-	    #legbeam=['Classical 25 ns','BCMS 25 ns', 'Classical 50 ns','BCMS 50 ns'];
-	    #emitbeam=[3.75,1.9,2.2,1.6];
-	    #intbeam=[1.35,1.15,1.65,1.6];
-	    #Mbeam=[3564,3564,1782,1782];
-	    #colbeam=['ok','xk','oc','xc'];
-	    # from Giovanni Rumolo LBOC talk, 8/4/2014, with 0.6 mm.mrad emittance blow-up in LHC
-	    # except emittance standard 25ns (3.75 -> nominal)
-	    legbeam=['25 ns, standard','25 ns, BCMS','25ns, standard, 8b+4e','50 ns, standard (2012)'];
-	    emitbeam=[3.75,1.9,2.9,2.2];
-	    intbeam=[1.3,1.3,1.8,1.7];
-	    Mbeam=[3564,3564,3564,1782];
-	    colbeam=['ok','xk','+k','dc'];
-	    # HL-LHC scenarios
-	    #legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
-	    #emitbeam=[1.8,2.22,2.62,2.26,2.5];
-	    #intbeam=[1.38,1.38,1.9,1.9,2.2];
-	    #colbeam=['or','+m','xg','dk','vb'];
+    #####################################################
+    # plots stabilizing emittance vs Nb for certain Qp
+    #####################################################
 
-	    #t1=ti.clock()
-	    # OLD VERSION
+    # post-LS1 scenarios
+    #legbeam=['Classical 25 ns','BCMS 25 ns', 'Classical 50 ns','BCMS 50 ns'];
+    #emitbeam=[3.75,1.9,2.2,1.6];
+    #intbeam=[1.35,1.15,1.65,1.6];
+    #Mbeam=[3564,3564,1782,1782];
+    #colbeam=['ok','xk','oc','xc'];
+    # from Giovanni Rumolo LBOC talk, 8/4/2014, with 0.6 mm.mrad emittance blow-up in LHC
+    # except emittance standard 25ns (3.75 -> nominal)
+    legbeam=['25 ns, standard','25 ns, BCMS','25ns, standard, 8b+4e','50 ns, standard (2012)'];
+    emitbeam=[3.75,1.9,2.9,2.2];
+    intbeam=[1.3,1.3,1.8,1.7];
+    Mbeam=[3564,3564,3564,1782];
+    colbeam=['ok','xk','+k','dc'];
+    # HL-LHC scenarios
+    #legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
+    #emitbeam=[1.8,2.22,2.62,2.26,2.5];
+    #intbeam=[1.38,1.38,1.9,1.9,2.2];
+    #colbeam=['or','+m','xg','dk','vb'];
+
+    #t1=ti.clock()
+    # OLD VERSION
+    if (lxplusbatchImp==None)or(lxplusbatchImp.startswith('retrieve')):
+
+	if (lxplusbatchDEL==None)or(lxplusbatchDEL.startswith('retrieve')):
+
 	    #if flagcompute:
 	    # test that first scenario is 2012 updated model, and that any other is an HL-LHC one
 	    if (len(subscan)>1)and((subscan[0]==0)and(all(subscan[1:]>0))):
@@ -576,107 +583,111 @@ if __name__ == "__main__":
 			    # finish plot
 			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.5),legfontsize=20)
 
-	    #t2=ti.clock();
-	    #print "time for int. vs. emit plots (OLD) [seconds]: ",t2-t1;
-	    
-	    
-	    # NEW VERSION (14/05/2014)
-	    colscen=['b','r','g','m','k','c','y'];
-	    colscen2=np.array([(0,0,1),(1,0,0),(0,1,0),(1,0,1),(0,0,0),(0,1,1),(1,1,0)]);
-	    hatch=np.array(["/","\\","|","X","/","\\","|","X"]);
-	    
-	    oct2012signscan=['_neg_oct','_pos_oct'];
-	    legsignscan=["negative polarity (\"old\")","positive polarity (\"new\")"];
-	    octLS1=570.;
+    #t2=ti.clock();
+    #print "time for int. vs. emit plots (OLD) [seconds]: ",t2-t1;
 
-	    # relevant 2012 instability data - based on files ../Mesures_LHC/instability_table_B2V_pos_oct_flattop.csv &
-	    # ../Mesures_LHC/instability_table_B2H_pos_oct_flattop.csv (Q' > 10)
-	    # and file ../Mesures_LHC/instability_table_B2H_neg_oct_squeeze.csv (Q'>5)
-	    # There are also a 3 flat top instabilities taken from an LMC talk
-	    # by G. Arduini in August 2012 (slides in ../Docs/lmc_145c_talk_instabilities2012_LHC_Gianluigi.pdf,
-	    # slide 14&15, fills 2919, 2920 & 2932 - damper gain from Timber & trim editor)
-	    en2012=4;M_2012=1782;
-	    # negative octupole polarity
-	    dataoct_neg2012=np.array([58.,200.,200.]);
-	    meanoct_neg2012=np.average(dataoct_neg2012);erroct_neg2012=np.sqrt(np.var(dataoct_neg2012));
-	    dataemit_neg2012=np.array([2.3,2.5,2.5]);
-	    meanemit_neg2012=np.average(dataemit_neg2012);erremit_neg2012=0.5;
-	    dataNb_neg2012=np.array([1.4,1.47,1.46])*1e11;
-	    dataQp_neg2012=np.array([5.9,7.,7.]);
-	    dataplane_neg2012=np.array(['x','x','x']);
-	    datadamp_neg2012=1./np.array([50.,100.,100.]);
-	    # positive octupole polarity
-	    dataoct_pos2012=np.array([209.,487.,510.,35.,35.,510.]);
-	    meanoct_pos2012=np.average(dataoct_pos2012);erroct_pos2012=np.sqrt(np.var(dataoct_pos2012));
-	    dataemit_pos2012=np.array([2.3,2.3,2.3,2.2,2.2,2.5]);
-	    meanemit_pos2012=np.average(dataemit_pos2012);erremit_pos2012=0.5;
-	    dataNb_pos2012=np.array([1.64,1.64,1.63,1.64,1.64,1.44])*1e11;
-	    dataQp_pos2012=np.array([15.4,18.3,10.3,13.6,17.8,9.]);
-	    dataplane_pos2012=np.array(['x','x','x','x','y','x']);
-	    datadamp_pos2012=1./np.array([100.,100.,100.,100.,100.,100.]);
 
-	    # scan parameters for DELPHI computation at 4 TeV for those experimental cases
-	    oct_2012=np.hstack((dataoct_neg2012,dataoct_pos2012));
-	    emit_2012=np.hstack((dataemit_neg2012,dataemit_pos2012));
-	    Nb_2012=np.hstack((dataNb_neg2012,dataNb_pos2012));
-	    Qp_2012=np.hstack((dataQp_neg2012,dataQp_pos2012));
-	    damp_2012=np.hstack((datadamp_neg2012,datadamp_pos2012));
-	    plane_2012=np.hstack((dataplane_neg2012,dataplane_pos2012));
-	    ind_neg2012=np.arange(3);ind_pos2012=np.arange(3,9); # indices in the above tables, for resp. neg. and oct. polarities
+    # NEW VERSION (14/05/2014)
+    colscen=['b','r','g','m','k','c','y'];
+    colscen2=np.array([(0,0,1),(1,0,0),(0,1,0),(1,0,1),(0,0,0),(0,1,1),(1,1,0)]);
+    hatch=np.array(["/","\\","|","X","/","\\","|","X"]);
 
-	    # compute first with 2012 imp. model
-	    param_filename_coll_2012='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-	    settings_filename_coll_2012='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
-	    # fixed parameters
-	    machine,E_2012,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=en2012*1e12);
-	    avbetax_2012=R/Qx;avbetay_2012=R/Qy; # average beta functions used
-	    # model
-	    imp_mod_2012,wake_mod_2012=LHC_imp_model_v2(E_2012,avbetax_2012,avbetay_2012,param_filename_coll_2012,
-		    settings_filename_coll_2012,TDIcoating='preLS1',dire="../LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',
-		    lxplusbatch='retrieve',BPM=False,beam=beam,squeeze='0p6m_3m_0p6m_3m',
-		    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave='_2012_v2')
-	    # longitudinal distribution initialization
-	    g,a,b=longdistribution_decomp(taub,typelong="Gaussian");
+    oct2012signscan=['_neg_oct','_pos_oct'];
+    legsignscan=["negative polarity (\"old\")","positive polarity (\"new\")"];
+    octLS1=570.;
 
-	    #t1=ti.clock()
-	    tuneshiftQp_2012=np.zeros((len(Qp_2012),1,1,1,1,kmaxplot),dtype=complex);
-	    factor_2012=np.zeros(len(Qp_2012));
-	    for iQp,Qp in enumerate(Qp_2012):
+    # relevant 2012 instability data - based on files ../Mesures_LHC/instability_table_B2V_pos_oct_flattop.csv &
+    # ../Mesures_LHC/instability_table_B2H_pos_oct_flattop.csv (Q' > 10)
+    # and file ../Mesures_LHC/instability_table_B2H_neg_oct_squeeze.csv (Q'>5)
+    # There are also a 3 flat top instabilities taken from an LMC talk
+    # by G. Arduini in August 2012 (slides in ../Docs/lmc_145c_talk_instabilities2012_LHC_Gianluigi.pdf,
+    # slide 14&15, fills 2919, 2920 & 2932 - damper gain from Timber & trim editor)
+    en2012=4;M_2012=1782;
+    # negative octupole polarity
+    dataoct_neg2012=np.array([58.,200.,200.]);
+    meanoct_neg2012=np.average(dataoct_neg2012);erroct_neg2012=np.sqrt(np.var(dataoct_neg2012));
+    dataemit_neg2012=np.array([2.3,2.5,2.5]);
+    meanemit_neg2012=np.average(dataemit_neg2012);erremit_neg2012=0.5;
+    dataNb_neg2012=np.array([1.4,1.47,1.46])*1e11;
+    dataQp_neg2012=np.array([5.9,7.,7.]);
+    dataplane_neg2012=np.array(['x','x','x']);
+    datadamp_neg2012=1./np.array([50.,100.,100.]);
+    # positive octupole polarity
+    dataoct_pos2012=np.array([209.,487.,510.,35.,35.,510.]);
+    meanoct_pos2012=np.average(dataoct_pos2012);erroct_pos2012=np.sqrt(np.var(dataoct_pos2012));
+    dataemit_pos2012=np.array([2.3,2.3,2.3,2.2,2.2,2.5]);
+    meanemit_pos2012=np.average(dataemit_pos2012);erremit_pos2012=0.5;
+    dataNb_pos2012=np.array([1.64,1.64,1.63,1.64,1.64,1.44])*1e11;
+    dataQp_pos2012=np.array([15.4,18.3,10.3,13.6,17.8,9.]);
+    dataplane_pos2012=np.array(['x','x','x','x','y','x']);
+    datadamp_pos2012=1./np.array([100.,100.,100.,100.,100.,100.]);
 
-		# select parameters
-		plane=plane_2012[iQp];iplane=int(plane=='y');print plane,iplane
-		Nb=Nb_2012[iQp];damp=damp_2012[iQp];
-		# select Zxdip or Zydip
-		for iw in imp_mod_2012:
-		    if test_impedance_wake_comp(iw,1-iplane,iplane,0,0,plane): Z=deepcopy(iw.func[::nevery,:]);freq=deepcopy(iw.var[::nevery]);
+    # scan parameters for DELPHI computation at 4 TeV for those experimental cases
+    oct_2012=np.hstack((dataoct_neg2012,dataoct_pos2012));
+    emit_2012=np.hstack((dataemit_neg2012,dataemit_pos2012));
+    Nb_2012=np.hstack((dataNb_neg2012,dataNb_pos2012));
+    Qp_2012=np.hstack((dataQp_neg2012,dataQp_pos2012));
+    damp_2012=np.hstack((datadamp_neg2012,datadamp_pos2012));
+    plane_2012=np.hstack((dataplane_neg2012,dataplane_pos2012));
+    ind_neg2012=np.arange(3);ind_pos2012=np.arange(3,9); # indices in the above tables, for resp. neg. and oct. polarities
 
-		flag_trapz=0; # by default no trapz method
-		if (M_2012==1): nxscan=np.array([0]);flag_trapz=1;
-		else: nxscan=sort_and_delete_duplicates(np.concatenate((np.arange(0,M_2012,M_2012/20),np.arange(M_2012/2-10,M_2012/2+11),
-			np.arange(M_2012-10,M_2012),np.arange(0,10))));print "number of coupled-bunch modes=",len(nxscan);
+    # compute first with 2012 imp. model
+    param_filename_coll_2012=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+    settings_filename_coll_2012=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+    # fixed parameters
+    machine,E_2012,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=en2012*1e12);
+    avbetax_2012=R/Qx;avbetay_2012=R/Qy; # average beta functions used
+    # model
+    imp_mod_2012,wake_mod_2012=LHC_imp_model_v2(E_2012,avbetax_2012,avbetay_2012,param_filename_coll_2012,
+	    settings_filename_coll_2012,TDIcoating='preLS1',dire=path_here+"LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',
+	    lxplusbatch=lxplusbatchImp,BPM=False,beam=beam,squeeze='0p6m_3m_0p6m_3m',
+	    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave='_2012_v2')
+    # longitudinal distribution initialization
+    g,a,b=longdistribution_decomp(taub,typelong="Gaussian");
 
-    		tuneshiftnx=np.zeros((1,len(nxscan),1,1,1,1,kmaxplot),dtype=complex);
+    #t1=ti.clock()
+    tuneshiftQp_2012=np.zeros((len(Qp_2012),1,1,1,1,kmaxplot),dtype=complex);
+    factor_2012=np.zeros(len(Qp_2012));
+    for iQp,Qp in enumerate(Qp_2012):
 
-		tuneshiftQp_2012[iQp,:,:,:,:,:],tuneshiftnx=eigenmodesDELPHI_converged_scan_lxplus([Qp],
-		    nxscan,[damp],[Nb],[omegas],[dphase],M_2012,omega0,eval('Q'+plane),
-		    gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=flagnorm,flag_trapz=flag_trapz,
-		    flagdamperimp=0,d=None,freqd=None,kmax=kmax,kmaxplot=kmaxplot,crit=5.e-2,
-		    abseps=1.e-4,flagm0=False,lxplusbatch='retrieve',
-		    comment=machine+'_2012_v2_'+float_to_str(round(E_2012/1e9))+'GeV_'+str(M_2012)+'b_Qp'+str(Qp)+'_'+plane,
-		    queue='2nd',dire=root_result+'/');
+	# select parameters
+	plane=plane_2012[iQp];iplane=int(plane=='y');print plane,iplane
+	Nb=Nb_2012[iQp];damp=damp_2012[iQp];
+	# select Zxdip or Zydip
+	for iw in imp_mod_2012:
+	    if test_impedance_wake_comp(iw,1-iplane,iplane,0,0,plane): Z=deepcopy(iw.func[::nevery,:]);freq=deepcopy(iw.var[::nevery]);
 
-		# "stability factor" for each case
-		factor_2012[iQp]=-oct_2012[iQp]*emit_2012[iQp]/(en2012**2*np.imag(tuneshiftQp_2012[iQp,0,0,0,0,0]));
-		print "all factors 2012:",factor_2012;
-		factor_neg_oct_2012_mean=np.average(factor_2012[ind_neg2012]);
-		factor_pos_oct_2012_mean=np.average(factor_2012[ind_pos2012]);
-		factor_neg_oct_2012_sig=np.sqrt(np.var(factor_2012[ind_neg2012]));
-		factor_pos_oct_2012_sig=np.sqrt(np.var(factor_2012[ind_pos2012]));
-		print "averages & sigmas:",factor_neg_oct_2012_mean,factor_neg_oct_2012_sig,factor_pos_oct_2012_mean,factor_pos_oct_2012_sig;
+	flag_trapz=0; # by default no trapz method
+	if (M_2012==1): nxscan=np.array([0]);flag_trapz=1;
+	else: nxscan=sort_and_delete_duplicates(np.concatenate((np.arange(0,M_2012,M_2012/20),np.arange(M_2012/2-10,M_2012/2+11),
+		np.arange(M_2012-10,M_2012),np.arange(0,10))));print "number of coupled-bunch modes=",len(nxscan);
 
-	    # end of computations with 2012 model
-	    #t2=ti.clock();
-	    #print "time for 2012 computations [seconds]: ",t2-t1;
+    	tuneshiftnx=np.zeros((1,len(nxscan),1,1,1,1,kmaxplot),dtype=complex);
+
+	tuneshiftQp_2012[iQp,:,:,:,:,:],tuneshiftnx=eigenmodesDELPHI_converged_scan_lxplus([Qp],
+	    nxscan,[damp],[Nb],[omegas],[dphase],M_2012,omega0,eval('Q'+plane),
+	    gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=flagnorm,flag_trapz=flag_trapz,
+	    flagdamperimp=0,d=None,freqd=None,kmax=kmax,kmaxplot=kmaxplot,crit=5.e-2,
+	    abseps=1.e-4,flagm0=False,lxplusbatch=lxplusbatchDEL,
+	    comment=machine+'_2012_v2_'+float_to_str(round(E_2012/1e9))+'GeV_'+str(M_2012)+'b_Qp'+str(Qp)+'_'+plane,
+	    queue='2nd',dire=root_result+'/');
+
+	# "stability factor" for each case
+	factor_2012[iQp]=-oct_2012[iQp]*emit_2012[iQp]/(en2012**2*np.imag(tuneshiftQp_2012[iQp,0,0,0,0,0]));
+	print "all factors 2012:",factor_2012;
+	factor_neg_oct_2012_mean=np.average(factor_2012[ind_neg2012]);
+	factor_pos_oct_2012_mean=np.average(factor_2012[ind_pos2012]);
+	factor_neg_oct_2012_sig=np.sqrt(np.var(factor_2012[ind_neg2012]));
+	factor_pos_oct_2012_sig=np.sqrt(np.var(factor_2012[ind_pos2012]));
+	print "averages & sigmas:",factor_neg_oct_2012_mean,factor_neg_oct_2012_sig,factor_pos_oct_2012_mean,factor_pos_oct_2012_sig;
+
+    # end of computations with 2012 model
+    #t2=ti.clock();
+    #print "time for 2012 computations [seconds]: ",t2-t1;
+
+    if (lxplusbatchImp==None)or(lxplusbatchImp.startswith('retrieve')):
+
+	if (lxplusbatchDEL==None)or(lxplusbatchDEL.startswith('retrieve')):
 
 	    #t1=ti.clock()
 	    # plots of averages, without "error bars", all scenarios on same plot

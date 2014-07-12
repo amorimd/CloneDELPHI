@@ -11,7 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -32,7 +32,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_HLLHC_v1_comp';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_HLLHC_v1_comp';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -51,12 +52,12 @@ if __name__ == "__main__":
     legscen=['2012','HL-LHC','HL-LHC with Mo TCSG'];
     squeezescan=['0p6m_3m_0p6m_3m','0p1m_10m_0p1m_3m','0p1m_10m_0p1m_3m'];
     Escan=[4e12,7e12,7e12];
-    param_filename_coll_scan=['../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt',
-    	'../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat',
-	'../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names_TCSG37_in_Mo.dat']
-    settings_filename_coll_scan=['../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt',
-    	'../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat',
-	'../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names_TCSG37_in_Mo.dat'];
+    param_filename_coll_scan=[path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt',
+    	path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat',
+	path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names_TCSG37_in_Mo.dat']
+    settings_filename_coll_scan=[path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt',
+    	path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat',
+	path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names_TCSG37_in_Mo.dat'];
     
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=['_Allthemachine_4TeV_B1_physics_fill_3265.dat']
@@ -90,7 +91,7 @@ if __name__ == "__main__":
 	print E
 	# compute imp. model
 	imp_mod,wake_mod=LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll_scan[iscenario],
-		settings_filename_coll_scan[iscenario],dire="../LHC_elements/",
+		settings_filename_coll_scan[iscenario],dire=path_here+"LHC_elements/",
 		commentcoll=scenario,direcoll='Coll'+scenario+'/',
 		lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[iscenario],
 		wake_calc=wake_calc)

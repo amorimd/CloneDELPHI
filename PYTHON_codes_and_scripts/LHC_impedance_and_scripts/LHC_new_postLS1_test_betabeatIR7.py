@@ -12,6 +12,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -33,7 +34,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_new_postLS1_test_beatbeatIR7';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_new_postLS1_test_beatbeatIR7';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -65,18 +67,18 @@ if __name__ == "__main__":
     Escan=np.array([7e12,7e12,7e12,7e12]);
     
     direcoll_scan=['Coll_nominal/','Coll_nominal/','Coll_nominal/','Coll_nominal/'];
-    param_filename_coll_scan=np.array(['../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat']);
-    settings_filename_coll_scan=np.array(['../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/collgaps_settings_nominal_betabetaIR7'+collscenario+'_b'+beam+'.dat',
-    	'../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/collgaps_settings_nominal_betabetaIR7'+collscenario+'_b'+beam+'.dat']);
-    beta_filename_coll_scan=np.array(['../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/coll_ph1_beta_7000GeV_betabeatIR7'+collscenario+'_b'+beam+'.txt',
-    	'../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
-    	'../Coll_settings/coll_ph1_beta_7000GeV_betabeatIR7'+collscenario+'_b'+beam+'.txt']);
+    param_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat']);
+    settings_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/collgaps_settings_nominal_betabetaIR7'+collscenario+'_b'+beam+'.dat',
+    	path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/collgaps_settings_nominal_betabetaIR7'+collscenario+'_b'+beam+'.dat']);
+    beta_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/coll_ph1_beta_7000GeV_betabeatIR7'+collscenario+'_b'+beam+'.txt',
+    	path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_nominal.dat',
+    	path_here+'Coll_settings/coll_ph1_beta_7000GeV_betabeatIR7'+collscenario+'_b'+beam+'.txt']);
    
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=np.array(['_Allthemachine_4TeV_B1_physics_fill_3265.dat','_Allthemachine_4TeV_B1_physics_fill_3265.dat'])
@@ -113,13 +115,13 @@ if __name__ == "__main__":
 	if subscan[iscenario]<2:
 	    imp_mod,wake_mod=LHC_imp_model_v1(E,avbetax,avbetay,param_filename_coll_scan[subscan[iscenario]],
 		    settings_filename_coll_scan[subscan[iscenario]],beta_filename_coll=beta_filename_coll_scan[subscan[iscenario]],
-		    dire="../LHC_elements/",commentcoll='_nominal',direcoll=direcoll_scan[subscan[iscenario]],
+		    dire=path_here+"LHC_elements/",commentcoll='_nominal',direcoll=direcoll_scan[subscan[iscenario]],
 		    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 		    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario)
 	else:
 	    imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll_scan[subscan[iscenario]],
 		    settings_filename_coll_scan[subscan[iscenario]],beta_filename_coll=beta_filename_coll_scan[subscan[iscenario]],
-		    dire="../LHC_elements/",commentcoll='_nominal',direcoll=direcoll_scan[subscan[iscenario]],
+		    dire=path_here+"LHC_elements/",commentcoll='_nominal',direcoll=direcoll_scan[subscan[iscenario]],
 		    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 		    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario)
 	

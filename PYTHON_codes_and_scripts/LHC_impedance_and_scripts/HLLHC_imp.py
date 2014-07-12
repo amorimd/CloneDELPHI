@@ -4,7 +4,8 @@ import sys
 from string import *
 import numpy as np
 import pickle as pick
-import pylab,re
+import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from string_lib import *
@@ -14,10 +15,10 @@ from LHC_coll_imp import *
 
 
 def HLLHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	beta_filename_coll=None,TDIcoating='preLS1',dire="../LHC_elements/",commentcoll='',direcoll='Coll_HLLHC_v2/',lxplusbatch=None,
+	beta_filename_coll=None,TDIcoating='preLS1',dire=path_here+"LHC_elements/",commentcoll='',direcoll='Coll_HLLHC_v2/',lxplusbatch=None,
 	BPM=True,beam='1',squeeze='0p15m_round',wake_calc=False,ftypescan=0,nflog=100,zpar=z_param(),
 	optionCrab=None,optionBBC=0,margin_factor=1.,optionMo_TCS37=None,optionTCu_triplet='',
-	fcutoffBB=50e9,flagplot=False,root_result='../DELPHI_results/LHC',commentsave=''):
+	fcutoffBB=50e9,flagplot=False,root_result=path_here+'../../../DELPHI_results/LHC',commentsave=''):
 
     ''' Total HL-LHC impedance model as of Nov. 2013 (model v1 was actually
     the LHC model v1 with HL-LHC collimators and beta functions)

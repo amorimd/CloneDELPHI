@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -35,7 +36,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_coll_details_'+Estr;
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_coll_details_'+Estr;
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
     dipstr=['','dip'];
@@ -56,12 +58,12 @@ if __name__ == "__main__":
     scenario='_2012_v2';squeeze='11m_10m_11m_10m';BPMflag=False;
     
     if scenario.startswith('_2012'):
-	param_filename_coll='../Coll_settings/coll_ph1_beta_'+coll_suf+'_b'+beam+'_2012.txt';
-	if E==4e12: settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_'+coll_suf+'_b'+beam+'_2012.txt';
+	if E==4e12: settings_filename_coll=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 	else: settings_filename_coll=param_filename_coll;
     else:
-	param_filename_coll='../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
-	settings_filename_coll='../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
+	param_filename_coll=path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
+	settings_filename_coll=path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
     
     beta_filename_coll=param_filename_coll;
     
@@ -97,7 +99,7 @@ if __name__ == "__main__":
     # compute total imp. model
     #imp_mod=[];
     imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-	    settings_filename_coll,TDIcoating='preLS1',dire="../LHC_elements/",
+	    settings_filename_coll,TDIcoating='preLS1',dire=path_here+"LHC_elements/",
 	    commentcoll=scenario,direcoll='Coll'+scenario+'/',
 	    lxplusbatch=lxplusbatchImp,BPM=BPMflag,beam=beam,squeeze=squeeze,
 	    wake_calc=wake_calc)

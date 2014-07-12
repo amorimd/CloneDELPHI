@@ -4,6 +4,7 @@ import sys
 from string import *
 import numpy as np
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -23,7 +24,7 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (insde DELPHI_results/[machine]) where to put the results
-    root_result='/test_Xavier';
+    root_result='/test_Xavier';os.system("mkdir -p "+root_result);
     # directory where are the impedances
     dirZ='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
     	    # figure, axis and output file name for impedance plots
 	    figZ,axZ=init_figure()
-	    fileoutZ='../DELPHI_results/'+machine+root_result+'/plot_imp_'+machine+model+'_'+plane;
+	    fileoutZ=path_here+'../../../DELPHI_results/'+machine+root_result+'/plot_imp_'+machine+model+'_'+plane;
 
 	    for iM,M in enumerate(Mscan):
 
@@ -160,9 +161,9 @@ if __name__ == "__main__":
 			for ir in range(2): fig,ax=init_figure(axes=[0.15,0.1,0.8,0.85]);figQp.append(fig);axQp.append(ax);
 
 			# output file name for plots vs Qp
-			fileoutplotQp='../DELPHI_results/'+machine+root_result+'/plot_vs_Qp_'+machine+'_'+float_to_str(round(E/1e9))+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane+suffix;
+			fileoutplotQp=path_here+'../../../DELPHI_results/'+machine+root_result+'/plot_vs_Qp_'+machine+'_'+float_to_str(round(E/1e9))+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane+suffix;
 			# output file name for data vs Qp
-			fileoutdataQp='../DELPHI_results/'+machine+root_result+'/data_vs_Qp_'+machine+'_'+float_to_str(round(E/1e9))+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane+suffix;
+			fileoutdataQp=path_here+'../../../DELPHI_results/'+machine+root_result+'/data_vs_Qp_'+machine+'_'+float_to_str(round(E/1e9))+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane+suffix;
 
 			strpart=['Re','Im'];
 			for ir,r in enumerate(['real','imag']):

@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -32,7 +33,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_optim_IR3_IR7';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_optim_IR3_IR7';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -50,8 +52,8 @@ if __name__ == "__main__":
 
     # scan definition
     scenario='_mm_kept';
-    param_filename_coll='../Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
-    settings_filename_coll_prefix='../Coll_settings/collgaps_settings_sigma_feb2014'+scenario+'_offsetIR3_';
+    param_filename_coll=path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames_feb2014'+scenario+'.dat';
+    settings_filename_coll_prefix=path_here+'Coll_settings/collgaps_settings_sigma_feb2014'+scenario+'_offsetIR3_';
     beta_filename_coll=param_filename_coll;
     squeeze='0p55m_10m_0p55m_10m';
     BPMflag=True;
@@ -109,15 +111,15 @@ if __name__ == "__main__":
     wake_calc=False; # True -> compute wake as well (otherwise only imp.)
     
     # compute first with 2012 imp. model
-    param_filename_coll_2012='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-    settings_filename_coll_2012='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+    param_filename_coll_2012=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+    settings_filename_coll_2012=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
     # fixed parameters
     machine,E_2012,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=en2012*1e12);
     avbetax_2012=R/Qx;avbetay_2012=R/Qy; # average beta functions used
     # model
     imp_mod_2012,wake_mod_2012=LHC_imp_model_v2(E_2012,avbetax_2012,avbetay_2012,param_filename_coll_2012,
-	    settings_filename_coll_2012,TDIcoating='preLS1',dire="../LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',
-	    lxplusbatch='retrieve',BPM=False,beam=beam,squeeze='0p6m_3m_0p6m_3m',
+	    settings_filename_coll_2012,TDIcoating='preLS1',dire=path_here+"LHC_elements/",commentcoll='_2012_v2',direcoll='Coll_2012_v2/',
+	    lxplusbatch=lxplusbatchImp,BPM=False,beam=beam,squeeze='0p6m_3m_0p6m_3m',
 	    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave='_2012_v2')
     # longitudinal distribution initialization
     g,a,b=longdistribution_decomp(taub,typelong="Gaussian");
@@ -144,7 +146,7 @@ if __name__ == "__main__":
 	    nxscan,[damp],[Nb],[omegas],[dphase],M_2012,omega0,eval('Q'+plane),
 	    gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=0,flag_trapz=flag_trapz,
 	    flagdamperimp=0,d=None,freqd=None,kmax=kmax,kmaxplot=kmaxplot,crit=5.e-2,
-	    abseps=1.e-4,flagm0=False,lxplusbatch='retrieve',
+	    abseps=1.e-4,flagm0=False,lxplusbatch=lxplusbatchDEL,
 	    comment=machine+'_2012_v2_'+float_to_str(round(E_2012/1e9))+'GeV_'+str(M_2012)+'b_Qp'+str(Qp)+'_'+plane,
 	    queue='2nd',dire=root_result+'/');
 
@@ -183,7 +185,7 @@ if __name__ == "__main__":
 
 	    # compute total imp. model
 	    imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-		    settings_filename_coll,TDIcoating='preLS1',dire="../LHC_elements/",
+		    settings_filename_coll,TDIcoating='preLS1',dire=path_here+"LHC_elements/",
 		    commentcoll=scenario,direcoll='Coll'+scenario+'/',
 		    lxplusbatch=lxplusbatchImp,BPM=BPMflag,beam=beam,squeeze=squeeze,
 		    wake_calc=wake_calc)

@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -32,7 +33,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_BS_TMCI';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_BS_TMCI';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -87,9 +89,9 @@ if __name__ == "__main__":
 	# compute imp. model (RW impedance of BS only, without weld)
 	
 	# beta functions
-	beta_filename_rest="../LHC_elements/LHC_beta_length_B"+str(beam)+"_sq"+squeezescan[subscan[iscenario]]+".dat"
+	beta_filename_rest=path_here+"LHC_elements/LHC_beta_length_B"+str(beam)+"_sq"+squeezescan[subscan[iscenario]]+".dat"
 	# parameters
-	param_filename_RW="../LHC_elements/LHC_RW_param.dat"
+	param_filename_RW=path_here+"LHC_elements/LHC_RW_param.dat"
 	# names of the BS
 	namesRW=read_ncol_file_identify_header(param_filename_RW,'name');
 	namesBS=select_LHC_names(namesRW,pattern='BS'); # only BS

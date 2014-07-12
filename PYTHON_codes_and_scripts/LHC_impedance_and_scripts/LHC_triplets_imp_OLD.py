@@ -10,6 +10,7 @@ from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -31,7 +32,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/triplets';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/triplets';
+    os.system("mkdir -p "+root_result);
     suffix='_triplets'; # suffix for impedance plots
     
     strnorm=['','_norm_current_chroma'];
@@ -71,14 +73,14 @@ if __name__ == "__main__":
     wake_calc=False; # True -> compute wake as well (otherwise only imp.)
         
     # rest (i.e. not coll.) of the machine wall impedance
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
     if E==4e12:
-    	beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
+    	beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
     elif E>=6.5e12:
-    	beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+    	beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     
     imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
-    	wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',comment='_'+Estr,dire='Rest_'+Estr+'/');
+    	wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,comment='_'+Estr,dire='Rest_'+Estr+'/');
     
     # broad-band model
     imp_mod_BB,wake_mod_BB=LHC_design_Broadband(squeeze=True,wake_calc=wake_calc,
@@ -93,11 +95,11 @@ if __name__ == "__main__":
 
     # compute separately triplets impedance
     if E==4e12:
-    	beta_filename_triplets="../LHC_elements/triplets_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat";
+    	beta_filename_triplets=path_here+"LHC_elements/triplets_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat";
     elif E>=6.5e12:
-    	beta_filename_triplets="../LHC_elements/triplets_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat";
-    param_filename_triplets_BB="../LHC_elements/triplets_LHC_BB_param.dat";
-    param_filename_triplets_RW="../LHC_elements/triplets_LHC_RW_param.dat";
+    	beta_filename_triplets=path_here+"LHC_elements/triplets_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat";
+    param_filename_triplets_BB=path_here+"LHC_elements/triplets_LHC_BB_param.dat";
+    param_filename_triplets_RW=path_here+"LHC_elements/triplets_LHC_RW_param.dat";
     
     namesBB=read_ncol_file_identify_header(param_filename_triplets_BB,'name');
     namestaper=select_LHC_names(namesBB,pattern='taper');
@@ -155,18 +157,18 @@ if __name__ == "__main__":
 	if (scenario=='_2012'):
 	    # 2012 files
     	    machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=4e12);
-	    param_filename_coll="../Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
+	    param_filename_coll=path_here+"Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
 	    beta_filename_coll=param_filename_coll;
-	    settings_filename_coll="../Coll_settings/coll_settings_physics_fill_3265_B1.txt";
+	    settings_filename_coll=path_here+"Coll_settings/coll_settings_physics_fill_3265_B1.txt";
 	else:
 	    # postLS1 files
     	    machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=6.5e12);
-    	    param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
+    	    param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
             beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
 	
 	# compute model for collimators
 	imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	    beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',
+	    beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,
 	    comment=scenario,dire='Coll'+scenario+'/');
 
 	# add up

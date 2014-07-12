@@ -4,7 +4,8 @@ import sys
 from string import *
 import numpy as np
 import pickle as pick
-import pylab,re
+import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from string_lib import *
@@ -402,9 +403,9 @@ def LHC_singlecoll_iw_model_with_geom(name,materials,halfgap,angle,gamma,length,
 	# but keep Stupakov's impedance
 	halfgapscan=[1,3,5,11.5,20];wake_modg=[];
 	filenamelist_l=[];filenamelist_yd=[];filenamelist_yq=[];
-	for hg in halfgapscan[:-1]: filenamelist_l.append('../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_long_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
-	for hg in halfgapscan: filenamelist_yd.append('../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_dip_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
-	for hg in halfgapscan: filenamelist_yq.append('../Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_quad_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
+	for hg in halfgapscan[:-1]: filenamelist_l.append(path_here+'Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_long_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
+	for hg in halfgapscan: filenamelist_yd.append(path_here+'Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_dip_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
+	for hg in halfgapscan: filenamelist_yq.append(path_here+'Coll_settings/TCS_TCT_geometric/GdfidLWakepotential_quad_halfgap'+str(hg)+'mm_bunchlength2mm_mesh0p2mm.txt');
 
 	wake_modg_l=imp_model_from_files(filenamelist_l,halfgapscan[:-1],halfgap,'Wlong',ignored_rows=0,sign=-1)
 	wake_modg_yd=imp_model_from_files(filenamelist_yd,halfgapscan,halfgap,'Wydip',ignored_rows=0,sign=-1)
@@ -582,14 +583,14 @@ if __name__ == "__main__":
     #lxplusbatch=None;
     
     # file with most of the parameters
-    param_filename="../Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
+    param_filename=path_here+"Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
 
     # file with beta functions
     beta_filename=param_filename;
     
     # file with collimator settings (half-gaps)
-    settings_filename="../Coll_settings/coll_settings_B1_4000GeV_20120624_04h24m00_TCSGclosed.txt";
-    #settings_filename="../Coll_settings/coll_settings_physics_fill_3265_B1.txt";
+    settings_filename=path_here+"Coll_settings/coll_settings_B1_4000GeV_20120624_04h24m00_TCSGclosed.txt";
+    #settings_filename=path_here+"Coll_settings/coll_settings_physics_fill_3265_B1.txt";
     #settings_filename=param_filename;
     
     # select coll. names

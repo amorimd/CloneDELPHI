@@ -1,10 +1,16 @@
 #!/usr/bin/python
 
 import sys
+if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
+elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
+else: lxplusbatchImp=None;lxplusbatchDEL=None;
+print lxplusbatchImp,lxplusbatchDEL;   
+
 from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from particle_param import *
 from Impedance import *
@@ -29,7 +35,8 @@ if __name__ == "__main__":
     # scan definition
     scenarioscan=['','_onlyTCL4'];
     model='_relaxed';
-    root_result='../DELPHI_results/'+machine+'/TCL4';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/TCL4';
+    os.system("mkdir -p "+root_result);
     suffix='_only_coll' # suffix for output files 
  
     # compute non changing part of the impedance
@@ -40,12 +47,12 @@ if __name__ == "__main__":
     print lxplusbatch
         
     # rest (i.e. not coll.) of the machine wall impedance
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
-    #beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
-    beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    #beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
+    beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     
     imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
-    	wake_calc=False,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',
+    	wake_calc=False,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,
 	comment='_'+Estr,dire='Rest_'+Estr+'/');
     
     # broad-band model
@@ -53,12 +60,12 @@ if __name__ == "__main__":
     	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param());
     
 
-    param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+model+".dat";
+    param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+model+".dat";
     beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
 
     # compute model for all collimators
     imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-	beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',
+	beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,
 	comment=model,dire='Coll'+model+'/');
 
     # compute model for TCL4 alone

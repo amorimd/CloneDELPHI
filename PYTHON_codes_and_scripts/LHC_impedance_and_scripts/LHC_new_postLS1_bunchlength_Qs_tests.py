@@ -11,7 +11,7 @@ import time# as ti
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -33,8 +33,9 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_new_postLS1_bunchlength_Qs_tests';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_new_postLS1_bunchlength_Qs_tests';
     #root_result='../../scratch0/LHC_new_postLS1';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -68,7 +69,7 @@ if __name__ == "__main__":
     # choice of the scenario
     iscenario=5;scenario=scenarioscan[iscenario];
     
-    param_filename_coll_root='../Coll_settings/collgaps_fromRoderik_modifNico_materialnames';
+    param_filename_coll_root=path_here+'Coll_settings/collgaps_fromRoderik_modifNico_materialnames';
    
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=np.array(['_Allthemachine_4TeV_B1_physics_fill_3265.dat','_Allthemachine_4TeV_B1_physics_fill_3265.dat'])
@@ -93,8 +94,8 @@ if __name__ == "__main__":
 
     # select coll. settings file	
     if scenario.startswith('_2012'):
-	param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-	settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+	param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+	settings_filename_coll=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
     else:
 	param_filename_coll=param_filename_coll_root+scenario+'.dat';
 	settings_filename_coll=param_filename_coll;
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     # compute imp. model
     scenariobis=scenario.replace('_feb2014','');
     imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-	    settings_filename_coll,dire="../LHC_elements/",commentcoll=scenariobis,
+	    settings_filename_coll,dire=path_here+"LHC_elements/",commentcoll=scenariobis,
 	    direcoll='Coll'+dircollscan[iscenario]+'/',
 	    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[iscenario],
 	    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario)

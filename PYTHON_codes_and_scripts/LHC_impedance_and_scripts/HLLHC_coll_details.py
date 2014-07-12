@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -33,7 +34,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_coll_details';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_coll_details';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -49,7 +51,7 @@ if __name__ == "__main__":
 
     # coll. files definition
     scenario='_HLLHC';optics='baseline';
-    param_filename_coll='../Coll_settings/collgaps_HLLHC_'+optics+'_from_Roderik_modifNico_material_names.dat';
+    param_filename_coll=path_here+'Coll_settings/collgaps_HLLHC_'+optics+'_from_Roderik_modifNico_material_names.dat';
     settings_filename_coll=param_filename_coll;
     beta_filename_coll=param_filename_coll;
     squeeze='0p15m_round';
@@ -85,7 +87,7 @@ if __name__ == "__main__":
     
     # compute total imp. model
     imp_mod,wake_mod=HLLHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-	    settings_filename_coll,TDIcoating='preLS1',dire="../LHC_elements/",
+	    settings_filename_coll,TDIcoating='preLS1',dire=path_here+"LHC_elements/",
 	    commentcoll=scenario,direcoll='Coll'+scenario+'_v2/',
 	    lxplusbatch=lxplusbatchImp,BPM=BPMflag,beam=beam,squeeze=squeeze,
 	    wake_calc=wake_calc,flagplot=True,root_result=root_result)

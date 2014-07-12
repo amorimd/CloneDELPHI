@@ -4,6 +4,7 @@ import sys
 from string import *
 import numpy as np
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -90,7 +91,7 @@ def TCTP_modes_impedance(betaavx,betaavy,nmodes=1,scenario=0,flagplot=True):
 	    plot(f,Z[:,0],'real part','b',"Z [ $ \Omega/ $m]",axr,0,xlab='Frequency [Hz]');
 	    plot(f,Z[:,1],'imag. part','r',"Z [ $ \Omega/ $m]",axr,0,xlab='Frequency [Hz]');
 	    axr.set_xlim([1e7,7e8]);
-    	    end_figure(figr,axr,save='../DELPHI_results/'+machine+'/plot_resonator_impedance_'+str(nmodes)+'modes_'+modestr)
+    	    end_figure(figr,axr,save=path_here+'../../../DELPHI_results/'+machine+'/plot_resonator_impedance_'+str(nmodes)+'modes_'+modestr)
 
     return f,Zx,Zy,modestr;
 
@@ -103,6 +104,7 @@ if __name__ == "__main__":
     machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=7000e9);
 
     strnorm=['','_norm_current_chroma'];
+    os.system("mkdir -p ../../../DELPHI_results/"+machine);
 
     flagsave=1; # 1 to save figure instead of plotting on screen
     flagdamperimp=0; # 1 to use frequency dependent damper gain (provided in Zd,fd)
@@ -156,7 +158,7 @@ if __name__ == "__main__":
 
     		# figure, axis and output file name for impedance plots
 		figZ,axZ=init_figure()
-		fileoutZ='../DELPHI_results/'+machine+'/plot_imp_'+machine+'_'+model+'_'+modestr+'_'+plane;
+		fileoutZ=path_here+'../../../DELPHI_results/'+machine+'/plot_imp_'+machine+'_'+model+'_'+modestr+'_'+plane;
 
 		for iM,M in enumerate(Mscan):
 
@@ -257,9 +259,9 @@ if __name__ == "__main__":
 	    		    for imode,mode in enumerate(modescan):
 
 				# output file name for plots vs Qp
-				fileoutplotQp='../DELPHI_results/'+machine+'/plot_vs_Qp_'+machine+'_'+str(round(E/1e9))+'GeV_'+model+'_'+modestr+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane;
+				fileoutplotQp=path_here+'../../../DELPHI_results/'+machine+'/plot_vs_Qp_'+machine+'_'+str(round(E/1e9))+'GeV_'+model+'_'+modestr+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane;
 				# output file name for data vs Qp
-				fileoutdataQp='../DELPHI_results/'+machine+'/data_vs_Qp_'+machine+'_'+str(round(E/1e9))+'GeV_'+model+mode+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane;
+				fileoutdataQp=path_here+'../../../DELPHI_results/'+machine+'/data_vs_Qp_'+machine+'_'+str(round(E/1e9))+'GeV_'+model+mode+'_'+str(M)+'b_d'+float_to_str(damp)+'_Nb'+float_to_str(Nb/1.e11)+'e11_converged'+strnorm[flagnorm]+'_'+plane;
 
 				strpart=['Re','Im'];
 				for ir,r in enumerate(['real','imag']):

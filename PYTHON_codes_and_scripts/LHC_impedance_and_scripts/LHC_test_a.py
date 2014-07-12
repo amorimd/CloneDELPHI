@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -35,7 +36,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/HLLHC_test_a';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/HLLHC_test_a';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -65,8 +67,8 @@ if __name__ == "__main__":
     # scan of a parameter
     ascan=np.array([5.,6.,7.,8.,9.,10.,12.]);
     
-    param_filename_coll_scan=np.array(['../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
-    settings_filename_coll_scan=np.array(['../Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
+    param_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
+    settings_filename_coll_scan=np.array([path_here+'Coll_settings/collgaps_HLLHC_baseline_from_Roderik_modifNico_material_names.dat']);
     
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=np.array(['_Allthemachine_4TeV_B1_physics_fill_3265.dat','_Allthemachine_4TeV_B1_physics_fill_3265.dat'])
@@ -91,7 +93,7 @@ if __name__ == "__main__":
     # compute imp. model
     collscen='_HLLHC';
     imp_mod,wake_mod=HLLHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll_scan[subscan[iscenario]],
-	    settings_filename_coll_scan[subscan[iscenario]],dire="../LHC_elements/",
+	    settings_filename_coll_scan[subscan[iscenario]],dire=path_here+"LHC_elements/",
 	    commentcoll=collscen,direcoll='Coll'+collscen+'_v2/',
 	    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeezescan[subscan[iscenario]],
 	    wake_calc=wake_calc,optionCrab=optionCrabscan[subscan[iscenario]],margin_factor=margin_factor,

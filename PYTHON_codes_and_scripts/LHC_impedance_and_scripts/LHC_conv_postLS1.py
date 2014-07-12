@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -31,8 +32,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/postLS1';
-    #root_result='/home/nmounet/Documents/DELPHI_results/'+machine+'/postLS1';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/postLS1';
+    os.system("mkdir -p "+root_result);
    
     strnorm=['','_norm_current_chroma'];
 
@@ -71,9 +72,9 @@ if __name__ == "__main__":
     wake_calc=False; # True -> compute wake as well (otherwise only imp.)
         
     # rest (i.e. not coll.) of the machine wall impedance
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
-    #beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
-    #beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    #beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
+    #beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     
     #imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
     #	wake_calc=False,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatch);
@@ -100,12 +101,12 @@ if __name__ == "__main__":
 	# postLS1 files
 	if iscenario==0:
 	    machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=4e12);
-	    param_filename_coll="../Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
+	    param_filename_coll=path_here+"Coll_settings/coll_ph1_beta_"+str(int(E/1e9))+"GeV_sq0p6_b1_2012.txt";
 	    beta_filename_coll=param_filename_coll;
-	    settings_filename_coll="../Coll_settings/coll_settings_physics_fill_3265_B1.txt";
+	    settings_filename_coll=path_here+"Coll_settings/coll_settings_physics_fill_3265_B1.txt";
 	else:
     	    machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=6.5e12);
-    	    param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
+    	    param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+scenario+".dat";
             beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
 	
 	# compute model for collimators
@@ -114,8 +115,8 @@ if __name__ == "__main__":
 	    comment=scenario,dire='Coll'+scenario+'/');
 
 	# compute the rest (once for 4 TeV and once for 6.5TeV - depends on energy)
-	if iscenario==0: beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
-	else: beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+	if iscenario==0: beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
+	else: beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     	
 	if (iscenario<2): imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
 		wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,comment='_'+Estr,dire='Rest_'+Estr+'/');

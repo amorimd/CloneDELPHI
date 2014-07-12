@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -34,7 +35,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_coll_meas_comp';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_coll_meas_comp';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -66,7 +68,7 @@ if __name__ == "__main__":
     
     damp=0;M=1;
     squeeze='0p6m_3m_0p6m_3m';
-    settings_filename_coll_root='../Coll_settings/coll_settings_';
+    settings_filename_coll_root=path_here+'Coll_settings/coll_settings_';
    
     zbaseroot='/afs/cern.ch/user/z/zdata/public/zbase/data2/LHC/2012/Coll_BS_Warmpipe_MBW_MQW_BB_newwakesbeta_modelApril2012/';
     zbasesuf=np.array(['_AllColl_4TeV_B1_20120624_TCSGclosed.dat','_AllColl_4TeV_B1_20120624_TCSGopened.dat',
@@ -102,7 +104,7 @@ if __name__ == "__main__":
 	print "scenario: ",scenario;
 	beam=str(beamscan[iscenario]);
 	
-	param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+	param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
 	settings_filename_coll=settings_filename_coll_root+'B'+beam+'_4000GeV_20120624'+scenario+'.txt';
 	beta_filename_coll=param_filename_coll;
 	

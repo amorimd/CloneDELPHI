@@ -1,10 +1,15 @@
 #!/usr/bin/python
 
 import sys
+if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
+elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
+else: lxplusbatchImp=None;lxplusbatchDEL=None;
+print lxplusbatchImp,lxplusbatchDEL;   
 from string import *
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -25,7 +30,8 @@ if __name__ == "__main__":
     col=['b','r','g','m','k','c','y']; # colors
     mark=['x','o','+','d'];
     flagsave=1;
-    root_result='../DELPHI_results/'+machine+'/postLS1';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/postLS1';
+    os.system("mkdir -p "+root_result);
     suffix='_Mo_coating';#suffix='_only_TCSG_IR7' # suffix for output files 
     
     # scan definition
@@ -40,12 +46,12 @@ if __name__ == "__main__":
     print lxplusbatch    
         
     # rest (i.e. not coll.) of the machine wall impedance
-    param_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
-    #beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
-    beta_filename_rest="../LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
+    param_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_param.dat"
+    #beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p6m_3m_0p6m_3m.dat"
+    beta_filename_rest=path_here+"LHC_elements/beam_screens_warm_pipe_LHC_beta_length_B1_sq0p55m_10m_0p55m_10m.dat"
     
     imp_mod_rest,wake_mod_rest=LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename_rest,beta_filename_rest,
-    	wake_calc=False,ftypescan=0,nflog=100,namesref=None,lxplusbatch='retrieve',
+    	wake_calc=False,ftypescan=0,nflog=100,namesref=None,lxplusbatch=lxplusbatchImp,
 	comment='_'+Estr,dire='Rest_'+Estr+'/');
     
     # broad-band model
@@ -59,7 +65,7 @@ if __name__ == "__main__":
     for iscenario,scenario in enumerate(scenarioscan):
     
     	machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr,V,h=LHC_param(E0,E=6.5e12);
-    	param_filename_coll="../Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+model+".dat";
+    	param_filename_coll=path_here+"Coll_settings/collgaps_fromRoderik_modifNico_materialnames"+model+".dat";
         beta_filename_coll=param_filename_coll;settings_filename_coll=param_filename_coll;
 	
 	# select coll. names
@@ -72,7 +78,7 @@ if __name__ == "__main__":
 	# compute model for collimators
 	if iscenario==0:
 	    imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,
-		beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=namesref,lxplusbatch=lxplusbatch,
+		beta_filename_coll,wake_calc=wake_calc,ftypescan=0,nflog=100,namesref=namesref,lxplusbatch=lxplusbatchImp,
 		comment=model+scenario,dire='Coll'+model+scenario+'/');
 	else:
 	    imp_mod_coll,wake_mod_coll=LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename_coll,settings_filename_coll,

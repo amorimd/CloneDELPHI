@@ -11,6 +11,7 @@ import time
 import numpy as np
 from copy import deepcopy
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from tables_lib import select_in_table
@@ -37,7 +38,8 @@ if __name__ == "__main__":
 
     beam='1';
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/LHC_tuneshift';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_tuneshift';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -71,12 +73,12 @@ if __name__ == "__main__":
     tuneshiftQp=np.zeros((2,len(Qpscan),1,len(Nbscan),1,1,kmaxplot),dtype=complex);
     tuneshiftm0Qp=np.zeros((2,len(Qpscan),1,len(Nbscan),1,1),dtype=complex);
 
-    param_filename_coll='../Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
-    settings_filename_coll='../Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
+    param_filename_coll=path_here+'Coll_settings/coll_ph1_beta_4000GeV_sq0p6_b'+beam+'_2012.txt';
+    settings_filename_coll=path_here+'Coll_settings/coll_settings_physics_fill_3265_B'+beam+'.txt';
 
     # compute imp. model
     imp_mod,wake_mod=LHC_imp_model_v2(E,avbetax,avbetay,param_filename_coll,
-	    settings_filename_coll,dire="../LHC_elements/",commentcoll=scenario,
+	    settings_filename_coll,dire=path_here+"LHC_elements/",commentcoll=scenario,
 	    direcoll='Coll'+scenario+'/',
 	    lxplusbatch=lxplusbatchImp,beam=beam,squeeze=squeeze,
 	    wake_calc=wake_calc,flagplot=flagplot,root_result=root_result,commentsave=scenario)
