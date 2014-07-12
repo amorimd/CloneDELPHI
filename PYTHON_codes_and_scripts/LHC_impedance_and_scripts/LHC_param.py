@@ -3,6 +3,7 @@
 import sys
 from string import *
 import numpy as np
+from DELPHI import Qs_from_RF_param
 
 def LHC_param(E0,E=7e12):
 
