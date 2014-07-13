@@ -599,7 +599,7 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
 		if flagm0: tuneshiftm0.fill(np.nan+1j*np.nan);
 		print " WARNING !!! no file",filename;
 	    
-	    #os.system("rm -rf LSFJOB_* error1.out batch"+comment+".job");
+	    os.system("rm -rf LSFJOB_* error1.out batch"+comment+".job");
 	
     if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0;
     else: return tuneshift_most,tuneshiftnx;
@@ -1346,7 +1346,7 @@ def eigenmodesDELPHI_tunespread_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbs
 		if flagm0: tuneshiftm0.fill(np.nan+1j*np.nan);
 		print " WARNING !!! no file",filename;
 	    
-	    #os.system("rm -rf LSFJOB_* error1.out batch"+comment+".job");
+	    os.system("rm -rf LSFJOB_* error1.out batch"+comment+".job");
 	
     if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0;
     else: return tuneshift_most,tuneshiftnx;
