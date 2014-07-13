@@ -1,9 +1,16 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -73,10 +80,11 @@ if __name__ == "__main__":
 	    print "Qpx=",Qpx,", f=",fdamp;
 	    
 	    # Karliner-Popov results
-	    filename='../docs/Leptons_machines/Karliner_Popov_figures/Karliner_Popov_'+machine+'_Qp'+float_to_str(Qpx)+'_f'+float_to_str(fdamp)+'_curve';
+	    filename=path_here+'Karliner_Popov_figures/Karliner_Popov_'+machine+'_Qp'+float_to_str(Qpx)+'_f'+float_to_str(fdamp)+'_curve';
 
 	    # output file name
-	    fileout='../DELPHI_results/'+machine+'/plot_TMCI_DELPHI_vs_Karliner-Popov_'+machine+'_'+float_to_str(round(E/1e8)/10)+'GeV'+model+'_'+str(M)+'b_f'+float_to_str(fdamp)+'_converged'+'_Qp'+float_to_str(Qpx)+strfreqflag[flagdamperimp]+strnorm[flagnorm];
+	    os.system("mkdir -p "+path_here+"../../../DELPHI_results/"+machine);
+	    fileout=path_here+'../../../DELPHI_results/'+machine+'/plot_TMCI_DELPHI_vs_Karliner-Popov_'+machine+'_'+float_to_str(round(E/1e8)/10)+'GeV'+model+'_'+str(M)+'b_f'+float_to_str(fdamp)+'_converged'+'_Qp'+float_to_str(Qpx)+strfreqflag[flagdamperimp]+strnorm[flagnorm];
 
 	    dscan=Iscan*1.e-3*fdamp*2*np.pi*Qs/Ib; # damper gain scan (gain depends on intensity here)
 	    #print dscan

@@ -1,22 +1,22 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
 elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
 else: lxplusbatchImp=None;lxplusbatchDEL=None;
 print lxplusbatchImp,lxplusbatchDEL;   
 
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
-
 import numpy as np
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from copy import deepcopy
-sys.path.append("../PYTHON/")
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from string_lib import *
@@ -72,8 +72,9 @@ if __name__ == "__main__":
 	if dphase==0: dphasestr=', resistive damper';
 	elif dphase==-np.pi/2: dphasestr=', reactive damper';
 
-	root_result='../DELPHI_results/'+machine;#+'_old';
-	#fileoutroot='../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b';
+	root_result=path_here+'../../../DELPHI_results/'+machine;#+'_old';
+    	os.system("mkdir -p "+root_result);
+	#fileoutroot=path_here+'../../../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b';
 
 	# longitudinal distribution initialization
 	g,a,b=longdistribution_decomp(taub,typelong="Gaussian");

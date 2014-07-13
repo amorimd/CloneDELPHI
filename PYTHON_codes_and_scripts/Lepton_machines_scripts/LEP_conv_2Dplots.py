@@ -1,9 +1,16 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -100,7 +107,8 @@ if __name__ == "__main__":
 
 	    # TMCI plots
 	    if (iQp%10==0)and(idamp%2==0):
-		fileout='../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_dphase'+float_to_str(round(dphase*100)/100)+'_converged'+'_Qp'+float_to_str(Qpx)+strfreqflag[flagdamperimp]+strnorm[flagnorm];
+	    	os.system("mkdir -p "+path_here+"../../../DELPHI_results/"+machine);
+		fileout=path_here+'../../../DELPHI_results/'+machine+'/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_d'+float_to_str(damp)+'_dphase'+float_to_str(round(dphase*100)/100)+'_converged'+'_Qp'+float_to_str(Qpx)+strfreqflag[flagdamperimp]+strnorm[flagnorm];
 	        for ir,r in enumerate(['real','imag']):
     		    fig,ax=init_figure();
 		    plot_TMCI(Iscan,lambdax,ax,part=r,leg='DELPHI',patcol='b',xlab='Intensity [mA]',
@@ -113,7 +121,7 @@ if __name__ == "__main__":
     # 2D plot
 
     # output file name (root)
-    fileout='../DELPHI_results/plot2D_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_dphase'+float_to_str(round(dphase*100)/100)+'_converged'+strfreqflag[flagdamperimp]+strnorm[flagnorm];
+    fileout=path_here+'../../../DELPHI_results/'+machine+'/plot2D_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_dphase'+float_to_str(round(dphase*100)/100)+'_converged'+strfreqflag[flagdamperimp]+strnorm[flagnorm];
 
     fig,ax=init_figure();
     

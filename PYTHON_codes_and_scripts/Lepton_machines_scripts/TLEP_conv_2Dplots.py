@@ -1,9 +1,16 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
@@ -49,7 +56,7 @@ def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
     ZRF=resonator_impedance(R1,f1,Q1,fRF);
     
     # real impedance of RF cavities (file from Rama)
-    filename='../Impedances/RF_700MHz_from_Rama/fft.bnl2EqualSmooth.dLW';
+    filename=path_here+'RF_700MHz_from_Rama_Calaga/fft.bnl2EqualSmooth.dLW';
     sr=read_ncol_file(filename,ignored_rows=14);
     si=read_ncol_file(filename,ignored_rows=12500);
     fRF_Rama=sr[:,0]*1e9;ZRF_Rama=np.zeros((len(fRF_Rama),2));
@@ -61,7 +68,7 @@ def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
      
     # resistive-wall impedance
     radius=20; # beam pipe radius
-    filename='../soft/My_prog_C/ImpedanceWake2D/ZxdipWTLEP_1layers'+str(radius)+'.00mm_TLEP_Al_beampipe.dat';
+    filename='../../ImpedanceWake2D/TLEP/ZxdipWTLEP_1layers'+str(radius)+'.00mm_TLEP_Al_beampipe.dat';
     s=read_ncol_file(filename,ignored_rows=1);
     fRes=s[:,0];ZRes=np.zeros((len(fRes),2));
     ZRes[:,0]=s[:,1];
@@ -94,7 +101,7 @@ def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
 	ax.set_xlim([1e3,1e13]);ax.set_ylim([10,1e9]);
 
 	if not(flagsave): end_figure(fig,ax,fontsize=20)
-	else: end_figure(fig,ax,save='../DELPHI_results/TLEPZ_impedance_model_comp',fontsize=20)
+	else: end_figure(fig,ax,save=path_here+'../../../DELPHI_results/TLEPZ/TLEPZ_impedance_model_comp',fontsize=20)
     
     if Zoption==0:
     	# total realistic impedance
@@ -144,8 +151,9 @@ if __name__ == "__main__":
     if dphase==0: dphasestr=', resistive damper';
     elif dphase==-np.pi/2: dphasestr=', reactive damper';
 
-    fileoutroot='../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_Q'+float_to_str(Qx-np.floor(Qx));
-    fileoutroot2D='../DELPHI_results/plot2D_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_Q'+float_to_str(Qx-np.floor(Qx));
+    os.system("mkdir -p "+path_here+"../../../DELPHI_results/"+machine);
+    fileoutroot=path_here+'../../../DELPHI_results/'+machine+'plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_Q'+float_to_str(Qx-np.floor(Qx));
+    fileoutroot2D=path_here+'../../../DELPHI_results/'+machine+'plot2D_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV'+model+'_'+str(M)+'b_Q'+float_to_str(Qx-np.floor(Qx));
     
     # longitudinal distribution initialization
     g,a,b=longdistribution_decomp(taub,typelong="Gaussian");

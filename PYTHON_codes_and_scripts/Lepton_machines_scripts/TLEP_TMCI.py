@@ -1,9 +1,16 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import numpy as np
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from particle_param import *
 from Impedance import *
@@ -32,7 +39,8 @@ if __name__ == "__main__":
     dphasei=0.; # damper phase (0 -> resistive; pi/2 -> reactive)
     dphasestr='';
 
-    fileoutroot='../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV';
+    os.system("mkdir -p "+path_here+"../../../DELPHI_results/"+machine);
+    fileoutroot=path_here+'../../../DELPHI_results/plot_TMCI_DELPHI_'+machine+'_'+float_to_str(E/1e9)+'GeV';
 
     # longitudinal distribution initialization
     g,a,b=longdistribution_decomp(taub,typelong="Gaussian");

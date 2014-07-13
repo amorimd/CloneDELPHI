@@ -1,19 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 if len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);
 else: lxplusbatchImp=None;
 print lxplusbatchImp   
 
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
-
 import numpy as np
 import pylab,os,re
+path_here=os.getcwd()+"/";
 from copy import deepcopy
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
@@ -230,6 +231,7 @@ if __name__ == "__main__":
 
 	    if (lxplusbatchImp==None)or(lxplusbatchImp.startswith('ret')):
 		# output in a HEADTAIL kind of wake file
-		wakefilename=machine+Estr+'_'+float_to_str(1000*b)+'mm_ldip'+float_to_str(ldip)+'m_all_wake.dat';
+	        os.system("mkdir -p "+path_here+"../../../DELPHI_results/"+machine);
+		wakefilename=path_here+'../../../DELPHI_results/'+machine+'/wake_for_hdtl_'+machine+Estr+'_'+float_to_str(1000*b)+'mm_ldip'+float_to_str(ldip)+'m_all_wake.dat';
 		write_wake_HEADTAIL(wake_mod,wakefilename,beta=beta,ncomp=4);
 
