@@ -575,8 +575,8 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
  	    #print >> filejob, "cp "+here+"/particle_param.py .";
             #print >> filejob, "chmod +x DELPHI_script.py";
             print >> filejob, "DELPHI_script.py "+filename+" > out_"+comment;
-            print >> filejob, "cp out"+filename+" "+here+dire;
-            print >> filejob, "cp out_"+comment+" "+here+dire;
+            print >> filejob, "cp out"+filename+" "+dire;
+            print >> filejob, "cp out_"+comment+" "+dire;
             filejob.close();
             os.system("chmod 744 batch"+comment+".job");
             os.system("bsub"+user_option+" -e error1.out -q "+queue+" batch"+comment+".job");

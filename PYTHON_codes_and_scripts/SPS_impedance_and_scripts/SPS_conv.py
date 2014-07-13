@@ -1,76 +1,30 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
 elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
 else: lxplusbatchImp=None;lxplusbatchDEL=None;
 print lxplusbatchImp,lxplusbatchDEL;   
-
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
 
 from string import *
 import numpy as np
 import pickle as pick
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-
-
-def SPS_param(E0,E=26e9,optics='Q26'):
-
-    # E is the energy in eV
-
-    e=1.602176487e-19; # elementary charge
-    c=299792458;
-    # fixed parameters
-    machine='SPS';
-    gamma=E*e/E0
-    beta=np.sqrt(1.-1./(gamma**2))
-    circ=6911; # total circumference in m
-    R=circ/(2.*np.pi) # machine radius
-    
-    if optics=='Q26':
-	Qx=26.13;
-	Qy=26.18;
-	alphap=1.9181e-3; # momentum compaction factor
-	if (E==26e9): Qs=0.00725;Estr='26GeV';taub=2.6e-9; # full length in s. This corresponds to 3MV
-	elif (E==450e9): Qs=0.00467;Estr='450GeV';taub=1.5e-9; # full length in s
-	else:
-    	    print "SPS energy not recognized; Q26 injection parameters taken";
-	    Qs=7.25e-3;Estr=float_to_str(E/1e9)+'GeV';taub=2.6e-9; # full length in s
-
-    elif optics=='Q20':
-	Qx=20.13;
-	Qy=20.18;
-	alphap=3.1e-3; # momentum compaction factor
-	if (E==26e9): Qs=0.01513;Estr='26GeV';taub=2.9e-9; # full length in s. This corresponds to 3MV
-	elif (E==450e9): Qs=0.00595;Estr='450GeV';taub=1.6e-9; # full length in s
-	else:
-    	    print "SPS energy not recognized; Q20 injection parameters taken";
-	    Qs=0.01513;Estr=float_to_str(E/1e9)+'GeV';taub=2.9e-9; # full length in s
-
-    else: print 'SPS_param: only Q20 & Q26 optics implemented';sys.exit();
-    
-    sigmaz=taub*beta*c/4.; # RMS bunch length (m)
-    Qxfrac=Qx-np.floor(Qx);
-    Qyfrac=Qy-np.floor(Qy);
-    f0=c*beta/circ # rev. frequency
-    omega0=2.*np.pi*f0;
-    omegas=Qs*omega0;
-    eta=alphap-1./(gamma*gamma); # slip factor
-    dphase=0.; # additional damper phase
-
-    return machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr;
+from SPS_param import SPS_param
 
     
 if __name__ == "__main__":
@@ -81,7 +35,8 @@ if __name__ == "__main__":
     machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr=SPS_param(E0,E=26e9);
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine;
+    root_result='../../../DELPHI_results/'+machine;
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -120,10 +75,10 @@ if __name__ == "__main__":
     
 	
 	# read model
-	imp_mod=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zxdip'+scenario+'.txt','Zxdip');
-	imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zydip'+scenario+'.txt','Zydip');imp_mod.append(imp_mod1[0]);
-	imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zxquad'+scenario+'.txt','Zxquad');imp_mod.append(imp_mod1[0]);
-	imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zyquad'+scenario+'.txt','Zyquad');imp_mod.append(imp_mod1[0]);
+	imp_mod=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zxdip'+scenario+'.txt','Zxdip');
+	imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zydip'+scenario+'.txt','Zydip');imp_mod.append(imp_mod1[0]);
+	imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zxquad'+scenario+'.txt','Zxquad');imp_mod.append(imp_mod1[0]);
+	imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zyquad'+scenario+'.txt','Zyquad');imp_mod.append(imp_mod1[0]);
 	
 	imp_mod_list.append(imp_mod);
 	

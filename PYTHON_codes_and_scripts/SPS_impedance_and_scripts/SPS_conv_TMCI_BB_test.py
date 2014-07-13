@@ -1,30 +1,30 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 if len(sys.argv)>2: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=str(sys.argv[2]);
 elif len(sys.argv)>1: lxplusbatchImp=str(sys.argv[1]);lxplusbatchDEL=None;
 else: lxplusbatchImp=None;lxplusbatchDEL=None;
 print lxplusbatchImp,lxplusbatchDEL;   
-
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
 
 from string import *
 import numpy as np
 import pickle as pick
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from SPS_conv import SPS_param
+from SPS_param import SPS_param
 
     
 if __name__ == "__main__":
@@ -39,7 +39,8 @@ if __name__ == "__main__":
     Rt=13e6;fr=1.3e9;Q=1; # BB resonator parameters
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'/BB_model_test_Kevin';
+    root_result='../../../DELPHI_results/'+machine+'/BB_model_test_Kevin';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 

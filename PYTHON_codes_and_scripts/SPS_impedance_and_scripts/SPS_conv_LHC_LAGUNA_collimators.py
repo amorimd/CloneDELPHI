@@ -1,29 +1,30 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 if len(sys.argv)>1: lxplusbatchDEL=str(sys.argv[1]);
 else: lxplusbatchDEL=None;
 print lxplusbatchDEL;   
-
-import commands
-out=commands.getoutput("hostname")
-if out.startswith('lxplus'):
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/numpy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/scipy-install/lib64/python2.6/site-packages');
-    sys.path.insert(1,'/afs/cern.ch/user/n/nmounet/private/soft/Pymodules/matplotlib-install/lib64/python2.6/site-packages');
 
 from string import *
 import numpy as np
 import pickle as pick
 from copy import deepcopy
 import pylab,os,re
-sys.path.append("../PYTHON/")
+path_here=os.getcwd()+"/";
 from plot_lib import plot,init_figure,end_figure
 from io_lib import *
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from SPS_conv import *
+from SPS_param import SPS_param
+sys.path.append("../LHC_impedance_and_scripts/")
 from LHC_coll_imp import *
 
 
@@ -36,7 +37,8 @@ if __name__ == "__main__":
     beta=np.sqrt(1.-1./(gamma**2))
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../DELPHI_results/'+machine+'_coll';
+    root_result='../../../DELPHI_results/'+machine+'_coll';
+    os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
 
@@ -99,14 +101,14 @@ if __name__ == "__main__":
 	    print scenario,opticscan[iscenario],avbetax,avbetay
 
 	    # read model from Carlo
-	    imp_mod=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zxdip'+modelscan[iscenario]+'.txt','Zxdip');
-	    imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zydip'+modelscan[iscenario]+'.txt','Zydip');imp_mod.append(imp_mod1[0]);
-	    imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zxquad'+modelscan[iscenario]+'.txt','Zxquad');imp_mod.append(imp_mod1[0]);
-	    imp_mod1=imp_model_from_file('../Impedances/SPS/From_Carlo_impSPS/Zyquad'+modelscan[iscenario]+'.txt','Zyquad');imp_mod.append(imp_mod1[0]);
+	    imp_mod=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zxdip'+modelscan[iscenario]+'.txt','Zxdip');
+	    imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zydip'+modelscan[iscenario]+'.txt','Zydip');imp_mod.append(imp_mod1[0]);
+	    imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zxquad'+modelscan[iscenario]+'.txt','Zxquad');imp_mod.append(imp_mod1[0]);
+	    imp_mod1=imp_model_from_file(path_here+'imp_model_SPS_from_CZannini/Zyquad'+modelscan[iscenario]+'.txt','Zyquad');imp_mod.append(imp_mod1[0]);
 
 	    if collscan[iscenario]:
 		# compute model for collimators
-		param_filename_coll='../Coll_settings/SPS/collgaps_'+opticscan[iscenario]+'_modifNico_materials.dat';
+		param_filename_coll=path_here+'Coll_settings/collgaps_'+opticscan[iscenario]+'_modifNico_materials.dat';
 		beta_filename_coll=param_filename_coll;
 		settings_filename_coll=param_filename_coll;
 

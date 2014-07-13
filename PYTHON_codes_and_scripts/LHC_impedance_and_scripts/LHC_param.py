@@ -9,6 +9,7 @@ if pymod.startswith('local'):
 
 from string import *
 import numpy as np
+from string_lib import *
 from DELPHI import Qs_from_RF_param
 
 def LHC_param(E0,E=7e12):
