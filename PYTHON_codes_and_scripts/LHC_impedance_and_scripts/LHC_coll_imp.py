@@ -43,26 +43,27 @@ def LHC_singlecoll_iw_model(name,material,halfgap,angle,gamma,length,
     dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
     if queue is not None, it is the lxbatch queue where to launch the calculation.'''
     
+    if (material.startswith('CU'))or(material.startswith('Cu')): material='Cu300K';
+    elif (material=='C'): material='graphite';
+    elif (material.startswith('HBN')): material='hBN';
+
     if (queue==None):
 	# find on which queue to launch calculation (case when lxplusbatch=='launch')
 	queues=['8nm','1nh','1nh','8nh','1nd','2nd','1nw'];
 	if wake_calc:
 	    if material.startswith('hBN'): iq=5;
-	    elif (material=="C")or(material=="CFC"): iq=4;
+	    elif (material=="graphite")or(material=="CFC"): iq=4;
 	    else: iq=3;
 	    if (gamma>=3000): iq+=1; # flat top settings -> convergence is slower
 	else:      
 	    nfreq=(np.mod(fpar.ftypescan,2)==0)*((np.log10(fpar.fmax)-np.log10(fpar.fmin))*fpar.nflog+1) + (fpar.ftypescan==1)*round((fpar.fmax-fpar.fmin)/fpar.fsamplin)+(fpar.ftypescan==2)*fpar.nrefine;
 	    iq=max(int(np.ceil(np.log10(nfreq/500.))),0); # =0 up to 500 frequencies; 1 up to 5000; 2 up to 50000; etc.
 	    iq+=1;
-	    if material.startswith('hBN')and(halfgap<0.01): iq+=1;
+	    if material.startswith('hBN'): iq+=2;
 	queue=queues[iq];
     print material, queue, coatingmat, comment;
     
     
-    if (material.startswith('CU'))or(material.startswith('Cu')): material='Cu300K';
-    elif (material=='C'): material='graphite';
-    elif (material.startswith('HBN')): material='hBN';
     
     # some hard coded parameters
     thickness=25e-3;freqlin=1.e11;
@@ -257,7 +258,7 @@ def read_coll_files_several_mat(param_filename,settings_filename,beta_filename,n
     
     # read materials and thicknesses
     material,thick,nmat=read_materials(param_filename,ind);
-    print material,thick,nmat
+    #print material,thick,nmat
     
     # file with settings
     names=read_ncol_file_identify_header(settings_filename,'[nN]ame');
@@ -330,7 +331,7 @@ def LHC_singlecoll_iw_model_with_geom(name,materials,halfgap,angle,gamma,length,
 	    nfreq=(np.mod(fpar.ftypescan,2)==0)*((np.log10(fpar.fmax)-np.log10(fpar.fmin))*fpar.nflog+1) + (fpar.ftypescan==1)*round((fpar.fmax-fpar.fmin)/fpar.fsamplin)+(fpar.ftypescan==2)*fpar.nrefine;
 	    iq=max(int(np.ceil(np.log10(nfreq/500.))),0); # =0 up to 500 frequencies; 1 up to 5000; 2 up to 50000; etc.
 	    iq+=1;
-	    if materials[0].startswith('Ti_in_TDI')and(halfgap<0.01): iq+=2;
+	    if materials[0].startswith('Ti_in_TDI'): iq+=2;
 	queue=queues[iq];
 
     # some hard coded parameters
@@ -531,7 +532,7 @@ def LHC_manycoll_iw_model_with_geom(E,avbetax,avbetay,param_filename,settings_fi
     
     # read files
     namesref,material,thick,angle,length,halfgap,betax,betay=read_coll_files_several_mat(param_filename,settings_filename,beta_filename,namesref=namesref);
-    print len(namesref),material,angle,length,halfgap,betax,betay
+    #print len(namesref),material,angle,length,halfgap,betax,betay
 
     # main loop to construct model
     imp_mod_RW=[];wake_mod_RW=[];imp_mod_geom=[];wake_mod_geom=[];

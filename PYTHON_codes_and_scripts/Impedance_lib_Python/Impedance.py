@@ -1588,7 +1588,7 @@ def imp_model_from_IW2D(iw_input,wake_calc=False,path=IW2D_path,
 	    status,name=commands.getstatusoutput("ls "+dire+"InputData*"+str(nup)+'layer*'+strb+"mm"+iw_input.comment+".dat");
 	    ib+=1;
 	if (status!=0):
-	    print " Error: File",path+dire+"InputData*"+str(nup)+'layer*'+strb+"mm"+iw_input.comment+".dat not found !"
+	    print "\n Error: File",path+'/'+dire+"InputData*"+str(nup)+'layer*'+strb+"mm"+iw_input.comment+".dat not found !"
 	    print " Probably computation failed; try with a longer queue (current queue:",queue+")";
 	    sys.exit();
 	#print iw_input.b[0]*1e3,fb,strb,status,name

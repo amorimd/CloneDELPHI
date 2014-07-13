@@ -126,7 +126,7 @@ def LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename,beta_filename,Bfield=
     
     # read materials an thicknesses
     material,thick,nmat=read_materials(param_filename,ind);
-    print material,thick,nmat
+    #print material,thick,nmat
     
     # file with beta functions
     names=read_ncol_file_identify_header(beta_filename,'[nN]ame');
