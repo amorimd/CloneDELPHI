@@ -1,6 +1,12 @@
 #!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+
 from string import *
 import numpy as np
 from DELPHI import Qs_from_RF_param

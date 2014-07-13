@@ -1,3 +1,4 @@
+./script_replace.sh py "import sys" "import sys\nimport commands\n# import local libraries if needed\npymod=commands.getoutput(\"echo\ \$PYMOD\");\nif pymod.startswith('local'):\n    py_numpy=commands.getoutput(\"echo\ \$PY_NUMPY\");sys.path.insert(1,py_numpy);\n    py_matpl=commands.getoutput(\"echo\ \$PY_MATPL\");sys.path.insert(1,py_matpl);\n"
 ./script_replace.sh py "import pylab,re" "import pylab,os,re"
 ./script_replace.sh py "import pylab,os,re" "import pylab,os,re\npath_here=os.getcwd()+\"\/\";"
 ./script_replace.sh py "\"\.\.\/LHC_elem" "path_here+\"LHC_elem"

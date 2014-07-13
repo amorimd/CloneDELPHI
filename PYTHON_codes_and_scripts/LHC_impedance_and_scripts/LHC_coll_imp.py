@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 from string import *
 import numpy as np
 import pickle as pick
@@ -17,24 +24,24 @@ def LHC_singlecoll_iw_model(name,material,halfgap,angle,gamma,length,
 	wake_calc=False,coatingmat=None,coatingthickness=0,fpar=freq_param(),zpar=z_param(),
 	lxplusbatch=None,comment='',dire='',queue=None):
     
-    # construct impedance/wake model (flat chamber) for an LHC collimator 
-    # with a skew angle (as defined in N. Mounet PhD, p. 56)
-    # name is the name of the collimator, material its main material,
-    # angle in rad, halfgap in m
-    # wake_calc: flag for wake calculation
-    # if coatingmat is not None, first layer is a coating defined
-    # by this and coatingthickness
-    # last layer is always stainless steel 304L
-    #
-    # fpar and zpar select the frequencies and distances (for the wake) scans 
-    # (objects of the classes freq_param and z_param).
-    #
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #		   if 'retrieve' -> retrieve outputs
-    # comment is added to the name for IW2D output files
-    # dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
-    # if queue is not None, it is the lxbatch queue where to launch the calculation.
+    ''' construct impedance/wake model (flat chamber) for an LHC collimator 
+    with a skew angle (as defined in N. Mounet PhD, p. 56)
+    name is the name of the collimator, material its main material,
+    angle in rad, halfgap in m
+    wake_calc: flag for wake calculation
+    if coatingmat is not None, first layer is a coating defined
+    by this and coatingthickness
+    last layer is always stainless steel 304L
+    
+    fpar and zpar select the frequencies and distances (for the wake) scans 
+    (objects of the classes freq_param and z_param).
+    
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus on queue 'queue'
+    		   if 'retrieve' -> retrieve outputs
+    comment is added to the name for IW2D output files
+    dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    if queue is not None, it is the lxbatch queue where to launch the calculation.'''
     
     if (queue==None):
 	# find on which queue to launch calculation (case when lxplusbatch=='launch')
@@ -111,11 +118,11 @@ def LHC_TDI_iw_model(name,material,halfgap,angle,gamma,wake_calc=False,
 	TDIcoating=['Ti_in_TDI',None,None],TDIcoatingthickness=[5e-6,0,0],
 	ftypescan=2,nflog=100,lxplusbatch=None,comment='',dire=''):
 
-    # impedance/wake model for the LHC TDI (particular case: 3 blocks)
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #		   if 'retrieve' -> retrieve outputs
-    # dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    ''' impedance/wake model for the LHC TDI (particular case: 3 blocks)
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus on queue 'queue'
+    		   if 'retrieve' -> retrieve outputs
+    dire contains the directory name where to put the outputs (default='./'=directory of IW2D)'''
 
     # TDI main materials and lengths
     TDImat=['hBN','Al','Cu300K'];TDIlength=[2.8,0.6,0.7];
@@ -139,10 +146,10 @@ def LHC_TDI_iw_model(name,material,halfgap,angle,gamma,wake_calc=False,
    
 
 def select_LHC_coll_IR(names,pattern='',IRlist=range(1,9)):
-    # select from a list of LHC device names those that begin with "pattern" and that are in
-    # an IR in the list "IRlist" (from 1 to 8)
-    # By default, pattern and IRlist are such that all names are
-    # selected.
+    ''' select from a list of LHC device names those that begin with "pattern" and that are in
+    an IR in the list "IRlist" (from 1 to 8)
+    By default, pattern and IRlist are such that all names are
+    selected.'''
     
     namesnew=[];
     for name in names:
@@ -156,20 +163,20 @@ def LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename,settings_filename,
 	beta_filename,wake_calc=False,ftypescan=2,nflog=100,namesref=None,
 	coatingmat=None,coatingthickness=0,lxplusbatch=None,comment='',dire=''):
 
-    # creates an impedance or wake model for all collimators.
-    # E is the energy in eV, avbetax and avbetay the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except half-gaps and betas, settings_filename is the file with half-gaps (in m),
-    # beta_filename the file with beta functions (in m).
-    # wake_calc selects the wake computation if True, nflog are the number of frequencies
-    # per decade, and ftypescan the type of frequency scan (0,1 or 2: logarithmic only, 
-    # linear only or logarithmic with refinement around high-frequency resonance(s) ).
-    # namesref are the coll. names (from param_filename) to select (if None take all),
-    # coatingmat and coatingthickness is the info about an added coating.
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #		   if 'retrieve' -> retrieve outputs
-    # dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    ''' creates an impedance or wake model for all collimators.
+    E is the energy in eV, avbetax and avbetay the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except half-gaps and betas, settings_filename is the file with half-gaps (in m),
+    beta_filename the file with beta functions (in m).
+    wake_calc selects the wake computation if True, nflog are the number of frequencies
+    per decade, and ftypescan the type of frequency scan (0,1 or 2: logarithmic only, 
+    linear only or logarithmic with refinement around high-frequency resonance(s) ).
+    namesref are the coll. names (from param_filename) to select (if None take all),
+    coatingmat and coatingthickness is the info about an added coating.
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus on queue 'queue'
+    		   if 'retrieve' -> retrieve outputs
+    dire contains the directory name where to put the outputs (default='./'=directory of IW2D)'''
 
     e,m0,c,E0=proton_param();
     gamma=E*e/E0;
@@ -204,7 +211,7 @@ def LHC_manycoll_iw_model(E,avbetax,avbetay,param_filename,settings_filename,
 	
 
 def read_coll_files(param_filename,settings_filename,beta_filename,namesref=None):
-    # read collimator files and output parameters.
+    ''' read collimator files and output parameters.'''
     
     # file with materials, angles and lengths
     if (namesref==None): namesref=read_ncol_file_identify_header(param_filename,'[nN]ame');
