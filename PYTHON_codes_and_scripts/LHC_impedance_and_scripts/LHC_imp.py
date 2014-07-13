@@ -1,6 +1,13 @@
 #!/usr/bin/python
 
 import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 from string import *
 import numpy as np
 import pickle as pick
@@ -17,24 +24,24 @@ from LHC_coll_imp import *
 def LHC_element_iw_model(name,layers,b,w,E,length,orientation,thickness=[],Bfield=None,
 	wake_calc=False,fpar=freq_param(),zpar=z_param(),lxplusbatch=None,comment='',dire=''):
     
-    # construct impedance/wake model for an LHC elliptic element
-    # name is the name of the element, layers a list of layers or material names,
-    # b and w the semi-axes (resp. small and large) in m.
-    # E is the energy in eV.
-    # orientation:'H' or 'V' for hor. or vert. orientation of b. 
-    # if material names are given (not layer class object), then layers
-    # thickness should be given as well in the list 'thickness'.
-    # Bfield: magnetic field (if None, compute it from the energy with LHC bending radius)
-    # wake_calc: flag for wake calculation
-    #
-    # fpar and zpar select the frequencies and distances (for the wake) scans 
-    # (objects of the classes freq_param and z_param).
-    #
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #		   if 'retrieve' -> retrieve outputs
-    # comment is added to the IW2D output file names
-    # dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    ''' construct impedance/wake model for an LHC elliptic element
+    name is the name of the element, layers a list of layers or material names,
+    b and w the semi-axes (resp. small and large) in m.
+    E is the energy in eV.
+    orientation:'H' or 'V' for hor. or vert. orientation of b. 
+    if material names are given (not layer class object), then layers
+    thickness should be given as well in the list 'thickness'.
+    Bfield: magnetic field (if None, compute it from the energy with LHC bending radius)
+    wake_calc: flag for wake calculation
+    
+    fpar and zpar select the frequencies and distances (for the wake) scans 
+    (objects of the classes freq_param and z_param).
+    
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus on queue 'queue'
+    		   if 'retrieve' -> retrieve outputs
+    comment is added to the IW2D output file names
+    dire contains the directory name where to put the outputs (default='./'=directory of IW2D)'''
     
     e,m0,c,E0=proton_param();
     gamma=E*e/E0;
@@ -71,38 +78,38 @@ def LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename,beta_filename,Bfield=
 	freq_dep_factor_file=None,dist_dep_factor_file=None,
 	lxplusbatch=None,comment='',dire=''):
 
-    # creates an impedance or wake model for many elements (cold beam screens
-    # and warm pipes).
-    # E is the energy in eV, avbetax and avbetay the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except betas, beta_filename the file with beta functions (in m).
-    # nmat is the number of material layers -> look for columns 'material1' to 'material[nmat]'
-    # in the file param_filename, and for columns 'thickness1' to thickness[nmat-1]'
-    #
-    # Bfield: magnetic field (if None, compute it from the energy with LHC bending radius)
-    #
-    # wake_calc selects the wake computation if True, nflog is the number of frequencies
-    # per decade, and ftypescan the type of frequency scan (0,1 or 2: logarithmic only, 
-    # linear only or logarithmic with refinement around high-frequency resonance(s) ).
-    #
-    # namesref are the coll. names (from param_filename) to select (if None take all),
-    #
-    # if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
-    # using the parameters given in power_loss_param, which should be like [sigz(RMS in m),Nb(nb p+),M(nb of bunches)]
-    # (assumes Gaussian equidistant bunches and protons)
-    #
-    # if freq_dep_factor_file is not None, each component is multiplied by a 
-    # frequency dependent factor, from the file indicated by this. File should
-    # contain (colums): frequency in Hz, then each component (factors for real
-    # part, then imaginary part), WITH HEADERS indicating the component (format:
-    # see function 'identify_component' in module Impedance + at the end re or 
-    # Re for real part and im or Im for imag. part).
-    # It is exactly the same for the wake with dist_dep_factor_file (if wake_calc==True).
-    #
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus on queue 'queue'
-    #		   if 'retrieve' -> retrieve outputs
-    # dire contains the directory name where to put the outputs (default='./'=directory of IW2D)
+    ''' creates an impedance or wake model for many elements (cold beam screens
+    and warm pipes).
+    E is the energy in eV, avbetax and avbetay the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except betas, beta_filename the file with beta functions (in m).
+    nmat is the number of material layers -> look for columns 'material1' to 'material[nmat]'
+    in the file param_filename, and for columns 'thickness1' to thickness[nmat-1]'
+    
+    Bfield: magnetic field (if None, compute it from the energy with LHC bending radius)
+    
+    wake_calc selects the wake computation if True, nflog is the number of frequencies
+    per decade, and ftypescan the type of frequency scan (0,1 or 2: logarithmic only, 
+    linear only or logarithmic with refinement around high-frequency resonance(s) ).
+    
+    namesref are the coll. names (from param_filename) to select (if None take all),
+    
+    if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
+    using the parameters given in power_loss_param, which should be like [sigz(RMS in m),Nb(nb p+),M(nb of bunches)]
+    (assumes Gaussian equidistant bunches and protons)
+    
+    if freq_dep_factor_file is not None, each component is multiplied by a 
+    frequency dependent factor, from the file indicated by this. File should
+    contain (colums): frequency in Hz, then each component (factors for real
+    part, then imaginary part), WITH HEADERS indicating the component (format:
+    see function 'identify_component' in module Impedance + at the end re or 
+    Re for real part and im or Im for imag. part).
+    It is exactly the same for the wake with dist_dep_factor_file (if wake_calc==True).
+    
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus on queue 'queue'
+    		   if 'retrieve' -> retrieve outputs
+    dire contains the directory name where to put the outputs (default='./'=directory of IW2D)'''
 
     # read files
     # file with materials, orientation and thickness
@@ -176,11 +183,11 @@ def LHC_manyelem_iw_model(E,avbetax,avbetay,param_filename,beta_filename,Bfield=
 def LHC_design_Broadband(squeeze=True,wake_calc=False,
 	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param()):
 
-    # LHC broad-band model (longitudinal and transverse)
-    # based on LHC design report (chap. 5)
-    # two different cases: squeezed optics or injection optics
-    # fpar and zpar select the frequencies and
-    # distances (for the wake) scans (objects of the classes freq_param and z_param).
+    ''' LHC broad-band model (longitudinal and transverse)
+    based on LHC design report (chap. 5)
+    two different cases: squeezed optics or injection optics
+    fpar and zpar select the frequencies and
+    distances (for the wake) scans (objects of the classes freq_param and z_param).'''
        
     Q=1;fr=5e9; # quality factor and cutoff
     # shunt impedances (Ohm in long., Ohm/m in transverse)
@@ -243,21 +250,21 @@ def LHC_manyBB_resonator(avbetax,avbetay,param_filename,beta_filename,
 	fcutoff=5e9,Q=1,beta=1,wake_calc=False,namesref=None,
 	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param(),power_loss_param=None):
 	
-    # add up many axisymmetric broad-band resonators into a single model.
-    # only longitudinal and dipolar terms are considered.
-    # avbetax and avbetay are the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except betas, beta_filename the file with beta functions (in m).
-    # fcutoff is the cutoff frequency of the broad-band model (from the beam pipe radius)
-    # and Q the quality factor chosen (usually 1).
-    # beta is the relativistic velocity factor
-    # wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
-    # distances (for the wake) scans (objects of the classes freq_param and z_param).
-    # namesref are the coll. names (from param_filename) to select (if None take all).
-    # if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
-    # using the parameters given in power_loss_param, which should be like
-    # [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
-    # (assumes Gaussian equidistant bunches and protons)
+    ''' add up many axisymmetric broad-band resonators into a single model.
+    only longitudinal and dipolar terms are considered.
+    avbetax and avbetay are the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except betas, beta_filename the file with beta functions (in m).
+    fcutoff is the cutoff frequency of the broad-band model (from the beam pipe radius)
+    and Q the quality factor chosen (usually 1).
+    beta is the relativistic velocity factor
+    wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
+    distances (for the wake) scans (objects of the classes freq_param and z_param).
+    namesref are the coll. names (from param_filename) to select (if None take all).
+    if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
+    using the parameters given in power_loss_param, which should be like
+    [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
+    (assumes Gaussian equidistant bunches and protons)'''
     
     # read files
     # file with materials, orientation and thickness
@@ -320,19 +327,26 @@ def LHC_many_resonators(avbetax,avbetay,param_filename,beta_filename,
 	beta=1,wake_calc=False,namesref=None,
 	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param(),power_loss_param=None):
 	
-    # add up many resonators into a single model.
-    # each device is defined by an HOM file. 
-    # avbetax and avbetay are the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except betas, beta_filename the file with beta functions (in m).
-    # beta is the relativistic velocity factor
-    # wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
-    # distances (for the wake) scans (objects of the classes freq_param and z_param).
-    # namesref are the coll. names (from param_filename) to select (if None take all).
-    # if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
-    # using the parameters given in power_loss_param, which should be like
-    # [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
-    # (assumes Gaussian equidistant bunches and protons)
+    ''' add up many resonators into a single model.
+    each device is defined by an HOM file. 
+    avbetax and avbetay are the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except betas, beta_filename the file with beta functions (in m).
+    beta is the relativistic velocity factor
+    wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
+    distances (for the wake) scans (objects of the classes freq_param and z_param).
+    namesref are the coll. names (from param_filename) to select (if None take all).
+    if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
+    using the parameters given in power_loss_param, which should be like
+    [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
+    (assumes Gaussian equidistant bunches and protons)'''
+    
+    # Extract the directory name (full path) containing the file named 'param_filename' 
+    # This will be added to the filenames contained in the file named 'param_filename'
+    # (Note: works also if the param_filename is only the filename - i.e. there is no '/';
+    # then path contains simply '')
+    ind_last_slash=param_filename.rfind('/');
+    path0=param_filename[:ind_last_slash+1];
     
     # read files
     # file with HOMs file names and individual length of each device
@@ -360,7 +374,7 @@ def LHC_many_resonators(avbetax,avbetay,param_filename,beta_filename,
     
     for iname,name in enumerate(namesref):
     
-    	imp,wake=imp_model_from_HOMfile(filenames[iname],beta=beta,fpar=fpar,zpar=zpar);
+    	imp,wake=imp_model_from_HOMfile(path0+filenames[iname],beta=beta,fpar=fpar,zpar=zpar);
     	
 	if (power_loss_param!=None):
 	    # compute power loss for each individual element
@@ -384,19 +398,19 @@ def LHC_many_striplineBPMs(avbetax,avbetay,param_filename,beta_filename,
 	beta=1,wake_calc=False,namesref=None,
 	fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param(),power_loss_param=None):
 	
-    # add up many stripline BPMS into a single model (using Ng simple fomulas).
-    # each device is defined by an HOM file. 
-    # avbetax and avbetay are the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except betas, beta_filename the file with beta functions (in m).
-    # beta is the relativistic velocity factor
-    # wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
-    # distances (for the wake) scans (objects of the classes freq_param and z_param).
-    # namesref are the coll. names (from param_filename) to select (if None take all).
-    # if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
-    # using the parameters given in power_loss_param, which should be like
-    # [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
-    # (assumes Gaussian equidistant bunches and protons)
+    ''' add up many stripline BPMS into a single model (using Ng simple fomulas).
+    each device is defined by an HOM file. 
+    avbetax and avbetay are the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except betas, beta_filename the file with beta functions (in m).
+    beta is the relativistic velocity factor
+    wake_calc selects the wake computation if True, fpar and zpar select the frequencies and
+    distances (for the wake) scans (objects of the classes freq_param and z_param).
+    namesref are the coll. names (from param_filename) to select (if None take all).
+    if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
+    using the parameters given in power_loss_param, which should be like
+    [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
+    (assumes Gaussian equidistant bunches and protons)'''
     
     # read files
     # file with stripline BPMs parameters and individual length of each device
@@ -450,18 +464,18 @@ def LHC_many_striplineBPMs(avbetax,avbetay,param_filename,beta_filename,
 def LHC_many_holes(avbetax,avbetay,param_filename,beta_filename,
 	fcutoff=5e9,namesref=None,fpar=freq_param(ftypescan=0,nflog=100),zpar=z_param(),power_loss_param=None):
 	
-    # add up many axisymmetric elements with pumping holes into a single model.
-    # only longitudinal and dipolar terms are considered.
-    # avbetax and avbetay are the average beta functions
-    # used for the weighting, param_filename is the file with all parameters
-    # except betas, beta_filename the file with beta functions (in m).
-    # fcutoff is the cutoff frequency (from the beam pipe radius, default value=LHC).
-    # fpar selects the frequencies scan (object of the classes freq_param).
-    # namesref are the coll. names (from param_filename) to select (if None take all).
-    # if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
-    # using the parameters given in power_loss_param, which should be like
-    # [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
-    # (assumes Gaussian equidistant bunches and protons)
+    ''' add up many axisymmetric elements with pumping holes into a single model.
+    only longitudinal and dipolar terms are considered.
+    avbetax and avbetay are the average beta functions
+    used for the weighting, param_filename is the file with all parameters
+    except betas, beta_filename the file with beta functions (in m).
+    fcutoff is the cutoff frequency (from the beam pipe radius, default value=LHC).
+    fpar selects the frequencies scan (object of the classes freq_param).
+    namesref are the coll. names (from param_filename) to select (if None take all).
+    if power_loss_param is not None, compute (and print) the power loss (in W and W/m) for each element,
+    using the parameters given in power_loss_param, which should be like
+    [sigz(RMS in m),gamma,Nb(nb p+),M(nb of bunches)]
+    (assumes Gaussian equidistant bunches and protons)'''
     
     # read files
     # file with all parameters
@@ -520,8 +534,8 @@ def LHC_many_holes(avbetax,avbetay,param_filename,beta_filename,
     
 
 def select_LHC_names(names,pattern=''):
-    # select from a list of LHC device names those that begin with "pattern"
-    # By default, pattern is such that all names are selected.
+    ''' select from a list of LHC device names those that begin with "pattern"
+    By default, pattern is such that all names are selected.'''
     
     namesnew=[];
     for name in names:
