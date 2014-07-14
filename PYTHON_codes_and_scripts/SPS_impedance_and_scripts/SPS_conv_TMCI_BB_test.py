@@ -39,7 +39,7 @@ if __name__ == "__main__":
     Rt=13e6;fr=1.3e9;Q=1; # BB resonator parameters
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../../../DELPHI_results/'+machine+'/BB_model_test_Kevin';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'/BB_model_test_Kevin';
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];

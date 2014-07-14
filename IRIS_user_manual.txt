@@ -151,6 +151,18 @@ written in PYTHON and C++, in particular:
        This creates a directory IRIS in the current directory, with the full package in it.
        
        
+       NOTE: at several places the 'bash' shell is assumed (in particular all Python scripts
+       use environment variables defined in the ~/.bashrc file). If you are using another shell,
+       then either
+        - adapt the installation procedure to use this shell (you need to change only a few
+        'script_configure_bashrc.sh' files in the various directories),
+	- or change to the bash shell each time you use the codes here (typing 'bash' in the terminal),
+        - or, for lxplus at CERN you can change your default shell to 'bash' by going to
+       	https://account.cern.ch/account/Management/MyAccounts.aspx
+	then click on
+	Services -> LXPLUS and Linux -> Settings
+       
+       
        Each part of the package has its own installation procedure: 
        
 	- DELPHI: follow the instructions in DELPHI/DELPHI_user_manual.txt

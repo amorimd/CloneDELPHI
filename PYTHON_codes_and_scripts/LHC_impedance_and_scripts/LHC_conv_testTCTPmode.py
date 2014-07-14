@@ -22,13 +22,13 @@ from LHC_param import LHC_param
 
 def TCTP_modes(scenario=0):
 
-    # retrieve the TCTP low freq. modes parameters (resonance frequencies, shunt impedances
-    # and quality factor), and the collimator settings (half-gaps and beta functions)
-    # scenario is the TCT settings & beta functions scenario (from Roderik Bruce):
-    #	0 = first realistic (small beta*),
-    #	1 = second realistic (large beta*),
-    #	2 = first pessimistic (8 sigmas, beta*=0.55 m),
-    #	3 = second pessimistic (12 sigmas, beta*=1.5 m).
+    ''' retrieve the TCTP low freq. modes parameters (resonance frequencies, shunt impedances
+    and quality factor), and the collimator settings (half-gaps and beta functions)
+    scenario is the TCT settings & beta functions scenario (from Roderik Bruce):
+    	0 = first realistic (small beta*),
+    	1 = second realistic (large beta*),
+    	2 = first pessimistic (8 sigmas, beta*=0.55 m),
+    	3 = second pessimistic (12 sigmas, beta*=1.5 m).'''
     
     # fr (Hz), R (Ohm/m) and Q from CST for 5 mm half-gap (correct materials) (from Benoit Salvant)
     fmodes=np.array([0.099,0.201,0.307,0.514,0.607])*1.e9;
@@ -59,15 +59,15 @@ def TCTP_modes(scenario=0):
 
 def TCTP_modes_impedance(betaavx,betaavy,nmodes=1,scenario=0,flagplot=True):
 
-    # compute TCTP low freq. modes impedance
-    # betaavx and betaavy are the average betas taken for the beta function weighting (usually circ/(2*pi*tune) ),
-    # nmodes is the number of resonances taken into account (up to 5), scenario is the
-    # TCT settings & beta functions scenario (from Roderik Bruce):
-    #	0 = first realistic (small beta*),
-    #	1 = second realistic (large beta*),
-    #	2 = first pessimistic (8 sigmas, beta*=0.55 m),
-    #	3 = second pessimistic (12 sigmas, beta*=1.5 m).
-    # plot total modes impedance only when flagplot is True.
+    ''' compute TCTP low freq. modes impedance
+    betaavx and betaavy are the average betas taken for the beta function weighting (usually circ/(2*pi*tune) ),
+    nmodes is the number of resonances taken into account (up to 5), scenario is the
+    TCT settings & beta functions scenario (from Roderik Bruce):
+    	0 = first realistic (small beta*),
+    	1 = second realistic (large beta*),
+    	2 = first pessimistic (8 sigmas, beta*=0.55 m),
+    	3 = second pessimistic (12 sigmas, beta*=1.5 m).
+    plot total modes impedance only when flagplot is True.'''
     
     fmodes,Rmodes,Qmodes,halfgap,Rnorm_halfgap,namesTCT,settTCT,modestr=TCTP_modes(scenario=scenario);
     

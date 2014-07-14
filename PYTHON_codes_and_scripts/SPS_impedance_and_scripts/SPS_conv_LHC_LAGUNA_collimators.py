@@ -38,7 +38,7 @@ if __name__ == "__main__":
     beta=np.sqrt(1.-1./(gamma**2))
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../../../DELPHI_results/'+machine+'_coll';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'_coll';
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
@@ -48,8 +48,8 @@ if __name__ == "__main__":
     flagnorm=0; # 1 if damper matrix normalized at current chromaticity (instead of at zero chroma)
     flagplotQp=1; # 1 to do the plots vs Qp
     #flagcompute=0; # 0 to avoid computing (simply plot from existing data)
-    flagSach=(lxplusbatchDEL=='launch'); # 1 to compute Sacherer tuneshifts, 0 to retrieve them
-    #flagSach=0; # 1 to compute Sacherer tuneshifts, 0 to retrieve them
+    #flagSach=(lxplusbatchDEL=='launch'); # 1 to compute Sacherer tuneshifts, 0 to retrieve them
+    flagSach=0; # 1 to compute Sacherer tuneshifts, 0 to retrieve them
     
     wake_calc=False
        
@@ -213,7 +213,7 @@ if __name__ == "__main__":
 				flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=None,freqd=None,
 				kmax=kmax,kmaxplot=kmaxplot,crit=5.e-2,abseps=1e-3,
 				lxplusbatch=lxplusbatchDEL,comment=machine+scenario+'_'+float_to_str(round(E/1e9))+'GeV_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
-				queue='1nd',dire=root_result+'/');
+				queue='2nd',dire=root_result+'/');
 
 			for iQp,Qp in enumerate(Qpscan):
 

@@ -38,7 +38,7 @@ if __name__ == "__main__":
     taub=4*sigmaz/(beta*c);Qs=0.014262;omegas=Qs*omega0;
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../../../DELPHI_results/'+machine+'_Q20';
+    root_result=path_here+'../../../DELPHI_results/'+machine+'_Q20';
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];

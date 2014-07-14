@@ -35,7 +35,7 @@ if __name__ == "__main__":
     machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qy,Qyfrac,Qs,eta,f0,omega0,omegas,dphase,Estr=SPS_param(E0,E=26e9);
 
     # directory (inside DELPHI_results/[machine]) where to put the results
-    root_result='../../../DELPHI_results/'+machine;
+    root_result=path_here+'../../../DELPHI_results/'+machine;
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
