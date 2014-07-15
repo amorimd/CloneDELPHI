@@ -10,7 +10,7 @@
 
 Author: Nicolas Mounet, CERN BE, Geneva
 
-Last modifications: 10/07/2014
+Last modifications: 15/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org,
 or imp-inst@cern.ch
@@ -686,7 +686,9 @@ the wake functions. This can be quite long.
        color=['b','xr','g','m','c','y','k'];
        
        
-              
+       There is an example of running these routines in
+       command_plots_impedance.txt
+       
 
 6. TROUBLESHOOTING
    ===============

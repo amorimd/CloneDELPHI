@@ -446,7 +446,7 @@ FILE
     LHC_param.py
 
 FUNCTIONS
-    LHC_param(E0, E=7000000000000.0)
+    LHC_param(E0, E=7e12)
 	generate typical LHC parameters, given the proton rest energy E0 in J (from e.g. function
 	proton_param) and the beam energy E in eV.
 	Outputs:
@@ -466,12 +466,12 @@ FUNCTIONS
 	- omega0: revolution angular frequency=2pi*f0,
 	- omegas: synchrotron angular frequency=Qs*omega0,
 	- dphase: phase of damper w.r.t. "normal" purely resistive damper,
-	- Estr: string with energy (e.g. '7TeV', '450GeV', etc. - see below),
-	- V: RF voltage in V,,
+	- Estr: string with energy (e.g. '7TeV', '450GeV'),
+	- V: RF voltage in V,
 	- h: harmonic number.
     
 #############
-# Folders LHC_elements/ and Coll_settings/
+# Folders LHC_elements and Coll_settings
 
 # Those are folders containing all the LHC & HL-LHC machine elements parameters and settings,
 # used to compute the impedances (collimators half-gaps, materials, all beta functions, HOMs, 
@@ -568,20 +568,23 @@ LHC_HLLHC_new_comp_imp.py
 converged within at worst 5%) -> kmax=1 is enough when we look only at most unstable mode
 - kmaxplot: number of kept and plotted eigenvalues (in TMCI plot)
 - g,a,b: longitudinal distribution parameters, usually from longdistribution_decomp function (from DELPHI.py) 
+- margin_factor (always 1): factor by which ones multiply all impedances (never used now)
 
-- scan definition:
+- typical scan definition:
     
     Scans on impedance model parameters (all these scans have same length -> all arrays are corresponding
     to each others):
-    * scenarioscan
-    * dircollscan
-    * legscen
-    * squeezescan
-    * Escan
+    * scenarioscan: scan on impedance scenarios
+    * dircollscan: corresponding scan on collimator settings directory (inside ImpedanceWake2D directory)
+      where to put the collimator impedance RW computations
+    * param_filename_coll_scan and settings_filename_coll_scan: correspondgin scans
+      of collimator parameters and settings files
+    * legscen: corresponding scan on legends for each scenario
+    * squeezescan: corresponding scan on squeeze (in IP1, 2, 5 and 8) option
+    * Escan: corresponding scan on beam energy (injection, top energy)
     * subscan: subscan of the 5 previous, to select only a few scenarios in the previous without
-    redefining everything
+      redefining everything
     * strsubscan: string to be added to general plots with all these scenarios
-    * margin_factor (always 1): factor by which ones multiply all impedances (never used now)
     
     Scans on beam & machine parameters (all these scans are typically done on top of each others ->
     can make up many many calculations - but remember that intensity scan, damper gain and phase scans, and Qs scans
