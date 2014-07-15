@@ -295,10 +295,10 @@ if __name__ == "__main__":
 					#    Qpscan=s[:,0];ts=s[:,1];
 
 					sgn=1;sgnstr='';
-					#if (ir==1): sgn=-1;sgnstr='-'; # invert sign of imaginary part
-					#plot(csiscan,np.squeeze(sgn*ts),'DELPHI, '+scenario,col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQp[ir],0,xlab=" $ Q^' $ ");
-					#if damp==0:
-					#    plot(Qpscan,np.squeeze(sgn*tsSach),'Sacherer, '+strhgapleg+', '+scenario,'--'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQp[ir],0,xlab=" $ Q^' $ ");
+					if (ir==1): sgn=-1;sgnstr='-'; # invert sign of imaginary part
+					plot(csiscan,np.squeeze(sgn*ts),'DELPHI, '+scenario,col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQp[ir],0,xlab=" $ Q^' $ ");
+					if damp==0:
+					    plot(csiscan,np.squeeze(sgn*tsSach),'Sacherer, '+strhgapleg+', '+scenario,'--'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQp[ir],0,xlab=" $ Q^' $ ");
 
 					#if (M==1):
 				    #	# compare with HEADTAIL
