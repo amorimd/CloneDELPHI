@@ -766,5 +766,6 @@ impedance library in Impedance.py)
 	complex tuneshifts)
 
   LHC_tuneshift.py (VERY SIMPLE AND RECENT)
-  	Very simple and recent script to compute complex tuneshifts vs Q' in a single case.
+  	Very simple and recent script to compute real tuneshifts of mode 0, vs Q', in a single case
+	(from sum Zdip+Zquad).
 
