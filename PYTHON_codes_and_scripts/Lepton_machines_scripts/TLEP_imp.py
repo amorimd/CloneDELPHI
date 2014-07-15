@@ -24,6 +24,29 @@ from DELPHI import *
 
 def TLEP_param(E=45e9,option='Z',Qxfrac=0.2,Qyfrac=0.15):
 
+    ''' generate typical TLEP parameters, the beam energy E in eV, the TLEP option 
+    ('Z', 'H', 'W', 't', 'tB' or 'Z4C') and the fraction parts of the tunes.
+    Outputs:
+    - machine: string with machine name(here 'TLEP'+option),
+    - E: same as input (beam energy in eV),
+    - gamma: relativistic mass factor,
+    - sigmaz: RMS bunch length in m,
+    - taub: total bunch length in s (4*RMS),
+    - R: machine pysical radius (circumference/(2 pi)),
+    - Qx: total horizontal tune (integer + fractional parts),
+    - Qxfrac: fractional horizontal tune,
+    - Qy: total vertical tune (integer + fractional parts),
+    - Qyfrac: fractional vertical tune,
+    - Qs: synchrotron tune,
+    - eta: slippage factor (alpha_p-1/gamma^2),
+    - f0: revolution frequency,
+    - omega0: revolution angular frequency=2pi*f0,
+    - omegas: synchrotron angular frequency=Qs*omega0,
+    - dphase: phase of damper w.r.t. "normal" purely resistive damper,
+    - Estr: string with energy (e.g. '45GeV').
+    - syncdamp: synchrotron transverse damping time (transverse=2*longitudinal) in seconds.
+    '''
+
     e,m0,c,E0=electron_param();
     # E is the energy in eV
     Estr=str(int(E/1e9))+'GeV';print Estr
@@ -98,23 +121,24 @@ def TLEP_param(E=45e9,option='Z',Qxfrac=0.2,Qyfrac=0.15):
 def TLEP_imp(gamma,circ,avbetax,avbetay,length_dip=11.,length_absorber=0.5,
 	bending_radius=11000,b=0.015,dire='TLEP',wake_calc=False,lxplusbatch=None,option='all'):
 
-    # all units are SI.
-    # gamma is the relativistic mass factor and circ the total circumference
-    # avbetax and avbetay are the average beta functions (where kick will be applied)
-    # length_dip is the dipole length, length_absorber the photon absorber length, 
-    # bending_radius the dipoles bending radius, b the vertical semi-axis
-    # dire is the directory in ImpedanceWake2D where to put the results
-    # wake_calc should be True to compute wake as well
-    # lxplusbatch: if None, no use of lxplus batch system
-    # 		   if 'launch' -> launch calculation on lxplus
-    #		   if 'retrieve' -> retrieve outputs
-    # option:
-    #  -'all': compute total impedance
-    #  -'RW': resistive-wall only
-    #  -'RWnoabs' : resistive-wall without absorber part
-    #  -'BB' : total broad-band part
-    #  -'RF': only broad-band from RF
-    #  -'abs': only absorber part (RW+BB from tapers)
+    ''' Generates TLEP impedance and wake model
+    all units are SI.
+    gamma is the relativistic mass factor and circ the total circumference
+    avbetax and avbetay are the average beta functions (where kick will be applied)
+    length_dip is the dipole length, length_absorber the photon absorber length, 
+    bending_radius the dipoles bending radius, b the vertical semi-axis
+    dire is the directory in ImpedanceWake2D where to put the results
+    wake_calc should be True to compute wake as well
+    lxplusbatch: if None, no use of lxplus batch system
+     		   if 'launch' -> launch calculation on lxplus
+    		   if 'retrieve' -> retrieve outputs
+    option:
+     -'all': compute total impedance
+     -'RW': resistive-wall only
+     -'RWnoabs' : resistive-wall without absorber part
+     -'BB' : total broad-band part
+     -'RF': only broad-band from RF
+     -'abs': only absorber part (RW+BB from tapers)'''
     
     Ax=0.045; # horizontal aperture of vacuum pipe
     # compute absorber aperture from dipole & absorber lengths

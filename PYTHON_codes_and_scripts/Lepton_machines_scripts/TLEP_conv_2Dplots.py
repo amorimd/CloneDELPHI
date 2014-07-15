@@ -20,6 +20,43 @@ from VEPP import VEPP_damper
 
 def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
 
+    ''' old function to generate typical TLEPZ parameters, given the electron rest energy 
+    E0 in J (from e.g. function proton_param) and the impedance option Zoption.
+    It also generates a dipolar impedance, depending on Zoption:
+    - if Zoption=0: total realistic impedance (RF cavities from Rama Calaga files + resistive-wall)
+    - if Zoption=1: RF broadband only
+    - if Zoption=2: RF from Rama Calaga only
+    - if Zoption=3: resistive wall (RW) only
+    - if Zoption=4: total impedance (RF+RW) with RF cavities as broad-band
+     
+    When flagplot=True, some impedance plots are produced, that are automatically
+    saved if flagsave=True (otherwise they are plotted on screen).
+    
+    Outputs:
+    - machine: string with machine name ('TLEPZ'),
+    - E: beam energy in eV (45.5 GeV),
+    - gamma: relativistic mass factor,
+    - sigmaz: RMS bunch length in m,
+    - taub: total bunch length in s (4*RMS),
+    - R: machine pysical radius (circumference/(2 pi)),
+    - Qx: total horizontal tune (integer + fractional parts),
+    - Qxfrac: fractional horizontal tune,
+    - Qs: synchrotron tune,
+    - eta: slippage factor (alpha_p-1/gamma^2),
+    - M: number of bunches (1),
+    - f0: revolution frequency,
+    - omega0: revolution angular frequency=2pi*f0,
+    - omegas: synchrotron angular frequency=Qs*omega0,
+    - dphase: phase of damper w.r.t. "normal" purely resistive damper,
+    - nx: coupled-bunch mode number (0),
+    - R1: total shunt impedance of broad-band resonator (Ohm/m) used to model RF cavities,
+    (including beta function weight),
+    - Zx: horizontal dipolar impedance (funcion of frequencies),
+    - f: frequencies corresponding to impedance,
+    - model: name of impedance model option chosen,
+    - syncdamp: synchrotron transverse damping time (transverse=2*longitudinal) in seconds.
+    '''
+
     e=1.602176487e-19; # elementary charge
     c=299792458;
     # fixed parameters
@@ -68,7 +105,7 @@ def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
      
     # resistive-wall impedance
     radius=20; # beam pipe radius
-    filename='../../ImpedanceWake2D/TLEP/ZxdipWTLEP_1layers'+str(radius)+'.00mm_TLEP_Al_beampipe.dat';
+    filename=path_here+'TLEP_impedance/ZxdipWTLEP_1layers'+str(radius)+'.00mm_TLEP_Al_beampipe.dat';
     s=read_ncol_file(filename,ignored_rows=1);
     fRes=s[:,0];ZRes=np.zeros((len(fRes),2));
     ZRes[:,0]=s[:,1];
@@ -116,7 +153,7 @@ def TLEPZ_param(E0,Zoption=0,flagplot=False,flagsave=False):
     	return machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qs,eta,M,f0,omega0,omegas,dphase,nx,R1,ZRF_Rama,fRF_Rama,'_RF_Rama',syncdamp;
 
     elif Zoption==3:
-    	# RF resistive wall only
+    	# resistive wall only
     	return machine,E,gamma,sigmaz,taub,R,Qx,Qxfrac,Qs,eta,M,f0,omega0,omegas,dphase,nx,R1,ZRes,fRes,'_res_wall_Al_'+str(radius)+'mm',syncdamp;
 
     elif Zoption==4:

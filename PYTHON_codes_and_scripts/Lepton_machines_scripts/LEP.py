@@ -19,6 +19,33 @@ from VEPP import VEPP_damper
 
 def LEP_param(E0):
 
+    ''' generates typical LEP parameters at injection, given the electron rest energy 
+    E0 in J (from e.g. function proton_param), and generate dipolar impedance (as two
+    broad-band resonators). See Karliner-Popov paper (2005).
+    Outputs:
+    - machine: string with machine name ('VEPP'),
+    - E: beam injection energy in eV (22 GeV),
+    - gamma: relativistic mass factor,
+    - sigmaz: RMS bunch length in m,
+    - taub: total bunch length in s (4*RMS),
+    - R: machine pysical radius (circumference/(2 pi)),
+    - Qx: total horizontal tune (integer + fractional parts),
+    - Qxfrac: fractional horizontal tune,
+    - Qs: synchrotron tune,
+    - eta: slippage factor (alpha_p-1/gamma^2),
+    - M: number of bunches (1),
+    - f0: revolution frequency,
+    - omega0: revolution angular frequency=2pi*f0,
+    - omegas: synchrotron angular frequency=Qs*omega0,
+    - dphase: phase of damper w.r.t. "normal" purely resistive damper,
+    - nx: coupled-bunch mode number (0),
+    - R1: shunt impedance of main broad-band resonator (Ohm/m) in the impedance model
+    (including beta function weight),
+    - Zx: horizontal dipolar impedance (funcion of frequencies),
+    - f: frequencies corresponding to impedance,
+    - model: name of impedance model.
+    '''
+    
     e=1.602176487e-19; # elementary charge
     c=299792458;
     # fixed parameters

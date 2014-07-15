@@ -83,7 +83,7 @@ if __name__ == "__main__":
 	col=['b','r','g','m','k','c','y'];mark=['.','x'];
 
 	# scan definitions
-	Qfracscan=np.arange(0.01,0.5,0.01);;
+	Qfracscan=np.arange(0.01,0.5,0.01);
 	#Zoptionscan=['all','RW','RWnoabs','BB','RF','abs'];
 	Zoptionscanleg=['Total impedance','Total resistive-wall imp.','Resistive-wall from vacuum pipe','Photon absorbers tapers + RF','Only RF','Total absorbers imp.'];
 	ldip=11.;ildip=0;

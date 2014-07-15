@@ -29,14 +29,15 @@ from DELPHI import *
 
 def ALBA_imp(circ=268.,gamma=5871,avbetax=6.4917,avbetay=9.1260,dire='ALBA_lumped/',wake_calc=False,lxplusbatch=None):
 
-    # all units are SI.
-    # gamma is the relativistic mass factor and circ the total circumference
-    # avbetax and avbetay are the average beta functions (where kick will be applied)
-    # dire is the directory in ImpedanceWake2D where to put the results
-    # wake_calc should be True to compute wake as well
-    # lxplusbatch: if None, no use of lxplus batch system
-    #            if 'launch' -> launch calculation on lxplus
-    #           if 'retrieve' -> retrieve outputs
+    ''' generates impedance model for ALBA ring
+    - circ is circumference in m
+    - gamma is the relativistic mass factor and circ the total circumference
+    - avbetax and avbetay are the average beta functions where to apply kick (must be R/Q for DELPHI computations later)
+    - dire is the directory in ImpedanceWake2D where to put the results
+    - wake_calc should be True to compute wake as well
+    - lxplusbatch: if None, no use of lxplus batch system
+                if 'launch' -> launch calculation on lxplus
+               if 'retrieve' -> retrieve outputs '''
 
     imp_mod=[];wake_mod=[];
 
