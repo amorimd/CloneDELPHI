@@ -1,7 +1,7 @@
 #########################################################################################
 #########################################################################################
 #											#
-#	Some basic info about LHC functions and scripts					#
+#	Some basic info about SPS functions and scripts					#
 #											#
 #########################################################################################
 #########################################################################################
@@ -105,13 +105,12 @@ SPS_conv_LHC_LAGUNA_collimators.py
 # - parameters and scanned parameters definition
 # - impedance model computation
 # - DELPHI computation (sometimes with Sacherer also)
-# - plots of results (typically growth_rate vs Q' or vs. intensity, TMCI plots, or stability limis).
+# - plots of results (typically growth_rate vs Q' or vs. intensity, TMCI plots, etc.).
 
 ##########
 # Typical variables that are very often used (see also SPS parameters described above in SPS_param function)
 # in these scripts examples:
 
-- beam='1' -> '1' for beam 1, '2' for beam 2
 - root_result: directory where to put the results
 - flagnorm (always 0): 1 if damper matrix normalized at current chromaticity; 0
   if instead it is normalized at zero chroma (which I almost always assume)
@@ -168,8 +167,7 @@ impedance library in Impedance.py)
 
 
 ###########
-# Short description of each script (we indicate if the script is old so not using the latest 
-# library functionalities or even likely to crash)
+# Short description of each script
 
 # NOTE: in all cases except for SPS_conv_LHC_LAGUNA_collimators.py,
 # the first launch is useless and one can do right away
