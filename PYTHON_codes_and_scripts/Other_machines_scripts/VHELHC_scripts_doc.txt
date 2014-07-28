@@ -1,0 +1,13 @@
+
+NAME
+    VHELHC_aperture_scan
+
+FILE
+    VHELHC_aperture_scan.py
+
+FUNCTIONS
+    VHELHC_param(E=50000000000000.0, Qxfrac=0.90000000000000002, Qyfrac=0.90000000000000002, V=16000000.0)
+    
+
+    VHELHC_coating_scan.py
+

@@ -22,8 +22,6 @@ from plot_lib import plot,init_figure,end_figure,cmap
 from particle_param import *
 from Impedance import *
 from DELPHI import *
-from LHC_imp import *
-from LHC_coll_imp import *
 from VHELHC_aperture_scan import VHELHC_param
 
 
