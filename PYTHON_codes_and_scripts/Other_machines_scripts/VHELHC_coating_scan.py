@@ -290,19 +290,6 @@ if __name__ == "__main__":
 						if damp==0:
 					    	    plot(Qpscan,np.squeeze(sgn*tsSach),'Sacherer, '+strcoatleg+', '+scenario,'--'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQpm0,0,xlab=" $ Q^' $ ");
 
-					    #if (M==1):
-					#	# compare with HEADTAIL
-					#	nsl=50;npr=100000;nlin=1; # HEADTAIL parameters for comparison
-					#	fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_lin_dip_quad';
-					#	rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/SPS/SPS_1b_ntwake10_nsl"+str(nsl)+"_npr"+str(npr)+"_nlin"+str(nlin)+"_I"+float_to_str(Nb*1.08333333333/1e11)+"_pre1_drate"+float_to_str(damp)+"_flagdamp0";
-					#	#fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_nonlin_all'
-					#	#rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/LHC_with_damper/LHC_testTCTPmodes/LHC_damper_1b_ntwake20_nkick1_nsl500_npr1000000_I1p5_qsec0_oct0_baseline_nlin4_drate"+float_to_str(damp);
-					#	sufHEADTAIL="_Sussix_aver_most_tau.txt";
-					#	s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-					#	fact=1;
-                                	#	if (ir==1): fact=1./omega0; # for imaginary part, divide by omega0
-                                	#	plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+scenario,'x'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0)/Q_s $ ",axQp[ir],0,xlab=" $ Q^' $ ");
-
 					# finish plots vs Qp
 					if (ir==0):
 					    end_figure(figQpm0,axQpm0,save=flagsave*(fileoutplotQpm0+'_'+r))
@@ -357,19 +344,6 @@ if __name__ == "__main__":
 					dampstr=str(int(damping))+' turns damping';
 					plot(coatscan*1e6,f0/damping*np.ones(len(coatscan)),dampstr,'-'+col[iscenario+idamping+1],ylab,ax,3,xlab=" coating thickness [ $ \mu $ m] ");
 				    
-				    #if (M==1):
-				#	# compare with HEADTAIL
-				#	nsl=50;npr=100000;nlin=1; # HEADTAIL parameters for comparison
-				#	fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_lin_dip_quad';
-				#	rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/SPS/SPS_1b_ntwake10_nsl"+str(nsl)+"_npr"+str(npr)+"_nlin"+str(nlin)+"_I"+float_to_str(Nb*1.08333333333/1e11)+"_pre1_drate"+float_to_str(damp)+"_flagdamp0";
-				#	#fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_nonlin_all'
-				#	#rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/LHC_with_damper/LHC_testTCTPmodes/LHC_damper_1b_ntwake20_nkick1_nsl500_npr1000000_I1p5_qsec0_oct0_baseline_nlin4_drate"+float_to_str(damp);
-				#	sufHEADTAIL="_Sussix_aver_most_tau.txt";
-				#	s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-				#	fact=1;
-                                #	if (ir==1): fact=1./omega0; # for imaginary part, divide by omega0
-                                #	plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+scenario,'x'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0)/Q_s $ ",axQp[ir],0,xlab=" $ Q^' $ ");
-
 				    # finish plots vs coating
 				    end_figure(fig,ax,save=flagsave*(fileoutplotcoat+'_'+r))
 

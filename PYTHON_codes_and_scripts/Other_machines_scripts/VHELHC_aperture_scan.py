@@ -25,6 +25,27 @@ from DELPHI import *
 
 def VHELHC_param(E=50e12,Qxfrac=0.9,Qyfrac=0.9,V=16e6):
 
+    ''' generate typical VHELHC parameters, from the beam energy E in eV, the fractional parts of the tunes and the RF voltage in V.
+    Outputs:
+    - machine: string with machine name(here 'TLEP'+option),
+    - E: same as input (beam energy in eV),
+    - gamma: relativistic mass factor,
+    - sigmaz: RMS bunch length in m,
+    - taub: total bunch length in s (4*RMS),
+    - R: machine pysical radius (circumference/(2 pi)),
+    - Qx: total horizontal tune (integer + fractional parts),
+    - Qxfrac: fractional horizontal tune,
+    - Qy: total vertical tune (integer + fractional parts),
+    - Qyfrac: fractional vertical tune,
+    - Qs: synchrotron tune,
+    - eta: slippage factor (alpha_p-1/gamma^2),
+    - f0: revolution frequency,
+    - omega0: revolution angular frequency=2pi*f0,
+    - omegas: synchrotron angular frequency=Qs*omega0,
+    - dphase: phase of damper w.r.t. "normal" purely resistive damper (0),
+    - Estr: string with energy (e.g. '50TeV').
+    '''
+
     e,m0,c,E0=proton_param();
     # E is the energy in eV
     Estr=str(int(E/1e12))+'TeV';print Estr
@@ -314,19 +335,6 @@ if __name__ == "__main__":
 						if damp==0:
 					    	    plot(Qpscan,np.squeeze(sgn*tsSach),'Sacherer, '+strhgapleg+', '+scenario,'--'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ",axQpm0,0,xlab=" $ Q^' $ ");
 
-					    #if (M==1):
-					#	# compare with HEADTAIL
-					#	nsl=50;npr=100000;nlin=1; # HEADTAIL parameters for comparison
-					#	fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_lin_dip_quad';
-					#	rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/SPS/SPS_1b_ntwake10_nsl"+str(nsl)+"_npr"+str(npr)+"_nlin"+str(nlin)+"_I"+float_to_str(Nb*1.08333333333/1e11)+"_pre1_drate"+float_to_str(damp)+"_flagdamp0";
-					#	#fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_nonlin_all'
-					#	#rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/LHC_with_damper/LHC_testTCTPmodes/LHC_damper_1b_ntwake20_nkick1_nsl500_npr1000000_I1p5_qsec0_oct0_baseline_nlin4_drate"+float_to_str(damp);
-					#	sufHEADTAIL="_Sussix_aver_most_tau.txt";
-					#	s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-					#	fact=1;
-                                	#	if (ir==1): fact=1./omega0; # for imaginary part, divide by omega0
-                                	#	plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+scenario,'x'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0)/Q_s $ ",axQp[ir],0,xlab=" $ Q^' $ ");
-
 					# finish plots vs Qp
 					if (ir==0):
 					    end_figure(figQpm0,axQpm0,save=flagsave*(fileoutplotQpm0+'_'+r))
@@ -380,19 +388,6 @@ if __name__ == "__main__":
 				    for idamping,damping in enumerate([10.,20.,50.]):
 					dampstr=str(int(damping))+' turns damping';
 					plot(hgapscan*1e3,f0/damping*np.ones(len(hgapscan)),dampstr,'-'+col[iscenario+idamping+1],ylab,ax,2,xlab=" half-gap [mm] ");
-				    
-				    #if (M==1):
-				#	# compare with HEADTAIL
-				#	nsl=50;npr=100000;nlin=1; # HEADTAIL parameters for comparison
-				#	fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_lin_dip_quad';
-				#	rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/SPS/SPS_1b_ntwake10_nsl"+str(nsl)+"_npr"+str(npr)+"_nlin"+str(nlin)+"_I"+float_to_str(Nb*1.08333333333/1e11)+"_pre1_drate"+float_to_str(damp)+"_flagdamp0";
-				#	#fileoutplotQp=fileoutplotQp+'_vs_HEADTAIL_nonlin_all'
-				#	#rootHEADTAIL="/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/LHC_with_damper/LHC_testTCTPmodes/LHC_damper_1b_ntwake20_nkick1_nsl500_npr1000000_I1p5_qsec0_oct0_baseline_nlin4_drate"+float_to_str(damp);
-				#	sufHEADTAIL="_Sussix_aver_most_tau.txt";
-				#	s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-				#	fact=1;
-                                #	if (ir==1): fact=1./omega0; # for imaginary part, divide by omega0
-                                #	plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+scenario,'x'+col[iscenario],"$ "+sgnstr+strpart[ir]+"(Q-Q_0)/Q_s $ ",axQp[ir],0,xlab=" $ Q^' $ ");
 
 				    # finish plots vs half-gap
 				    end_figure(fig,ax,save=flagsave*(fileoutplothg+'_'+r))
