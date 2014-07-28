@@ -1,4 +1,0 @@
-# PS at injection:
-~/Documents/DATA_HEADTAIL/multikick/PS_test_7b$ ~/Documents/PYTHON/read_Headtail_hdtl.py -f PS_test_7b_ntwake10_nkick1_nsl50_npr100000/PS_test_100000_hdtl.dat -b 1:7
-
-
