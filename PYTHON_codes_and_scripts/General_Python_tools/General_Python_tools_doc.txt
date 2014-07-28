@@ -372,12 +372,12 @@ FUNCTIONS
 
 
 #################################################################################
-#    parser 									#
+#    parser_lib 									#
 # library with parser routines (for command line options)			#
 #################################################################################
 
 FILE
-    parser.py
+    parser_lib.py
 
 FUNCTIONS
     bunch_parse(option, opt_str, value, parser)

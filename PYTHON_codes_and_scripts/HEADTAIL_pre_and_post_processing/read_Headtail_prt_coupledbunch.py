@@ -1,8 +1,13 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 from optparse import OptionParser
 from string import *
 import pylab,os,re
@@ -13,7 +18,6 @@ from io_lib import list_files
 from string_lib import takeout_common
 from read_Headtail_prt import extract_Headtail_param
 from read_Headtail_prt_fit import read_prt_file
-#from read_Headtail_prt_sussix import extract
 from read_Headtail_prt_laplace import find_peak_lapl,Laplace
 from numpy.fft import fft,fft2,fftshift
 import numpy as np

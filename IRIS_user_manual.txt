@@ -11,7 +11,7 @@
 
 Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
-Last modifications: 11/07/2014
+Last modifications: 28/07/2014
 
 Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
 and/or imp-inst@cern.ch
@@ -81,12 +81,6 @@ written in PYTHON and C++, in particular:
 		* LHC_impedance_and_scripts: LHC & HL-LHC impedance model generation (including data files 
 		with parameters and beta functions), and scripts for complex tuneshifts computation,
 		
-		* HEADTAIL_pre_and_post_processing: HEADTAIL pre and postprocessing scripts (compatible with HEADTAIL 
-		multibunch version) ,
-		
-		* Data_analysis: Data analysis scripts (particularly adapted to LHC Timber data, but also to PS & 
-		PSB matlab files obtained in a "Guido Sterbini" way),
-		
 		* SPS_impedance_and_scripts: SPS impedance models (from Carlo Zannini) and scripts,
 		
 		* Lepton_machines_scripts: scripts to compute complex tuneshifts, and sometimes impedance models,
@@ -94,8 +88,13 @@ written in PYTHON and C++, in particular:
 		
 		* Other_machines_scripts: Other machines scripts (now only VHE-LHC, actually),
 		
-		* Other_Python_tools: some other python tools,
-	
+		* HEADTAIL_pre_and_post_processing: HEADTAIL pre and postprocessing scripts (compatible with HEADTAIL 
+		multibunch version) ,
+		
+		* Data_analysis: Data analysis scripts (particularly adapted to LHC Timber data, but also to PS & 
+		PSB matlab files obtained in a "Guido Sterbini" way),
+		
+		
 
 	- External_libs: 
 		
@@ -222,7 +221,7 @@ written in PYTHON and C++, in particular:
 			    ./script_configure_bashrc.sh
 			
 		* Impedance_lib_Python: Impedance python library:
-			~ you need to have installed ImpedanceWake2D first (see above)
+			~ you need to have installed ImpedanceWake2D first, as well as General_Python_tools (see above)
 			~ to be able to use the function 'imp_model_from_IW2D' with lxplusbatch='launch' or 'retrieve'
 			(i.e. to launch parallel jobs on a cluster - typically lxplus at CERN), you need
 			to have the LSF batch system installed (this is the case on lxplus at CERN),
@@ -236,7 +235,7 @@ written in PYTHON and C++, in particular:
 			    ./script_configure_bashrc.sh
 
 		* DELPHI_Python: 
-			~ you need to have installed DELPHI first (see above)
+			~ you need to have installed DELPHI first as well as General_Python_tools (see above)
 			~ to be able to use the DELPHI encapsulating functions with lxplusbatch='launch' or 'retrieve'
 			(i.e. to launch parallel jobs on a cluster - typically lxplus at CERN), you need
 			to have the LSF batch system installed (this is the case on lxplus at CERN),
@@ -248,13 +247,38 @@ written in PYTHON and C++, in particular:
 			    cd PYTHON_codes_and_scripts/DELPHI_Python
 			    ./script_configure_bashrc.sh
 
-		* LHC_impedance_and_scripts:  
-		* HEADTAIL_pre_and_post_processing:
-		* Data_analysis:
+		* LHC_impedance_and_scripts:
+			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
+		
 		* SPS_impedance_and_scripts:
-		* Lepton_machines_scripts: 
-		* Other_machines_scripts: 
-		* Other_Python_tools:
+			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
+		
+		* Lepton_machines_scripts:
+			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
+		
+		* Other_machines_scripts:
+			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
+		
+		* HEADTAIL_pre_and_post_processing:
+			~ You need to have installed SUSSIX, General_Python_tools.
+			~ Some of the scripts in the Data_analysis folder use functions from here, so you should add
+			add to your PYTHONPATH the HEADTAIL_pre_and_post_processing folder.
+			Moreover, it is usually convenient to run these command-line scripts from
+			the place were the HEADTAIL data is located, in which case it is nice to put this folder
+			also in your PATH.
+			To do these 2 operations, you simply need to type on a terminal
+			
+			    cd PYTHON_codes_and_scripts/HEADTAIL_pre_and_post_processing
+			    ./script_configure_bashrc.sh
+		
+		* Data_analysis:
+			~ You need to have installed SUSSIX, General_Python_tools and HEADTAIL_pre_and_post_processing.
+			~ It is usually convenient to run these command-line scripts from
+			the place were the data is located, in which case it is nice to put this folder
+			in your PATH. To do this, you simply need to type on a terminal
+			
+			    cd PYTHON_codes_and_scripts/Data_analysis
+			    ./script_configure_bashrc.sh
 	
 		
 		Don't forget to reload your bashrc (open a new terminal, or type source ~/.bashrc in the current one).

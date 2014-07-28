@@ -1,14 +1,19 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-#sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import pylab,re,random
 import numpy as np
 from string import split, replace
-from parser import *
 import math
 import matplotlib
-from parser import bunch_parse
+from parser_lib import *
 from plot_lib import cmap,plot,init_figure,end_figure,set_legend_fontsize
 from io_lib import list_files
 from string_lib import takeout_common,takeout_spaces

@@ -1,9 +1,14 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
-from parser import *
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
+from parser_lib import *
 from string import *
 import numpy as np
 import pylab,os,re
@@ -27,7 +32,7 @@ def parsse():
                       help="Specify the Headtail _hdtl.dat name of the file to plot. Several files are possible - either with regular expression (using *, [], etc. and BETWEEN QUOTES \"\") or with several -f options.",
                       metavar="FILE", default=None,dest="FILE")
     parser.add_option("-k", "--keeptmp",action="store_true",
-                      help="Specify if temporary files are kept (not ereased) after making the coupled-bunch movie (with -c option)",
+                      help="Specify if temporary files are kept (not erased) after making the coupled-bunch movie (with -c option) (default=erased)",
                       metavar="KEEP", default=False,dest="KEEP")
     parser.add_option("-m", "--maxtrace",type=int,
                       help="Specify the maximum number of traces to plot",

@@ -1,7 +1,13 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import pylab
 import numpy as np
 from string import split, replace

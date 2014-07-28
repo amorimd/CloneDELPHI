@@ -1,15 +1,21 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 
 # to plot tuneshifts and growth rates from several files, vs. a parameter changing
 # in one of the columns (user defined)
 
-import sys,pylab,re,dateutil,random,pytz,os
+import sys
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
+import pylab,re,dateutil,random,pytz,os
 from datetime import time,datetime,date
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
 import numpy as np
-from parser import *
+from parser_lib import *
 from plot_lib import init_figure,end_figure,plot
 from io_lib import list_files
 from string import split

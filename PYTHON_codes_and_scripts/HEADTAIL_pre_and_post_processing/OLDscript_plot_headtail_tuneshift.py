@@ -1,14 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 
 # obsolete
 
-import sys,pylab,re,dateutil,random,pytz,os
+import sys,
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
+import pylab,re,dateutil,random,pytz,os
 from datetime import time,datetime,date
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
 import numpy as np
-from parser import *
+from parser_lib import *
 from plot_lib import init_figure,end_figure,plot
 from string_lib import takeout_common,split_and_takeout_spaces
 from io_lib import list_files

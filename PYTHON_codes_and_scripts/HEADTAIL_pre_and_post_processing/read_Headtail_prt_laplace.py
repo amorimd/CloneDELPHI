@@ -1,9 +1,15 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
-from parser import *
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_scipy=commands.getoutput("echo $PY_SCIPY");sys.path.insert(1,py_scipy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
+from parser_lib import *
 from string import *
 import numpy as np
 from numpy import fft

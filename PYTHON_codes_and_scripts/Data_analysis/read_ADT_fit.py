@@ -1,17 +1,20 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-#sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
-#sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-#sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 import pylab,re,random,pytz
 from datetime import time,datetime,date
 import numpy as np
 from string import split, replace
-from parser import *
+from parser_lib import *
 import math
 import matplotlib
-#from SussixNM import *
 from multiturndata_riccardodemaria_modifNico import *
 from plot_lib import init_figure,cmap,plot,end_figure,build_colors,plot2D,set_fontsize
 from io_lib import list_files

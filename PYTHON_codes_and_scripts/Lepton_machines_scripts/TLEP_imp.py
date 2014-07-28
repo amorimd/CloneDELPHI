@@ -24,8 +24,8 @@ from DELPHI import *
 
 def TLEP_param(E=45e9,option='Z',Qxfrac=0.2,Qyfrac=0.15):
 
-    ''' generate typical TLEP parameters, the beam energy E in eV, the TLEP option 
-    ('Z', 'H', 'W', 't', 'tB' or 'Z4C') and the fraction parts of the tunes.
+    ''' generate typical TLEP parameters, from the beam energy E in eV, the TLEP option 
+    ('Z', 'H', 'W', 't', 'tB' or 'Z4C') and the fractional parts of the tunes.
     Outputs:
     - machine: string with machine name(here 'TLEP'+option),
     - E: same as input (beam energy in eV),
@@ -42,7 +42,7 @@ def TLEP_param(E=45e9,option='Z',Qxfrac=0.2,Qyfrac=0.15):
     - f0: revolution frequency,
     - omega0: revolution angular frequency=2pi*f0,
     - omegas: synchrotron angular frequency=Qs*omega0,
-    - dphase: phase of damper w.r.t. "normal" purely resistive damper,
+    - dphase: phase of damper w.r.t. "normal" purely resistive damper (0),
     - Estr: string with energy (e.g. '45GeV').
     - syncdamp: synchrotron transverse damping time (transverse=2*longitudinal) in seconds.
     '''

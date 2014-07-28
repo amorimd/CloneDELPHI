@@ -1,14 +1,17 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-#sys.path.append("/afs/cern.ch/eng/sl/lintrack/Python_Classes4MAD/")
-#import pylab,re,random
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+
 import numpy as np
 from string import split, replace
-from parser import *
+from parser_lib import *
 from tables_lib import diffshape
 import math
-#import matplotlib
 
 def parsse():
     parser = OptionParser()

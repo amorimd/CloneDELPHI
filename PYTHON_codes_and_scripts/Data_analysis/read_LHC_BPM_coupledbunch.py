@@ -1,13 +1,18 @@
-#!/usr/bin/python2.6
+#!/usr/bin/python
 
 import sys
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX/Sussix")
-sys.path.append("/home/nmounet/Documents/PYTHON/SUSSIX")
+import commands
+# import local libraries if needed
+pymod=commands.getoutput("echo $PYMOD");
+if pymod.startswith('local'):
+    py_numpy=commands.getoutput("echo $PY_NUMPY");sys.path.insert(1,py_numpy);
+    py_matpl=commands.getoutput("echo $PY_MATPL");sys.path.insert(1,py_matpl);
+
 from optparse import OptionParser
 from string import *
 import pylab,os,re
 from SussixNM import *
-from parser import bunch_parse
+from parser_lib import bunch_parse
 from read_cfg import read_cfg
 from plot_lib import init_figure,plot,plot2D
 from read_Headtail_prt_sussix import extract

@@ -1,5 +1,5 @@
-#!/usr/bin/python2.6
-#import sys
+#!/usr/bin/python
+
 from string import split, replace
 from optparse import OptionParser
 
