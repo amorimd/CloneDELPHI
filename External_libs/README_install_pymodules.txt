@@ -32,7 +32,8 @@ cd scipy-0.12.0
 import sys
 sys.path.insert(1,'../numpy-install/lib64/python2.6/site-packages');
 # NOTE: in the path above you might need to change "python2.6" with your 
-# actual python version
+# actual python version, and/or "lib64" to "lib"
+# (or just check the full path is correct)
 
 # if necessary clean out
 rm -rf build
@@ -57,7 +58,8 @@ cd matplotlib-1.2.1
 # change setupext.py: add 1 line (at line 67, after "import sys") (to point to correct numpy installation directory)
 sys.path.insert(1,'../numpy-install/lib64/python2.6/site-packages');
 # NOTE: in the path above you might need to change "python2.6" with your 
-# actual python version
+# actual python version, and/or "lib64" to "lib"
+# (or just check the full path is correct)
 
 # if necessary clean out
 rm -rf build
@@ -92,7 +94,8 @@ cd matplotlib-1.2.1
 # change setupext.py: add 1 line (at line 67, after "import sys") (to point to correct numpy installation directory)
 sys.path.insert(1,'../numpy-install/lib64/python2.6/site-packages');
 # NOTE: in the path above you might need to change "python2.6" with your 
-# actual python version
+# actual python version, and/or "lib64" to "lib"
+# (or just check the full path is correct)
 
 # if necessary clean out
 rm -rf build
