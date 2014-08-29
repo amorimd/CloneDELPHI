@@ -322,7 +322,7 @@ if __name__ == "__main__":
 			    	    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.8))
 
 				    data=np.hstack((emitLS1.reshape((-1,1)),Nbscan.reshape((-1,1)),sig_emitLS1.reshape((-1,1))));
-				    write_ncol_file(fileoutdataemit+'.dat',data,header="emit\tsig_emit\tNb")
+				    write_ncol_file(fileoutdataemit+'.dat',data,header="emit\tNb\tsig_emit")
 
 		    # finish plot
 		    end_figure(figall,axall,save=flagsave*fileoutplotemitall,legpos=(0.3,0.5),legfontsize=20)

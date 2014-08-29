@@ -662,7 +662,7 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 			    a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			    flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
-			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+'_'+plane,
+			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+strnorm[flagnorm]+'_'+plane,
 			    queue=queue,dire=dire);
 
 		    else:
@@ -683,7 +683,7 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 			a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
-			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_'+plane,
+			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 
 		else:
@@ -692,7 +692,7 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 			a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
-			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_'+strnorm[flagnorm]+'_'+plane,
+			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 	    
 
@@ -1378,6 +1378,8 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
     from Impedance import test_impedance_wake_comp,impedance_wake
     from copy import deepcopy
 
+    strnorm=['','_norm_current_chroma'];
+
     if (len(bxscan)==len(bxyscan)): bxyscanbis=np.array([0.]);# 1D scan simultaneously along bxscan and bxyscan; only the length of bxyscanbis is used then
     else: bxyscanbis=bxyscan; # 2D scan of bxscan and bxyscan
 
@@ -1410,7 +1412,7 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
 			    flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
 			    distribution=distribution,kini=kini,
-			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+'_'+plane,
+			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+strnorm[flagnorm]+'_'+plane,
 			    queue=queue,dire=dire);
 
 		    else:
@@ -1433,7 +1435,7 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
 			distribution=distribution,kini=kini,
-			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_'+plane,
+			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 
 		else:
@@ -1443,7 +1445,7 @@ def DELPHI_tunespread_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dp
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
 			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
 			distribution=distribution,kini=kini,
-			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_'+strnorm[flagnorm]+'_'+plane,
+			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 	    
 

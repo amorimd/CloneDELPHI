@@ -751,7 +751,7 @@ if __name__ == "__main__":
 			    #i+=1;
 
 			    data=np.hstack((emit.reshape((-1,1)),Nbscan.reshape((-1,1)),sig_emit.reshape((-1,1))));
-			    write_ncol_file(fileoutdataemit+'.dat',data,header="emit\tsig_emit\tNb")
+			    write_ncol_file(fileoutdataemit+'.dat',data,header="emit\tNb\tsig_emit")
 			    			    
 			    # plot of each individual line with "error bars"
 			    plot(emit,Nbscan/1e11,"Stab. limit with "+legsignscan[isign],colscen[isign],"Intensity ($ 10^{11} $p+/b)",ax,0,lw=3.,xlab="Norm. emittance ($ \mu $ m)");
