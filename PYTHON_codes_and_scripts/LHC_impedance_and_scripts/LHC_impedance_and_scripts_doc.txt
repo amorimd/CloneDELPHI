@@ -639,6 +639,9 @@ impedance library in Impedance.py)
   	compare tuneshifts from DELPHI, HEADTAIL and measured in MD when moving
 	some collimator families in and out
 
+  LHC_compare_B1_B2.py (simple)
+  	compare B1 and B2 impedances (no DELPHI computation)
+	
   LHC_compare_impedances.py
   	compare between them 2 cases (one 2011 experiment and a typical 2012 case),
 	with different beam & machine settings (including different collimator settings

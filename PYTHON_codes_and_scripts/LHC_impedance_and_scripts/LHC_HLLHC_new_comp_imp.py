@@ -62,7 +62,6 @@ if __name__ == "__main__":
     linetype=['-','--',':'];
 
     # scan definition
-    #n=np.array([0,1,2,3,4,5,6]);strsubscan='_all_round';
     #subscan=np.array([0,1]);strsubscan='_LHC_v1_v2';margin_factor=1;
     #subscan=np.array([1,2,6]);strsubscan='_LHC_HLLHC_round_Mo';margin_factor=1;
     #subscan=np.array([2,3,4,5]);strsubscan='_HLLHC_round_SLAC_Crab_BBC_comp';margin_factor=1;
