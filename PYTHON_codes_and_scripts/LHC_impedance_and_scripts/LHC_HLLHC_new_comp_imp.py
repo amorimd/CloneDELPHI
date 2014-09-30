@@ -515,12 +515,18 @@ if __name__ == "__main__":
 		#octHL=550.*2.;enHL=7.;
 		# 2 factor due to highest oct. efficiency in HL-LHC (from their beta) (rough estimate from 15cm round optics)
 		# -> WRONG: valid only after pre-squeeze !! so not a flat-top nor ramp
-		octHL=570.;enHL=7.; # 2 factor due to highest oct. efficiency in HL-LHC (from their beta) (rough estimate from 15cm round optics)
+		octHL=570.;enHL=7.;
 		# HL-LHC scenarios
-		legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
-		emitbeam=[1.8,2.22,2.62,2.26,2.5];
-		intbeam=[1.38,1.38,1.9,1.9,2.2];
+		#legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
+		#emitbeam=[1.8,2.22,2.62,2.26,2.5];
+		#intbeam=[1.38,1.38,1.9,1.9,2.2];
+		#colbeam=['or','+m','xg','dk','vb'];
+		# new HL-LHC scenarios
+		legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 50ns"];
+		emitbeam=[2.5,1.4,3.0];
+		intbeam=[2.2,2.2,3.5];
 		colbeam=['or','+m','xg','dk','vb'];
+		Mbeam=[3564,3564,1782];
 
 		colscen=['b','m','k','c'];
 
@@ -592,11 +598,17 @@ if __name__ == "__main__":
     oct2012signscan=['_neg_oct','_pos_oct'];
     octHL=570.;
     # HL-LHC scenarios
-    legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
-    emitbeam=[1.8,2.22,2.62,2.26,2.5];
-    intbeam=[1.38,1.38,1.9,1.9,2.2];
+    #legbeam=['PIC low emit.','PIC high emit.', 'US1',"US2 low int. & low emit.","US2 high int. & high emit."];
+    #emitbeam=[1.8,2.22,2.62,2.26,2.5];
+    #intbeam=[1.38,1.38,1.9,1.9,2.2];
+    #colbeam=['or','+m','xg','dk','vb'];
+    #Mbeam=[3564,3564,3564,3564,3564];
+    # new HL-LHC scenarios
+    legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 50ns"];
+    emitbeam=[2.5,1.4,3.0];
+    intbeam=[2.2,2.2,3.5];
     colbeam=['or','+m','xg','dk','vb'];
-    Mbeam=[3564,3564,3564,3564,3564];
+    Mbeam=[3564,3564,1782];
 
     # relevant 2012 instability data - based on files ../Mesures_LHC/instability_table_B2V_pos_oct_flattop.csv &
     # ../Mesures_LHC/instability_table_B2H_pos_oct_flattop.csv (Q' > 10)
