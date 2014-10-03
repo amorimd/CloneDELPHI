@@ -42,6 +42,7 @@ if __name__ == "__main__":
     # directory (inside DELPHI_results/[machine]) where to put the results
     root_result=path_here+'../../../DELPHI_results/'+machine+'/LHC_HLLHC_new_comp_BBcutoff50GHz';
     #root_result='/home/nmounet/Documents/DELPHI_results/'+machine+'/LHC_HLLHC_new_comp_BBcutoff50GHz';
+    print root_result
     os.system("mkdir -p "+root_result);
     
     strnorm=['','_norm_current_chroma'];
@@ -66,7 +67,7 @@ if __name__ == "__main__":
     #subscan=np.array([1,2,6]);strsubscan='_LHC_HLLHC_round_Mo';margin_factor=1;
     #subscan=np.array([2,3,4,5]);strsubscan='_HLLHC_round_SLAC_Crab_BBC_comp';margin_factor=1;
     #subscan=np.array([5]);strsubscan='_HLLHC_round_SLAC_Crab_BBC';margin_factor=1;
-    subscan=np.array([5,12,16,17]);strsubscan='_LHC_HLLHC_round_SLAC_Crab_BBC_comp_Mo';margin_factor=1;
+    subscan=np.array([1,5,12,16,17]);strsubscan='_LHC_HLLHC_round_SLAC_Crab_BBC_comp_Mo';margin_factor=1;
     #subscan=np.array([1,5]);strsubscan='_LHC_HLLHC_round_SLAC_Crab_BBC';margin_factor=1;
     #subscan=np.array([0,1,5]);strsubscan='_LHC_v1_v2_HLLHC_round_SLAC_Crab_BBC';margin_factor=1;
     #subscan=np.array([2,3,15]);strsubscan='_HLLHC_round_SLAC_Crab_withQ1';margin_factor=1;
@@ -89,6 +90,15 @@ if __name__ == "__main__":
 	'HL-LHC round, thick MoC (no crab cav.)','HL-LHC round, injection (SLAC crab cav., wire inside TCT)',
 	'HL-LHC round (SLAC crab cav. with all Q=1)','HL-LHC round, 50mum Mo (SLAC crab cav., wire inside TCT)',
 	'HL-LHC round, thick MoC (SLAC crab cav., wire inside TCT)']);
+#    legscen=np.array(['LHC 2012 (old model)','LHC 2012 (updated model)','HL-LHC round (no crab cav.)',
+#    	'HL-LHC round (SLAC crab cav.)','HL-LHC round (SLAC crab cav., wire as stand-alone)',
+#	'HL-LHC round (SLAC crab cav., wire comp.)','HL-LHC round, thick Mo (no crab cav.)',
+#	'HL-LHC round, thick Mo (SLAC crab cav., wire inside TCT)','HL-LHC flat (no crab cav.)',
+#	'HL-LHC flat (SLAC crab cav., wire inside TCT)','HL-LHC round with BS triplets at 50K (SLAC crab cav., wire inside TCT)',
+#	'HL-LHC round, 5mum Mo (no crab cav.)','HL-LHC round, 50mum Mo (no crab cav.)',
+#	'HL-LHC round, thick MoC (no crab cav.)','HL-LHC round, injection (SLAC crab cav., wire inside TCT)',
+#	'HL-LHC round (SLAC crab cav. with all Q=1)','HL-LHC round, 50mum Mo (SLAC crab cav., wire comp.)',
+#	'HL-LHC round, thick MoC (SLAC crab cav., wire comp.)']);
     squeezescan=np.array(['0p6m_3m_0p6m_3m','0p6m_3m_0p6m_3m','0p15m_round','0p15m_round',
     	'0p15m_round','0p15m_round','0p15m_round','0p15m_round','0p30m_0p075m_flat','0p30m_0p075m_flat',
 	'0p15m_round','0p15m_round','0p15m_round','0p15m_round','6m_10m_6m_10m','0p15m_round','0p15m_round','0p15m_round']);
@@ -370,8 +380,8 @@ if __name__ == "__main__":
 				    ylab="$ "+sgnstr+strpart[ir]+"(Q-Q_0) $ ";
 				    if (ir==1): sgn=-omega0;ylab="Growth rate [s $ ^{-1} $ ] "; # invert sign of imaginary part & conversion to growth rate
 				    
-				    plot(Qpscan[~np.isnan(np.squeeze(ts))],np.squeeze(sgn*ts)[~np.isnan(np.squeeze(ts))],'DELPHI, '+legscen[subscan[iscenario]]+' '+Estr,col[iscenario],ylab,axQp[ir],0,xlab=" $ Q^' $ ");
-				    plot(Qpscan[~np.isnan(np.squeeze(tsm0))],np.squeeze(sgn*tsm0)[~np.isnan(np.squeeze(tsm0))],'DELPHI, '+legscen[subscan[iscenario]]+' '+Estr,col[iscenario],ylab+" (mode 0)",axQpm0[ir],0,xlab=" $ Q^' $ ");
+				    plot(Qpscan[~np.isnan(np.squeeze(ts))],np.squeeze(sgn*ts)[~np.isnan(np.squeeze(ts))],'DELPHI, '+legscen[subscan[iscenario]]+' '+Estr,col[iscenario],ylab,axQp[ir],0,xlab=r" $ Q' $ ");
+				    plot(Qpscan[~np.isnan(np.squeeze(tsm0))],np.squeeze(sgn*tsm0)[~np.isnan(np.squeeze(tsm0))],'DELPHI, '+legscen[subscan[iscenario]]+' '+Estr,col[iscenario],ylab+" (mode 0)",axQpm0[ir],0,xlab=r" $ Q' $ ");
 
 				    if (M==1):
 					# compare with HEADTAIL
@@ -386,7 +396,7 @@ if __name__ == "__main__":
 					    sufHEADTAIL="_aver_Sussix_most_tau_finer.txt";
 					    # plot
 					    s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-                                	    plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+legscen[subscan[iscenario]]+' '+Estr,'x'+col[iscenario],ylab,axQp[ir],0,xlab=" $ Q^' $ ");
+                                	    plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+legscen[subscan[iscenario]]+' '+Estr,'x'+col[iscenario],ylab,axQp[ir],0,xlab=r" $ Q' $ ");
 					
 					elif ((scenario=='_2012_v2')or(scenario=='_HLLHC_round_Crab_wire_TCT'))and(Nb in NbscanHEADTAILv2):
 					    nsl=200;npr=500000;nlin=1; # HEADTAIL parameters for comparison
@@ -395,7 +405,7 @@ if __name__ == "__main__":
 					    sufHEADTAIL="_aver_most_tau_finer.txt";
 					    # plot
 					    s=read_ncol_file(rootHEADTAIL+sufHEADTAIL,ignored_rows=1);
-                                	    plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+legscen[subscan[iscenario]]+' '+Estr,'x'+col[iscenario],ylab,axQp[ir],0,xlab=" $ Q^' $ ");
+                                	    plot(s[:,0],fact*s[:,3*iplane+ir+1],'HEADTAIL, '+legscen[subscan[iscenario]]+' '+Estr,'x'+col[iscenario],ylab,axQp[ir],0,xlab=r" $ Q' $ ");
 
 
 			    #t1bis=ti.clock()
@@ -485,7 +495,7 @@ if __name__ == "__main__":
 				    # TMCI plot
 				    ts=tuneshiftQp[iscenario,iplane,iM,pylab.mlab.find(Qpscan==Qp),idamp,:,0,0,:];
 				    plot_TMCI(Nbscan,np.squeeze(ts/Qs),axTMCI[ir],part=r,leg='DELPHI, '+legscen[subscan[iscenario]]+' '+Estr,patcol=pat[ir]+col[iscenario],xlab='Nb [p+/b]',
-					title=machine+r", $ Q^' = $ "+str(round(100*Qp)/100.),ms=1,ylim=ylim[ir]);
+					title=machine+r", $ Q' = $ "+str(round(100*Qp)/100.),ms=1,ylim=ylim[ir]);
 	    
 
 			    # finish plots vs Nb and TMCI plots
@@ -522,11 +532,11 @@ if __name__ == "__main__":
 		#intbeam=[1.38,1.38,1.9,1.9,2.2];
 		#colbeam=['or','+m','xg','dk','vb'];
 		# new HL-LHC scenarios
-		legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 50ns"];
-		emitbeam=[2.5,1.4,3.0];
-		intbeam=[2.2,2.2,3.5];
+		legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 8b+4e 25ns","HL-LHC 50ns"];
+		emitbeam=[2,1.4,1.7,2.4];
+		intbeam=[2.3,2.3,2.4,3.7];
 		colbeam=['or','+m','xg','dk','vb'];
-		Mbeam=[3564,3564,1782];
+		Mbeam=[3564,3564,3564,1782];
 
 		colscen=['b','m','k','c'];
 
@@ -587,7 +597,7 @@ if __name__ == "__main__":
 
 
 			    # finish plot
-			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.5),legfontsize=20)
+			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.7),legfontsize=20)
 
 
     # NEW VERSION (14/05/2014)
@@ -604,11 +614,11 @@ if __name__ == "__main__":
     #colbeam=['or','+m','xg','dk','vb'];
     #Mbeam=[3564,3564,3564,3564,3564];
     # new HL-LHC scenarios
-    legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 50ns"];
-    emitbeam=[2.5,1.4,3.0];
-    intbeam=[2.2,2.2,3.5];
+    legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 8b+4e 25ns","HL-LHC 50ns"];
+    emitbeam=[2,1.4,1.7,2.4];
+    intbeam=[2.3,2.3,2.4,3.7];
     colbeam=['or','+m','xg','dk','vb'];
-    Mbeam=[3564,3564,1782];
+    Mbeam=[3564,3564,3564,1782];
 
     # relevant 2012 instability data - based on files ../Mesures_LHC/instability_table_B2V_pos_oct_flattop.csv &
     # ../Mesures_LHC/instability_table_B2H_pos_oct_flattop.csv (Q' > 10)
@@ -766,7 +776,7 @@ if __name__ == "__main__":
 			    
 
 			# finish plot
-			end_figure(figall,axall,save=flagsave*fileoutplotemitall,legpos=(0.3,0.5),legfontsize=20)
+			end_figure(figall,axall,save=flagsave*fileoutplotemitall,legpos=(0.3,0.7),legfontsize=20)
 
 
     if not(flagsave): pylab.show();
