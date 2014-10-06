@@ -533,7 +533,7 @@ if __name__ == "__main__":
 		#colbeam=['or','+m','xg','dk','vb'];
 		# new HL-LHC scenarios
 		legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 8b+4e 25ns","HL-LHC 50ns"];
-		emitbeam=[2,1.4,1.7,2.4];
+		emitbeam=[2,1.4,1.7,2.3];
 		intbeam=[2.3,2.3,2.4,3.7];
 		colbeam=['or','+m','xg','dk','vb'];
 		Mbeam=[3564,3564,3564,1782];
@@ -597,7 +597,7 @@ if __name__ == "__main__":
 
 
 			    # finish plot
-			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.7),legfontsize=20)
+			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.22,0.7),legfontsize=20)
 
 
     # NEW VERSION (14/05/2014)
@@ -615,7 +615,7 @@ if __name__ == "__main__":
     #Mbeam=[3564,3564,3564,3564,3564];
     # new HL-LHC scenarios
     legbeam=['HL-LHC std 25ns',"HL-LHC BCMS 25ns","HL-LHC 8b+4e 25ns","HL-LHC 50ns"];
-    emitbeam=[2,1.4,1.7,2.4];
+    emitbeam=[2,1.4,1.7,2.3];
     intbeam=[2.3,2.3,2.4,3.7];
     colbeam=['or','+m','xg','dk','vb'];
     Mbeam=[3564,3564,3564,1782];
@@ -769,14 +769,14 @@ if __name__ == "__main__":
 			    ax.set_xlim([0,6]);ax.set_ylim([0,6]);
 			    axall.set_xlim([0,6]);axall.set_ylim([0,6]);
 			    #i+=1;
-			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.3,0.8))
+			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.22,0.8))
 
 			    data=np.hstack((emit.reshape((-1,1)),Nbscan.reshape((-1,1)),sig_emit.reshape((-1,1))));
 			    write_ncol_file(fileoutdataemit+'.dat',data,header="emit\tNb\tsig_emit")
 			    
 
 			# finish plot
-			end_figure(figall,axall,save=flagsave*fileoutplotemitall,legpos=(0.3,0.7),legfontsize=20)
+			end_figure(figall,axall,save=flagsave*fileoutplotemitall,legpos=(0.22,0.7),legfontsize=20)
 
 
     if not(flagsave): pylab.show();
