@@ -13,8 +13,8 @@ make
 tar -xzvf mpfr-3.1.2.tar.gz
 cd mpfr-3.1.2/
 
-# configure using the local GMP (check the path after "--with-gmp")
-./configure --with-gmp=../GMP/gmp-6.0.0 --disable-thread-safe
+# configure using the local GMP (put the absolute path to the GMP directory you just installed, after "--with-gmp")
+./configure --with-gmp=/home/inewton/GMP/gmp-6.0.0 --disable-thread-safe
 
 # then change all options -O3 into -O2 in files "libtool", "Makefile" and "config.status"
 # and finally do
