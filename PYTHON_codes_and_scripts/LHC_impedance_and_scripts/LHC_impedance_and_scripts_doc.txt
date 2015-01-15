@@ -508,14 +508,14 @@ LHC_new_postLS1.py
 LHC_HLLHC_new_comp_imp.py
 
 # To launch the scripts on a LSF batch system (like lxplus), the procedure is
-# (e.g. here with LHC_compare):
+# (e.g. here with LHC_compare_B1_B2):
 # first type
-./LHC_compare.py launch launch
+./LHC_compare_B1_B2.py launch launch
 #
 # -> this launches the resistive-wall impedance computations on batch jobs
 #
 # then when all jobs are finished (and if none crashed)
-./LHC_compare.py retrieve launch
+./LHC_compare_B1_B2.py retrieve launch
 #
 # -> this retrieves the resistive-wall impedance computations, computes the impedance model
 # (can still takes a bit of time) and finally launches the DELPHI computations
@@ -525,7 +525,7 @@ LHC_HLLHC_new_comp_imp.py
 # present in the 'root_result' folder - see below) are launched.
 #
 # Finally, when all jobs are finished: 
-./LHC_compare.py retrieve retrieve
+./LHC_compare_B1_B2.py retrieve retrieve
 #
 # -> this will finally write output files and plots (depending on the scripts).
 #
