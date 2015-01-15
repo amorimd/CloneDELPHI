@@ -9,10 +9,13 @@ PATH_MPFR = ../../../Soft/MPFR/mpfr-3.1.2/src
 PATH_GMP_LIB = $(PATH_GMP)/.libs
 PATH_GMP_INC = $(PATH_GMP)
 
+PATH_MPFR_LIB = $(PATH_MPFR)/.libs
+PATH_MPFR_INC = $(PATH_MPFR)
+
 OPTS = -O2 -I$(PATH_ALGLIB) -L$(PATH_ALGLIB)
 
-LIBOPTS = -L$(PATH_GMP_LIB) -L$(PATH_MPFR) -L$(PATH_ALGLIB) -lmpalglib -lmpfr -lgmp -lm -lstdc++ -lgsl -lgslcblas 
-INCOPTS = -I$(PATH_GMP_INC) -I$(PATH_MPFR) -I$(PATH_ALGLIB)
+LIBOPTS = -L$(PATH_GMP_LIB) -L$(PATH_MPFR_LIB) -L$(PATH_ALGLIB) -lmpalglib -lmpfr -lgmp -lm -lstdc++ -lgsl -lgslcblas 
+INCOPTS = -I$(PATH_GMP_INC) -I$(PATH_MPFR_INC) -I$(PATH_ALGLIB)
 
 LOPTS = 
 
