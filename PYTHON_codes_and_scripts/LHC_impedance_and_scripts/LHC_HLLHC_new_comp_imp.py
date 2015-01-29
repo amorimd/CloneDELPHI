@@ -547,7 +547,7 @@ if __name__ == "__main__":
 			for idamp,damp in enumerate(dampscan):
 
 			    # initialize plot
-			    fig,ax=init_figure(axes=[0.15,0.1,0.8,0.7]);
+			    fig,ax=init_figure(axes=[0.15,0.1,0.8,0.55]);
 
 			    # output file name for plots vs emittance
 			    fileoutplotemit=root_result+'/plot_int_vs_emit_OLD_'+machine+strsubscan+'_'+str(M)+'b_d'+float_to_str(damp)+'_Qp'+float_to_str(Qpaver[0])+'_'+float_to_str(Qpaver[-1])+octsign+'_converged'+strnorm[flagnorm];
@@ -590,14 +590,14 @@ if __name__ == "__main__":
 				#if damp==0: emitLS1lin=np.max(np.abs(maxratio_mb[:,iscenario,0]+0*maxratio_mb[:,iscenario,1]))*factor2012lin*enHL/octHL * (Nbscan/1e11);
 				#else: emitLS1lin=np.max(np.abs(maxratio_sb[:,iscenario,0]+0*maxratio_sb[:,iscenario,1]))*factor2012lin*enHL/octHL * (Nbscan/1e11);
 				#plot(emitLS1lin,Nbscan/1e11,"Limit with "+legscen[subscan[iscenario+1]]+' '+Estr+', linear approx.','--'+colscen[iscenario],"Intensity ($ 10^{11} $p+/b)",ax,0,xlab="Norm. emittance ($ \mu $ m)");
-				ax.set_xlim([0,6]);ax.set_ylim([0,6]);
+				ax.set_xlim([0,3]);ax.set_ylim([0,4]);
 
 				data=np.hstack((emit.reshape((-1,1)),Nbscan.reshape((-1,1))));
 				write_ncol_file(fileoutdataemit+'_'+r+'.dat',data,header="emit\t"+strpart[ir]+"Nb")
 
 
 			    # finish plot
-			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.22,0.7),legfontsize=20)
+			    end_figure(fig,ax,save=flagsave*fileoutplotemit,legpos=(0.05,0.95),legfontsize=16)
 
 
     # NEW VERSION (14/05/2014)

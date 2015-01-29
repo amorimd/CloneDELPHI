@@ -153,7 +153,7 @@ def filteredfft(x,low,up,exparray=None):
     return y;
     
     
-def scan_tunes(tunes,turns,maxdif,nturns,axtu,filename,addstring='',databreaks=None,turnsbreaks=None,xscaleplot=1.,xoffplot=0.):
+def scan_tunes(tunes,turns,maxdif,nturns,axtu,filename,addstring='',databreaks=None,turnsbreaks=None,xscaleplot=1.,xoffplot=0.,xlab="Number of turns"):
 
     # scan all the tunes to find some interval where an average value can be computed,
     # then plot those average values
@@ -182,7 +182,7 @@ def scan_tunes(tunes,turns,maxdif,nturns,axtu,filename,addstring='',databreaks=N
 		tuneshifts.append(abs(tuneaver-oldtuneaver)); # tuneshift in absolute value
 		vartuneshifts.append((sig**2+oldsig**2)/2.); # variance
 		
-	    plot(turns[breaks[ibr-1]:br]*xscaleplot+xoffplot,tuneaver*np.ones(len(turns[breaks[ibr-1]:br])),lab,'-g','Tune (fractional part)',axtu,0);
+	    plot(turns[breaks[ibr-1]:br]*xscaleplot+xoffplot,tuneaver*np.ones(len(turns[breaks[ibr-1]:br])),lab,'-g','Tune (fractional part)',axtu,0,xlab=xlab);
 	    k+=1;oldtuneaver=tuneaver;oldsig=sig;
 	    
     
@@ -643,7 +643,10 @@ if __name__ == "__main__":
     else:  
         # scan the tune to get averages over intervals where it does not move too much
     	print "   Scan the tunes to get interval averages ...";
-        scan_tunes(tunemaver,turns,opt.INTER[0],opt.INTER[1],axtu,listname[0],addstring='_'+beam+plane+opt.OUT)
+        if not(opt.NODATE):
+            scan_tunes(tunemaver,turns,opt.INTER[0],opt.INTER[1],axtu,listname[0],addstring='_'+beam+plane+opt.OUT,xscaleplot=Trev/86400.,xoffplot=t0/86400.,xlab='Local time on '+dat.strftime("%Y-%m-%d"))
+        else:
+            scan_tunes(tunemaver,turns,opt.INTER[0],opt.INTER[1],axtu,listname[0],addstring='_'+beam+plane+opt.OUT)
     print "   Done";
     
     
