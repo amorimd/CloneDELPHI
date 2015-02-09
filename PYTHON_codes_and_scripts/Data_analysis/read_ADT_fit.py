@@ -77,6 +77,9 @@ def parsse():
     parser.add_option("-z", "--rolloffset",type=int,
                       help="Specify the additional offset used in the data rolling (such that instability at the end), when using pre-treatment. -1 means no roll (default=10).",
                       metavar="ROLL", default=10,dest="ROLL")		      
+    parser.add_option("--save",action="store_true",
+                      help="Specify if all the plots are saved right away (.png and .eps files). Then they are not printed on the screen.",
+                      metavar="SAVE", default=False,dest="SAVE")
     # Note: options -c, -e, -o, -l, -d, -r and -g used only when -a option activated
     # -i and -s options used only if -t option activated	      
     (opt, args) = parser.parse_args()
@@ -363,22 +366,26 @@ if __name__ == "__main__":
 		axtau.set_xlabel("Bunch number");
 		axtau.set_ylabel("Rise time [s]");
 		axtau.legend(loc=0);
-		set_fontsize(figtau,'large');
+		#set_fontsize(figtau,'large');
+		end_figure(figtau,axtau,save=opt.SAVE*(filename.replace(".data","")+adt.deviceNames[j]+"_tau_vs_bunches_raw"));
 
 	    #ax[j].set_title(fil);
 	    ax[j].legend(loc=0);
-	    if (not(opt.ONEPLOT)): ax[j].set_title(fil);
-	    #set_fontsize(fig[j],'large');
-	    #set_fontsize(fig[j],'xx-large');
-	    set_fontsize(fig[j],'medium');
+	    if (not(opt.ONEPLOT)):
+                ax[j].set_title(fil);
+	        #set_fontsize(fig[j],'large');
+	        #set_fontsize(fig[j],'xx-large');
+	        set_fontsize(fig[j],'medium');
+	        end_figure(fig[j],ax[j],save=opt.SAVE*(filename.replace(".data","")+adt.deviceNames[j]+"_raw"));
 	    if (opt.AVER):
 		axbeam[j].legend(loc=0);
 		if (not(opt.ONEPLOT)): axbeam[j].set_title(fil);
-	        set_fontsize(figbeam[j],'large');
+	        #set_fontsize(figbeam[j],'large');
+	    	end_figure(figbeam[j],axbeam[j],save=opt.SAVE*(filename.replace(".data","")+adt.deviceNames[j]+"_aver_raw"));
 
     
     if (opt.ONEPLOT):
-	timeinterval=np.ceil((timestamp+nturns*Trev-t0)/8.);
+	timeinterval=np.ceil((timestamp+nturns*Trev-t0)/6.);
 	print "Time interval for plot: ", timeinterval
 	for j,dev in enumerate(adt.deviceNames):
 	    if (timeinterval<60):
@@ -390,6 +397,7 @@ if __name__ == "__main__":
 	    else:
     		ax[j].xaxis.set_major_locator(matplotlib.dates.HourLocator(interval=int(np.floor(timeinterval/3600.))))
 		ax[j].xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'))
+	    end_figure(fig[j],ax[j],legpos=2,save=opt.SAVE*(filename.replace(".data","")+adt.deviceNames[j]+"_raw"),legfontsize=20);
 		
 	    # 2D plot of amplitudes, bunch-by-bunch
 	    # re-interpolate data on a regular mesh (25ns slots for x axis)
@@ -405,11 +413,10 @@ if __name__ == "__main__":
 	    ax2D.yaxis_date(tz=gmt);
     	    ax2D.xaxis.set_major_locator(matplotlib.dates.SecondLocator(interval=timeinterval))
 	    ax2D.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M:%S'))
-	    end_figure(fig2D,ax2D);
+	    end_figure(fig2D,ax2D,save=opt.SAVE*(filename.replace(".data","")+adt.deviceNames[j]+"_raw2D"));
 	
 	
-
-    pylab.show();
+    if not(opt.SAVE): pylab.show();
 
     sys.exit()
 
