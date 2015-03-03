@@ -24,6 +24,7 @@ from plot_lib import plot,set_fontsize,init_figure,end_figure
 from string_lib import get_nice_string
 from datetime_lib import tt
 from io_lib import list_files
+from parser_lib import multifloatint_parse
 from read_Headtail_prt_fit import slideaver
 from collimator_settings import concatenate_data_Timber
 
@@ -62,6 +63,12 @@ def parsse():
     parser.add_option("-y", "--ylabel",action="append",
                       help="Specify the y axis name. Two labels maximum (in two separate -y options) : one for the left axis + one for the right axis - if needed; by default take the name of the first variable on the axis",
                       metavar="YLABEL", default=None,dest="YLABEL")
+    parser.add_option("-p","--legpos_left",action="callback",callback=multifloatint_parse,
+                      help="Specify the position of the legend box related to the leftt axis. Can be one integer (0=best position, 3=lower left) or two float numbers to indicate a precise position. Default: 3.",
+                      metavar="POS_L", default=None,dest="LEGPOS_LEFT")
+    parser.add_option("-q","--legpos_right",action="callback",callback=multifloatint_parse,
+                      help="Specify the position of the legend box related to the right axis. Can be one integer (0=best position, 2=upper left) or two float numbers to indicate a precise position. Default: 2.",
+                      metavar="POS_R", default=None,dest="LEGPOS_RIGHT")
     parser.add_option("--sigl",action="append",
                       help="Specify the TIMBER variable name to use as an error bar for the left axis curves (several --sigl options possible -> one for each -l option); only a part of the variable name (sufficient to identify it) is enough. Default: no error bar. Use 0 to avoid giving error bars for a certain curve. Not compatible with -a or -s option.",
                       metavar="SIGLEFT", default=None,dest="SIGLEFT")
@@ -130,6 +137,14 @@ if __name__ == "__main__":
 
     if (opt.YLABEL!=None)and(len(opt.YLABEL)>2): print "Too many labels for the y axes ! Put only 2 !";
 
+    if opt.LEGPOS_LEFT==None: legpos_left=3
+    elif len(opt.LEGPOS_LEFT)==1: legpos_left=opt.LEGPOS_LEFT[0]
+    else: legpos_left=opt.LEGPOS_LEFT
+    
+    if opt.LEGPOS_RIGHT==None: legpos_right=2
+    elif len(opt.LEGPOS_RIGHT)==1: legpos_right=opt.LEGPOS_RIGHT[0]
+    else: legpos_right=opt.LEGPOS_RIGHT
+    
     gmt=pytz.timezone('Europe/Amsterdam');
 
     # create list of filenames to analyse
@@ -296,7 +311,7 @@ if __name__ == "__main__":
 		
     	
     	jvar+=1;
-	ax.set_ylim(ylim);end_figure(fig,ax2,legpos=3);
+	ax.set_ylim(ylim);end_figure(fig,ax2,legpos=legpos_left);
     
     
     if (timeinterval<60):
@@ -309,7 +324,7 @@ if __name__ == "__main__":
 	ax.xaxis.set_major_locator(matplotlib.dates.HourLocator(interval=int(np.floor(timeinterval/3600.))));
 	ax.xaxis.set_major_formatter(matplotlib.dates.DateFormatter('%H:%M'));
     
-    end_figure(fig,ax,legpos=2);
+    end_figure(fig,ax,legpos=legpos_right);
     if (opt.VS): end_figure(figvs,axvs);
     
     if (opt.OUT!=None):
