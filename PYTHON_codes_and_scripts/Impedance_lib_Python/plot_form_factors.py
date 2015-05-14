@@ -41,9 +41,15 @@ def parsse():
     parser.add_option("-o", "--loglog",action="store_true",
                       help="Specify if we do a loglog plot (instead of semilogx)",
                       metavar="LOG", default=False,dest="LOG")
+    parser.add_option("-q", "--anchor_quad",type=float,nargs=2,
+                      help="Specify the place to anchor the upper-right corner of the legend for quadrupolar form factors (only with -a option)",
+                      metavar="ANC", default=(0.95,1.1),dest="ANCQ")
     parser.add_option("-r", "--anchor",type=float,nargs=2,
                       help="Specify the place to anchor the upper-right corner of the legend",
-                      metavar="ANC", default=(0.5,1.1),dest="ANC")
+                      metavar="ANC", default=(0.45,1.1),dest="ANC")
+    parser.add_option("-x", "--xlim",type=float,nargs=2,
+                      help="Specify the limits on the x axis",
+                      metavar="XLIM", default=None,dest="XLIM")
     parser.add_option("-y", "--yokoya",action="store_true",
                       help="Specify if we plot the Yokoya form factors for a flat chamber",
                       metavar="YOK", default=False,dest="YOK")
@@ -51,26 +57,28 @@ def parsse():
     #print "Selected Files:", opt.FILE
     return opt, args
 
-def semilogplot_comp(x,y,lab,leg,col,flaglog=False,lw=2.5,ms=12):
+def semilogplot_comp(x,y,lab,leg,col,flaglog=False,lw=2.5,ms=12,ax=None):
     # y complex: plot real and imag parts, with labels, legend and color
     legr=leg+", real part"
     legi=leg+", imag. part"
+    if ax is None: ax=pylab.gca()
     if flaglog: 
-	pylab.loglog(x,np.abs(y.real),col,label=legr,lw=lw,ms=ms,mew=2.5)
-	pylab.loglog(x,np.abs(y.imag),col+'-',label=legi,lw=lw,ms=ms,mew=2.5)
+	ax.loglog(x,np.abs(y.real),col,label=legr,lw=lw,ms=ms,mew=2.5)
+	ax.loglog(x,np.abs(y.imag),col+'-',label=legi,lw=lw,ms=ms,mew=2.5)
     else:
-	pylab.semilogx(x,y.real,col,label=legr,lw=lw,ms=ms,mew=2.5)
-	pylab.semilogx(x,y.imag,col+'-',label=legi,lw=lw,ms=ms,mew=2.5)
-    pylab.xlabel(lab)
-    pylab.ylabel("Form factor");
+	ax.semilogx(x,y.real,col,label=legr,lw=lw,ms=ms,mew=2.5)
+	ax.semilogx(x,y.imag,col+'-',label=legi,lw=lw,ms=ms,mew=2.5)
+    ax.set_xlabel(lab)
+    ax.set_ylabel("Form factor");
 
 
-def semilogplot(x,y,lab,leg,col,flaglog=False,lw=2.5,ms=12):
+def semilogplot(x,y,lab,leg,col,flaglog=False,lw=2.5,ms=12,ax=None):
     # y real: plot  with labels, legend and color
-    if flaglog: pylab.loglog(x,np.abs(y.real),col,label=leg,lw=lw,ms=ms,mew=2.5,mfc='w',mec=col[1])
-    else: pylab.semilogx(x,y.real,col,label=leg,lw=lw,ms=ms,mew=2.5,mfc='w',mec=col[1])
-    pylab.xlabel(lab)
-    pylab.ylabel("Form factor");
+    if ax is None: ax=pylab.gca()
+    if flaglog: ax.loglog(x,np.abs(y.real),col,label=leg,lw=lw,ms=ms,mew=2.5,mfc='w',mec=col[1])
+    else: ax.semilogx(x,y.real,col,label=leg,lw=lw,ms=ms,mew=2.5,mfc='w',mec=col[1])
+    ax.set_xlabel(lab)
+    ax.set_ylabel("Form factor");
 
 
 def read(filename):
@@ -106,7 +114,7 @@ def read(filename):
     return x,y,flagimp
     
 
-def form(fil1,fil2,i,leg,col,flaglog=False,lw=2.5):
+def form(fil1,fil2,i,leg,col,flaglog=False,lw=2.5, ax=None):
     # compute the form factor between two files
     # i is the figure number, leg the legend, col the color
     x1,y1,flagimp1=read(fil1);
@@ -120,12 +128,12 @@ def form(fil1,fil2,i,leg,col,flaglog=False,lw=2.5):
     	y2iinterp=np.interp(x1,x2,y2.imag);
     	fact=(y2rinterp+1j*y2iinterp)/y1;
     	lab="Frequency [Hz]"
-	semilogplot_comp(x1,fact,lab,leg,col+'-',flaglog=flaglog,lw=lw);
+	semilogplot_comp(x1,fact,lab,leg,col+'-',flaglog=flaglog,lw=lw,ax=ax);
     else:
     	y2interp=np.interp(x1,x2,y2);
     	fact=y2interp/y1;
     	lab="Distance behind the source [m]";
-    	semilogplot(x1,fact,lab,leg,'-'+col,flaglog=flaglog,lw=lw);
+    	semilogplot(x1,fact,lab,leg,'-'+col,flaglog=flaglog,lw=lw,ax=ax);
     
     return x1,fact,lab;
 
@@ -135,7 +143,7 @@ if __name__ == "__main__":
     
         
     if (opt.ALL): 
-    	fig,ax=init_figure();ax=pylab.subplot(111);
+    	fig,ax=init_figure();ax=pylab.subplot(111);ax2=pylab.twinx(ax=ax)
     else:
     	for i in range(5): init_figure();
     
@@ -157,63 +165,73 @@ if __name__ == "__main__":
 	fileclong=opt.CFILE[j];
 	filecxdip=fileclong.replace("long","xdip",1);
 	
-	i=1;
+	i=1;kwargs={}
 	npts=20;
+	if opt.ALL: kwargs={'ax': ax}
         x,y,flagimp=read(fileclong);
 	if (flagimp==1): xcst=10.**np.linspace(-3,15,npts); # absissae for constant form factors (impedances)
 	else: xcst=10.**np.linspace(-6,6,12); # absissae for constant form factors (wakes)
 	# longitudinal form factor
 	if opt.LONG:
-	    x,y,lab=form(fileclong,fileflong,i,"Longitudinal "+leg,color[j],flaglog=opt.LOG)
-	    if (opt.YOK): semilogplot(xcst,np.ones(xcst.size),lab,"Longitudinal Yokoya factor=1",'s'+color[j],flaglog=opt.LOG);
+	    x,y,lab=form(fileclong,fileflong,i,"Longitudinal "+leg,color[j],flaglog=opt.LOG,**kwargs)
+	    if (opt.YOK): semilogplot(xcst,np.ones(xcst.size),lab,"Longitudinal Yokoya factor=1",'s'+color[j],flaglog=opt.LOG,**kwargs);
 	    pylab.ylim(-0.1,1.5)
 	
 	# x dipolar form factor
 	if not opt.ALL: i=2;
-	else: j=j+1;
-	x,y,lab=form(filecxdip,filefxdip,i,"Dipolar (x) "+leg,color[j],flaglog=opt.LOG,lw=8.)
-	if (opt.YOK): semilogplot(xcst,np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Dipolar (x) Yokoya factor=$\pi^2/24$",'o'+color[j],flaglog=opt.LOG);
-	elif (opt.BUROV): semilogplot(xcst,np.ones(xcst.size)/4.,lab,"Dipolar (x) Burov-Danilov factor=$1/4$",'o'+color[j],flaglog=opt.LOG);
+	else: j=j+1;kwargs={'ax': ax}
+	x,y,lab=form(filecxdip,filefxdip,i,"Dipolar (x) "+leg,color[j],flaglog=opt.LOG,lw=8.,**kwargs)
+	if (opt.YOK): semilogplot(xcst,np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Dipolar (x) Yokoya factor=$\pi^2/24$",'o'+color[j],flaglog=opt.LOG,**kwargs);
+	elif (opt.BUROV): semilogplot(xcst,np.ones(xcst.size)/4.,lab,"Dipolar (x) Burov-Danilov factor=$1/4$",'o'+color[j],flaglog=opt.LOG,**kwargs);
 	pylab.ylim(-0.1,0.8)
 
 	# y dipolar form factor
 	if not opt.ALL: i=3;
-	else: j=j+1;
-	x,y,lab=form(filecxdip,filefydip,i,"Dipolar (y) "+leg,color[j],flaglog=opt.LOG)
-	if (opt.YOK): semilogplot(xcst,np.ones(xcst.size)*np.pi*np.pi/12.,lab,"Dipolar (y) Yokoya factor=$\pi^2/12$",'D'+color[j],flaglog=opt.LOG);
-	elif (opt.BUROV): semilogplot(xcst*np.sqrt(10.),np.ones(xcst.size)/4.,lab,"Dipolar (y) Burov-Danilov factor=$1/4$",'D'+color[j],flaglog=opt.LOG);
+	else: j=j+1;kwargs={'ax': ax}
+	x,y,lab=form(filecxdip,filefydip,i,"Dipolar (y) "+leg,color[j],flaglog=opt.LOG,**kwargs)
+	if (opt.YOK): semilogplot(xcst,np.ones(xcst.size)*np.pi*np.pi/12.,lab,"Dipolar (y) Yokoya factor=$\pi^2/12$",'D'+color[j],flaglog=opt.LOG,**kwargs);
+	elif (opt.BUROV): semilogplot(xcst*np.sqrt(10.),np.ones(xcst.size)/4.,lab,"Dipolar (y) Burov-Danilov factor=$1/4$",'D'+color[j],flaglog=opt.LOG,**kwargs);
 	pylab.ylim(-0.1,1.2)
 
 	# x quadrupolar form factor
-	if not opt.ALL: i=4;
-	else: j=j+1;
+	if not opt.ALL:
+	    i=4;
+	else:
+	    j=j+1;kwargs={'ax': ax2}
 	if not opt.LOG:
-	    x,y,lab=form(filecxdip,filefxquad,i,"Quadrupolar (x) "+leg,color[j],flaglog=opt.LOG)
-	    if (opt.YOK): semilogplot(xcst,-np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Quadrupolar (x) Yokoya factor=$-\pi^2/24$",'+'+color[j],flaglog=opt.LOG);
-	    elif (opt.BUROV): semilogplot(xcst,-np.ones(xcst.size)/4.,lab,"Quadrupolar (x) Burov-Danilov factor=$-1/4$",'+'+color[j],flaglog=opt.LOG);
+	    x,y,lab=form(filecxdip,filefxquad,i,"Quadrupolar (x) "+leg,color[j],flaglog=opt.LOG,**kwargs)
+	    if (opt.YOK): semilogplot(xcst,-np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Quadrupolar (x) Yokoya factor=$-\pi^2/24$",'+'+color[j],flaglog=opt.LOG,**kwargs);
+	    elif (opt.BUROV): semilogplot(xcst,-np.ones(xcst.size)/4.,lab,"Quadrupolar (x) Burov-Danilov factor=$-1/4$",'+'+color[j],flaglog=opt.LOG,**kwargs);
 	    pylab.ylim(-0.8,0.1)
 
 	# y quadrupolar form factor
-	if not opt.ALL: i=5;
-	else: j=j+1;
+	if not opt.ALL:
+	    i=5;
+	else:
+	    j=j+1;kwargs={'ax': ax2}
 	if not opt.BUROV:
-	    x,y,lab=form(filecxdip,filefyquad,i,"Quadrupolar (y) "+leg,color[j],flaglog=opt.LOG)
-	    if (opt.YOK): semilogplot(xcst*np.sqrt(10.),np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Quadrupolar (y) Yokoya factor=$\pi^2/24$",'x'+color[j],flaglog=opt.LOG);
-	    elif (opt.BUROV): semilogplot(xcst*4.,np.ones(xcst.size)/4.,lab,"Quadrupolar (y) Burov-Danilov factor=$1/4$",'x'+color[j],flaglog=opt.LOG);
+	    x,y,lab=form(filecxdip,filefyquad,i,"Quadrupolar (y) "+leg,color[j],flaglog=opt.LOG,**kwargs)
+	    if (opt.YOK): semilogplot(xcst*np.sqrt(10.),np.ones(xcst.size)*np.pi*np.pi/24.,lab,"Quadrupolar (y) Yokoya factor=$\pi^2/24$",'x'+color[j],flaglog=opt.LOG,**kwargs);
+	    elif (opt.BUROV): semilogplot(xcst*4.,np.ones(xcst.size)/4.,lab,"Quadrupolar (y) Burov-Danilov factor=$1/4$",'x'+color[j],flaglog=opt.LOG,**kwargs);
 	    pylab.ylim(-0.1,0.8)
 	
 	if (opt.ALL):
-	    pylab.ylim(opt.YLIM[0],opt.YLIM[1]);
+	    ax.set_ylim(opt.YLIM[0],opt.YLIM[1]);
+	    if opt.XLIM is not None: ax.set_xlim(opt.XLIM[0],opt.XLIM[1]) 
+	    ax2.set_ylim(opt.YLIM[0],opt.YLIM[1]);
 	    set_fontsize(pylab.figure(1),'xx-large');
 	    if opt.LONG: 
-	    	fontP = FontProperties();fontP.set_size('large');
-		ax.legend(bbox_to_anchor=opt.ANC,prop = fontP);
-	    else:
 	    	fontP = FontProperties();fontP.set_size('x-large');
+		ax.legend(bbox_to_anchor=opt.ANC,prop = fontP);
+		ax2.legend(bbox_to_anchor=opt.ANCQ,prop = fontP);
+	    else:
+	    	fontP = FontProperties();fontP.set_size('xx-large');
 	    	ax.legend(bbox_to_anchor=opt.ANC,prop = fontP);
+		ax2.legend(bbox_to_anchor=opt.ANCQ,prop = fontP);
 	else:
 	    for i in range(5):
     		pylab.figure(i+1);
+		if opt.XLIM is not None: pylab.xlim(opt.XLIM[0],opt.XLIM[1]) 
     		pylab.legend(loc=2);
 		set_fontsize(pylab.figure(i+1),'xx-large');
 	
