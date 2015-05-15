@@ -125,7 +125,7 @@ if __name__ == "__main__":
 		
 		if (Qpx==-7.5)and(ir==1):
 		    # HEADTAIL result for most unstable mode
-		    filenameHEAD='/afs/cern.ch/work/n/nmounet/private/DATA_HEADTAIL/LHC_with_damper/VEPP/VEPP_damper_1b_ntwake1_nsl1000_npr2000000_nlin1_csi'+float_to_str(Qpx)+'_tau_raw.txt'
+		    filenameHEAD=path_here+'HEADTAIL_VEPP/VEPP_damper_1b_ntwake1_nsl1000_npr2000000_nlin1_csi'+float_to_str(Qpx)+'_tau_raw.txt'
 		    s=read_ncol_file(filenameHEAD,ignored_rows=1);
 		    plot(s[:,0]*1.e14*e*f0,-1./(s[:,2]*omegas),'HEADTAIL','k',"$ "+strpart[ir]+"(Q-Q_0)/Q_s $ ",ax,0,xlab='Intensity [mA]');
 		
