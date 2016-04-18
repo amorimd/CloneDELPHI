@@ -1,2 +1,0 @@
-# command line example to test Sussix on HEADTAIL center of mass data (single bunch)
-./getTuneSussixNM.py -f HEADTAIL_test_prt.dat -q .31 .32 0.0021219 -r 0 -i 0.02 -b 65.976 71.526 -n 1 -t 8192 -k1
