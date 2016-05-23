@@ -1,2 +1,0 @@
-~/Documents/PYTHON/diff_tau_tuneshift_Headtail.py -f PS_test_7b_ntwake10_nkick1_nsl200_npr800000/PS_test_800000_prt -f PS_test_7b_ntwake10_nkick1_nsl500_npr2000000/PS_test_2000000_prt -m 0 2
-

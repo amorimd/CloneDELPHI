@@ -1,2 +1,0 @@
-~/Documents/PYTHON/read_LHC_BPM_coupledbunch.py -f Beam1@BunchTurn@2011_05_08@12_46_02_633.sdds -r -a -d -q 0.28 0.31 -e 450. -s
-

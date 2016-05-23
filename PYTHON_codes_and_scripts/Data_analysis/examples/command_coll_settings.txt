@@ -1,6 +1,0 @@
-collimator_settings.py -f ~/Documents/Mesures_LHC/Fill_1727_instab_around23h/TIMBER_DATA_coll_B1_fill1727_20110421021725CET.csv -p T -o coll_settings.txt -r TIMBER_DATA_coll_settings_MD_17052010_beam1_22h00.txt -b1
-
-collimator_settings.py -f TIMBER_DATA_coll_B1_20110507210000CET.csv -m -b1 -r ~/Documents/Impedances/LHC/Data_AdrianaR/collgap3.5TeV.lowb.coll.hor.b1_squeeze.txt -p T -m -i 1 -t 2011 05 07 23 11 0
-
-collimator_settings.py -f TIMBER_DATA_coll_B1_20110508105136CET.csv -m -b1 -r ~/Documents/Impedances/LHC/LHC_coll_settings_DWollmann/Alignment_06march2010/coll_settings_B1_450GeV_06032001_forzbase.txt -p T -t 2011 5 8 14 46 0
-
