@@ -2,9 +2,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%											  %%
 %%  IRIS: Impedance, Resistive-wall & Instability codes and Scripts			  %%
-%%  Package of codes to compute multilayer resistive-wall impedances, impedance models,	  %%
-%%  and instabilities due to impedance (with or without damper), with example scripts and %%
-%%  data for several CERN machines, studies, and others.				  %% 
+%%  DELPHI package of codes to compute instabilities due to impedance (with or without damper).			  %% 
 %%											  %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -13,7 +11,7 @@ Author: Nicolas Mounet, CERN BE/ABP/HSC, Geneva
 
 Last modifications: 28/07/2014
 
-Comments / remarks are welcome and can be sent to nicolas.mounet@cern.ch, nicolas.mounet@m4x.org
+Comments / remarks are welcome and can be sent to nicolo.biancacci@cern.ch
 and/or imp-inst@cern.ch
 
 
@@ -56,9 +54,6 @@ written in PYTHON and C++, in particular:
 	(Vlasov solver), in mode-coupling regime (azimuthal and radial modes considered)
 	
 
-	- ImpedanceWake2D: C++ code (stand-alone and shared library) to compute resistive-wall
-	impedance & wake functions of flat or round multilayer infinitely long ("2D") structures,
-
 
 	- Laclare: C++ code (stand-alone) to compute eigenfrequencies (tuneshifts and growth 
 	rates) from a coupling-impedance alone, in weak headtail (low intensity) regime,
@@ -71,53 +66,10 @@ written in PYTHON and C++, in particular:
 		* General_Python_tools: Some general purpose python modules used in many of the functions and 
 		scripts here,
 		
-		* Impedance_lib_Python: Impedance python library: library to compute impedance models, including a 
-		wrapper for ImpedanceWake2D,
-		
 		* DELPHI_Python: DELPHI python library: library to compute instabilities for a 
 		coupling-impedance/damper system (wrapper of DELPHI) (also contains a wrapper 
 		for the MOSES code of Y. Chin, and several other functions),
 		
-		* LHC_impedance_and_scripts: LHC & HL-LHC impedance model generation (including data files 
-		with parameters and beta functions), and scripts for complex tuneshifts computation,
-		
-		* SPS_impedance_and_scripts: SPS impedance models (from Carlo Zannini) and scripts,
-		
-		* Lepton_machines_scripts: scripts to compute complex tuneshifts, and sometimes impedance models,
-		for several lepton machines (LEP, TLEP, VEPP, ALBA - model obtained from E. Koukovini Platia),
-		
-		* Other_machines_scripts: Other machines scripts (now only VHE-LHC, actually),
-		
-		* HEADTAIL_pre_and_post_processing: HEADTAIL pre and postprocessing scripts (compatible with HEADTAIL 
-		multibunch version) ,
-		
-		* Data_analysis: Data analysis scripts (particularly adapted to LHC Timber data, but also to PS & 
-		PSB matlab files obtained in a "Guido Sterbini" way),
-		
-		
-
-	- External_libs: 
-		
-		* External python modules (numpy, scipy and matplotlib) in a version compatible with the content of the repository,
-		
-		* External GMP and MPFR libraries for the ImpedanceWake2D code (used by ALGLIB, see below).
-		
-		* External ALGLIB library for the ImpedanceWake2D code (C++ library for computations with high precision numbers).
-
-
-	- SUSSIX: Sussix code (see R. Bartolini - F. Schmidt, CERN SL/Note 98-017 (AP) - 1998)
-	for high accuracy spectral analysis, with python wrappers from Rogelio Tomas & Benoit
-	Salvant. It is used in particular by the data analysis scripts and the HEADTAIL 
-	postprocessing scripts (see above).
-
-
-	- Getting_LHC_beta_functions: a collection of MAD-X and Matlab® scripts to easily 
-	extract (from optics files in the official repositories) and compute beta functions
-	for all elements defined in the LHC & HL-LHC impedance models (used to obtain beta 
-	functions in files contained in 
-	PYTHON_codes_and_scripts/LHC_impedance_and_scripts/LHC_elements).
-	There are also functions to get the octupole detuning coefficients (and Q'').
-
 
 3. INSTALLATION AND USE
    ====================
@@ -166,73 +118,8 @@ written in PYTHON and C++, in particular:
        
 	- DELPHI: follow the instructions in DELPHI/DELPHI_user_manual.txt
 		
-	- ImpedanceWake2D: follow the instructions in ImpedanceWake2D/IW2D_user_manual.txt
-
 	- Laclare: follow the instructions in Laclare/Laclare_user_manual.txt
 
-	- External_libs: 
-		* Python modules (numpy, scipy and matplotlib):
-			- they might be needed by the Python programs
-			(particularly under lxplus at CERN)
-			- in that case, follow the instructions in External_libs/README_install_pymodules.txt
-		
-		* GMP and MPFR (used by ImpedanceWake2D):
-			- see first in ImpedanceWake2D/IW2D_user_manual.txt if they are needed,
-			- if they are needed follow the instructions in External_libs/README_compile_GMP_MPFR.txt
-		
-		* ALGLIB (used by ImpedanceWake2D):
-			- install first GMP and MPFR if needed (check in ImpedanceWake2D/IW2D_user_manual.txt)
-			- follow the instructions in ImpedanceWake2D/IW2D_user_manual.txt
-
-	- SUSSIX:
-		* check that f2py is present in /usr/bin
-		If it is not there or if you have troubles, you can try to use
-		the one provided with numpy:
-			~ install numpy from External_libs (see above)
-			~ in SUSSIX/Sussix/Makefile, replace /usr/bin/f2py by
-			[numpy_install_directory]/bin/f2py[python_version_number]
-			
-			where [numpy_install_directory] is the directory where you installed numpy
-			(e.g. ../../External_libs/numpy-install)
-			and [python_version_number] is your python version number (e.g. 2.6)
-		* do:
-		cd  SUSSIX/Sussix
-		make (* this compiles the fortran SUSSIX code *)
-		cd ../
-		./script_configure_bashrc.sh (* to add the correct python paths to your .bashrc *)
-		chmod +x getTuneSussixNM.py (* to be able to use getTuneSussixNM.py *)
-
-
-	- PYTHON_codes_and_scripts: 
-	
-		Generally speaking, you need numpy, scipy and matplotlib (see above if they were not 
-		already available on your system).
-		
-		* General_Python_tools: to be installed first,
-			~ if you want to use the Fourier library (fourier_lib.py), you need first to have
-			installed ImpedanceWake2D (with its library) (see above)
-			DO NOT FORGET TO PUT IN YOUR .bashrc the corresponding LD_LIBRARY_PATH
-			(use ../ImpedanceWake2D/script_configure_bashrc.sh)
-			
-			~ you need to add the path to this directory to your PYTHONPATH. The best
-			is do to it in your .bashrc file. For this you can type in a terminal
-
-			    cd PYTHON_codes_and_scripts/General_Python_tools
-			    ./script_configure_bashrc.sh
-			
-		* Impedance_lib_Python: Impedance python library:
-			~ you need to have installed ImpedanceWake2D first, as well as General_Python_tools (see above)
-			~ to be able to use the function 'imp_model_from_IW2D' with lxplusbatch='launch' or 'retrieve'
-			(i.e. to launch parallel jobs on a cluster - typically lxplus at CERN), you need
-			to have the LSF batch system installed (this is the case on lxplus at CERN),
-			with typical commands "bsub", "bjobs", etc.
-			Otherwise you can still use this routine but sequentially, with lxplusbatch=None.
-			~ you need to add the path to this directory to your PYTHONPATH, and define
-			the environement variable YOK_PATH for the path to the Yokoya factors file.
-			The simplest is to modify your .bashrc file, typing in a terminal
-			
-			    cd PYTHON_codes_and_scripts/Impedance_lib_Python
-			    ./script_configure_bashrc.sh
 
 		* DELPHI_Python: 
 			~ you need to have installed DELPHI first as well as General_Python_tools (see above)
@@ -247,72 +134,9 @@ written in PYTHON and C++, in particular:
 			    cd PYTHON_codes_and_scripts/DELPHI_Python
 			    ./script_configure_bashrc.sh
 
-		* LHC_impedance_and_scripts:
-			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
-		
-		* SPS_impedance_and_scripts:
-			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
-		
-		* Lepton_machines_scripts:
-			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
-		
-		* Other_machines_scripts:
-			You need to have installed General_Python_tools, Impedance_lib_Python and DELPHI_Python.
-		
-		* HEADTAIL_pre_and_post_processing:
-			~ You need to have installed SUSSIX, General_Python_tools.
-			~ Some of the scripts in the Data_analysis folder use functions from here, so you should add
-			add to your PYTHONPATH the HEADTAIL_pre_and_post_processing folder.
-			Moreover, it is usually convenient to run these command-line scripts from
-			the place were the HEADTAIL data is located, in which case it is nice to put this folder
-			also in your PATH.
-			To do these 2 operations, you simply need to type on a terminal
-			
-			    cd PYTHON_codes_and_scripts/HEADTAIL_pre_and_post_processing
-			    ./script_configure_bashrc.sh
-		
-		* Data_analysis:
-			~ You need to have installed SUSSIX, General_Python_tools and HEADTAIL_pre_and_post_processing.
-			~ It is usually convenient to run these command-line scripts from
-			the place were the data is located, in which case it is nice to put this folder
-			in your PATH. To do this, you simply need to type on a terminal
-			
-			    cd PYTHON_codes_and_scripts/Data_analysis
-			    ./script_configure_bashrc.sh
-	
-		
-		Don't forget to reload your bashrc (open a new terminal, or type source ~/.bashrc in the current one).
 
+4. WORK IN PROGRESS
+   ================
 
-	- Getting_LHC_beta_functions: nothing to install, but in case one wants to run matlab (*.m)
-	files, one needs Matlab® (commercial software, http://www.mathworks.com/products/matlab/)
-	while for madx scripts one would need MAD-X (free, http://madx.web.cern.ch/madx/)
-       
-       
-   3.3 How to use the codes
-       --------------------
-       
-       The main codes of the repository are in the subdirectories DELPHI, 
-       ImpedanceWake2D, Laclare and in PYTHON_codes_and_scripts.
-       
-       For the first three (DELPHI, IW2D, Laclare), go in the corresponding subdirectory and follow the user
-       manual.
-       
-       For the Python scripts and programs, each subdirectory of PYTHON_codes_and_scripts
-       has a file [subdir_name]_doc.txt with a description of the functions and/or scripts in the
-       directory.
-       
-       For SUSSIX, you can make a test (on the HEADTAIL center of mass output
-       "HEADTAIL_test_prt.dat") with the command-line example in 
-       "example_getTune.txt".
-       
-       To get beta functions for the LHC or octupole coefficients, have a look at 
-       "Getting_LHC_beta_functions/README.txt". 
-
-
-4. FUTURE DEVELOPMENTS (TO-DO LIST)
-   ================================
-
-- Make nicer (html) user manuals (using sphinx for instance - it should be easy
-to change all .txt files into .rst files).
+- Getting the DELPHI time domain signal from pick-up (as in Laclare) to get hint of the unstable radial mode number.
 	
