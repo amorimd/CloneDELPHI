@@ -1,5 +1,0 @@
-name file length
-RF	../LHC_elements/HOMs/LHC_RF_cavities.txt	1.095
-CMS	../LHC_elements/HOMs/LHC_CMS.txt	18.6
-ALICE	../LHC_elements/HOMs/LHC_ALICE.txt	8.6
-LHCb	../LHC_elements/HOMs/LHC_LHCb.txt	8.6

@@ -1,7 +1,0 @@
-name Rt[Ohm/m] Rl[Ohm] length
-taperBS53_BS63	98.16	2.62	0.03
-taperBS63_BS74	28.46	1.15	0.077
-taperBS74_warm	126.73	8.1	0.035
-BPM61CW	880	0	0.3
-BPM61strip	800	0	0.25
-BPM80strip	300	0	0.25
