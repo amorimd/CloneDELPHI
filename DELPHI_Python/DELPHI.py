@@ -263,13 +263,8 @@ def computes_coef(f0,dmax,b,g0,dnormfactor,taub,dphase,M,Nb,gamma,Q,particle='pr
     - particle: 'proton' or 'electron'.
     '''
     
-    # particle mass in kg
-    if particle.startswith('proton'): m0=1.6726e-27;
-    elif particle.startswith('electron'): m0=9.1094e-31;
-    else: print "Pb with particle type";sys.exit();
-    
-    e=1.60218e-19; # elementary charge in C
-    clight=299792458; # speed of light in m/s
+
+    e,m0,clight,E0=eval(particle+'_param()');
     Ib=M*Nb*f0*e; # beam current
     
     bovertaub2=b/(taub*taub);
