@@ -38,4 +38,16 @@ def Pb54_param():
     E0=m0*c**2 # rest energy
 
     return e,m0,c,E0
-   
+
+def Pb54_ion_param():
+
+    ''' gives basic proton parameters
+    Output: e [C], mass [kg], speed of light [m/s], rest energy [J] '''
+    Z = 54
+    e = Z*1.602176487e-19; # elementary charge
+    m0 = 207.947*1.6726216e-27; # Pb54 nucleon mass in kg
+    c = 299792458; # speed of light
+    E0 = m0*c**2 # rest energy
+
+    return e,m0,c,E0
+  
