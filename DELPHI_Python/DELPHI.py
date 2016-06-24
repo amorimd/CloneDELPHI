@@ -25,7 +25,7 @@ from particle_param import *
 from ctypes import *
 from numpy import linalg as li
 import time as ti  
-
+from scipy.special import *
 
 libDELPHI=CDLL("libDELPHI.so");
 
@@ -1472,8 +1472,6 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
     typelong can be "Gaussian", "parabolicamp", "parabolicline"
     '''
     
-    from scipy.special import eval_genlaguerre as sclaguerre
-
 
     if typelong.startswith('Gaussian'):
 
@@ -1504,8 +1502,8 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
 
         while np.trapz(np.abs(np.interp(tau2,tau,distrib)-approx),tau2)/np.trapz(distrib,tau)>5.0e-2:
 
-            coeff.append(np.trapz(distribnorm*np.exp(-a*(tau/taub)**2)*sclaguerre(i,0,a*(tau/taub)**2),x=a*(tau/taub)**2))
-            approx += coeff[i]*sclaguerre(i,0,a*(tau2/taub)**2)*np.exp(-b*(tau2/taub)**2)
+            coeff.append(np.trapz(distribnorm*np.exp(-a*(tau/taub)**2)*eval_genlaguerre(i,0,a*(tau/taub)**2),x=a*(tau/taub)**2))
+            approx += coeff[i]*eval_genlaguerre(i,0,a*(tau2/taub)**2)*np.exp(-b*(tau2/taub)**2)
             i+=1
 
         g = np.array(coeff)
