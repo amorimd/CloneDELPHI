@@ -1472,49 +1472,47 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
     typelong can be "Gaussian", "parabolicamp", "parabolicline"
     '''
     
-    from plot_lib import plot,init_figure,end_figure
+    from scipy.special import eval_genlaguerre as sclaguerre
+
 
     if typelong.startswith('Gaussian'):
-    	a=8.;b=8.;g=np.ones(1)*8/(np.pi*taub*taub);
-    
+
+        g=np.ones(1)*8/(np.pi*taub*taub)
+        a=8.0; b=8.0
+
     else:
 
-	ntau=10000;deltatau=taub/(2.*ntau);
-	tau=np.arange(0,taub/2+deltatau,deltatau); # sampling for integration
-	if typelong.startswith('parabolicline'):
-            g0=6./(np.pi*taub**2) * np.sqrt(1.-(2.*tau/taub)**2);
-            a=9.;b=9.;
-        elif typelong.startswith('parabolicamp'):
-            g0=8./(np.pi*taub**2) * (1.-(2.*tau/taub)**2);
-            a=4.;b=4.;
-    
-	x=a*(tau/taub)**2;gnorm=real(g0*np.exp(b*(tau/taub)**2));
-	tau2=np.arange(0,taub+taub/1000.,taub/1000.);
-	gsum=np.zeros((1,len(tau2)));
-	i=0;glag=[];glag.append(0.);
-	tabtau=np.concatenate(tau,np.array([2.*taub]));
-	tabg=np.concatenate(g0,np.array([0.]));
+        # Interval for the distribution
+        ntau = 10000
+        delta = taub/(2*ntau)
+        tau = np.arange(0,taub/2+delta,delta)
+        # Interval for the sampled distribution 
+        tau2 = np.arange(0,taub+taub/1000,taub/1000)
 
-	while (np.trapz(np.abs(np.interp(tau2,tabtau,tabg)-gsum),tau2)
-    	    /np.trapz(tabg,tabtau)>5.e-2)and(not(np.isnan(glag[-1]))):
+        if typelong.startswith('parabolicline'):
+            distrib = 6.0/(np.pi*taub**2) * np.sqrt(1.0 - (2*tau/taub)**2)
+            a = 9.0; b = 9.0
+        if typelong.startswith('parabolicamp'):
+            distrib = 8.0/(np.pi*taub**2) * (1.0 - (2.0*tau/taub)**2)
+            a = 4.0; b = 4.0
 
-            glag.append(np.trapz(gnorm*np.exp(-x)*laguerre(i,0,x)),x);
-            if (not(isnan(glag(i+1)))):
-        	gsum=gsum+glag(i+1)*laguerre(i,0,a*(tau2/taub)**2)*np.exp(-b*(tau2/taub)**2);
-        	i+=i;
-	i-=1;
-	if (np.isnan(glag[-1])): glag.pop();
-	# check the normalization
-	s=np.sum(glag*(1.-a/b)**np.arange(i+1))*taub**2/(2.*b);
-	print "check normalization (should be 1): "(s-1./(2.*np.pi))*2.*np.pi
-	# plots
-	fig,ax=init_figure();
-	plot(np.arange(len(glag)),glag,'','b','Laguerre poly. coeff.',ax,0,xlab='Coeff. number');
-	fig,ax=init_figure();
-	plot(tau,g0,'g0','xb','Long. distribution',ax,0,xlab=r" $ \tau $");
-	plot(tau2,gsum,'Sum of Laguerre decomposition','r','Long. distribution',ax,0,xlab=r" $ \tau $ ");
+        distribnorm = np.exp(b*(tau/taub)**2)*distrib
+
+        i = 0
+        coeff = []
+        approx = np.zeros(len(tau2))
+
+        while np.trapz(np.abs(np.interp(tau2,tau,distrib)-approx),tau2)/np.trapz(distrib,tau)>5.0e-2:
+
+            coeff.append(np.trapz(distribnorm*np.exp(-a*(tau/taub)**2)*sclaguerre(i,0,a*(tau/taub)**2),x=a*(tau/taub)**2))
+            approx += coeff[i]*sclaguerre(i,0,a*(tau2/taub)**2)*np.exp(-b*(tau2/taub)**2)
+            i+=1
+
+        g = np.array(coeff)
 
     return g,a,b;
+
+
 
 
 def plot_TMCI(Nbscan,lambdax,ax,part='real',leg='',patcol='xb',
