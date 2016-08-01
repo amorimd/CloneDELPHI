@@ -404,7 +404,7 @@ def eigenmodesDELPHI_converged(nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,Z,freqZ,
 	lmax+=1;nmax+=1;
 
 
-    return eigenval[ind],v[:,ind],lmaxold,nmaxold,matdamperold,matZold;
+    return eigenval[ind],v[ind,:],lmaxold,nmaxold,matdamperold,matZold;
 	
 
 def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
@@ -1475,24 +1475,41 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
 
     if typelong.startswith('Gaussian'):
 
-        g=np.ones(1)*8/(np.pi*taub*taub)
+	g=np.ones(1)*8/(np.pi*taub*taub)
         a=8.0; b=8.0
 
     else:
-
+        
         # Interval for the distribution
         ntau = 10000
         delta = taub/ntau
-        tau = np.arange(0,taub/2,delta)
-        # Interval for the sampled distribution 
-        tau2 = np.arange(0,taub+taub/1000,taub/1000)
 
         if typelong.startswith('parabolicline'):
+            tau = np.arange(0,taub/2,delta)
+            # Interval for the sampled distribution 
+            tau2 = np.arange(0,taub+taub/1000,taub/1000)
+            
             distrib = 6.0/(np.pi*taub**2) * np.sqrt(1.0 - (2*tau/taub)**2)
-            a = 9.0; b = 9.0
+	    a = 9.0; b = 9.0
+        
+        
         if typelong.startswith('parabolicamp'):
+            tau = np.arange(0,taub/2,delta)
+            # Interval for the sampled distribution 
+            tau2 = np.arange(0,taub+taub/1000,taub/1000)
+            
             distrib = 8.0/(np.pi*taub**2) * (1.0 - (2.0*tau/taub)**2)
             a = 4.0; b = 4.0
+        
+        
+        if typelong.startswith('uniform'):
+            tau = np.arange(0,2*taub,delta)
+            # Interval for the sampled distribution 
+            tau2 = np.arange(0,2*taub+taub/1000,taub/1000)
+            
+            distrib = (4.0/(np.pi*taub**2)) / (1 + np.exp(25.0*(tau-0.5*taub)/taub))
+            a = 8.0; b= 8.0
+
 
         distribnorm = np.exp(b*(tau/taub)**2)*distrib
 
