@@ -264,7 +264,13 @@ def computes_coef(f0,dmax,b,g0,dnormfactor,taub,dphase,M,Nb,gamma,Q,particle='pr
     '''
     
 
-    e,m0,clight,E0=eval(particle+'_param()');
+    # particle mass in kg
+    if particle.startswith('proton'): m0=1.6726e-27;
+    elif particle.startswith('electron'): m0=9.1094e-31;
+    else: print "Pb with particle type";sys.exit();
+    
+    e=1.60218e-19; # elementary charge in C
+    clight=299792458; # speed of light in m/s
     Ib=M*Nb*f0*e; # beam current
     
     bovertaub2=b/(taub*taub);
@@ -644,8 +650,12 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 	    if (M==1): nxscan=np.array([0]);flag_trapz=1;
 	    #elif (M==1782): nxscan=np.array([0, 1, 300, 600, 880, 890, 891, 892, 900, 910, 950, 1000, 1200, 1500, 1780, 1781])
 	    #elif (M==3564): nxscan=np.array([0, 1, 300, 600, 900, 1200, 1500, 1770, 1780, 1781, 1782, 1785, 1790, 1800, 1900, 2000, 2300, 2600, 2900, 3200, 3500, 3560, 3561, 3562, 3563])
-	    else: nxscan=sort_and_delete_duplicates(np.concatenate((np.arange(0,M,M/20),np.arange(M/2-10,M/2+11),
-		np.arange(M-10,M),np.arange(0,10))));print "number of coupled-bunch modes=",len(nxscan);
+	    else:
+
+		    # nxscan=sort_and_delete_duplicates(np.concatenate((np.arange(0,M,M/20),np.arange(M/2-10,M/2+11),np.arange(M-10,M),np.arange(0,10))));print "number of coupled-bunch modes=",len(nxscan);
+		    nxscan = np.arange(0,M);
+		    print "number of coupled-bunch modes=",len(nxscan);
+
 
 	    if flagQpscan_outside:
 		# put loop on Qpscan outside the lxplus job
