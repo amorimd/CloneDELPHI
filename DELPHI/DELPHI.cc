@@ -345,7 +345,10 @@ double Gln(int l, int n, double omega, double a, double taub, long ng, double *g
  where g0(tau) is the initial distribution, L_n^|l| an associated Laguerre polynomial, J_l Bessel function.
  It is independent on b (cancels with exponential in g0(tau) ).
  
- Uses an analytical formula from Erdeliy et al (Table of Integral Transforms, vol. 2, p 43 (8) ). */
+ Uses an analytical formula from Erdeliy et al (Table of Integral Transforms, vol. 2, p 43 (8) ).
+
+For the different cases in the Laguerre calculations, uses formula 5.2.1 (p.102) from G. Szego, Orthogonal Polynomials, 1939
+*/
  
  double res=0.,lag1,lag2,x=omega*omega/(4.*a);
  long fact;
@@ -362,7 +365,7 @@ double Gln(int l, int n, double omega, double a, double taub, long ng, double *g
    else epsl=-1;
 
 
-   for (int k=0; k<=ng; k++) {
+   for (int k=0; k<ng; k++) {
 
      if (k<n) {
 
@@ -379,7 +382,6 @@ double Gln(int l, int n, double omega, double a, double taub, long ng, double *g
        lag2=Laguerre(n+absl,k-n-absl,x)*std::pow(-x,k-n-absl)/(double)fact;
 
      } else lag2=Laguerre(k,n+absl-k,x);
-
 
      res+=g[k]*(double)minus1pow(n+k)*lag1*lag2;
 
