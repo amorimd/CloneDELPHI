@@ -271,9 +271,8 @@ def computes_coef(f0,dmax,b,g0,dnormfactor,taub,dphase,M,Nb,gamma,Q,particle='pr
     e=1.60218e-19; # elementary charge in C
     clight=299792458; # speed of light in m/s
     Ib=M*Nb*f0*e; # beam current
-    
+
     bovertaub2=b/(taub*taub);
-    
     coefdamper=(1j*f0*dmax*2.*bovertaub2/(g0*dnormfactor))*np.exp(1j*dphase);
     coefZ=1j*Ib*e/(2.*gamma*m0*clight*Q);
     
@@ -306,7 +305,7 @@ def eigenmodesDELPHI(lmax,nmax,matdamper,matZ,coefdamper,coefZ,omegas,flageigenv
     	    	for nprime in range(nmax+1):
 
 		    Mat[l+lmax,n,lprime+lmax,nprime] = coefdamper*matdamper[l+lmax,n,lprime+lmax,nprime];
-		    Mat[l+lmax,n,lprime+lmax,nprime]+= coefZ*matZ[l+lmax,n,lprime+lmax,nprime];
+                    Mat[l+lmax,n,lprime+lmax,nprime]+= coefZ*matZ[l+lmax,n,lprime+lmax,nprime];
 		    
 		    if ( (l==lprime)and(n==nprime) ): Mat[l+lmax,n,lprime+lmax,nprime] += omegas*l;
     
@@ -1501,7 +1500,8 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
             
             distrib = 6.0/(np.pi*taub**2) * np.sqrt(1.0 - (2*tau/taub)**2)
 	    a = 9.0; b = 9.0
-        
+            crit=10.0e-2
+
         
         if typelong.startswith('parabolicamp'):
             tau = np.arange(0,taub/2,delta)
@@ -1510,6 +1510,7 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
             
             distrib = 8.0/(np.pi*taub**2) * (1.0 - (2.0*tau/taub)**2)
             a = 4.0; b = 4.0
+            crit = 10.0e-2
         
         
         if typelong.startswith('uniform'):
@@ -1519,6 +1520,7 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
             
             distrib = (4.0/(np.pi*taub**2)) / (1 + np.exp(25.0*(tau-0.5*taub)/taub))
             a = 8.0; b= 8.0
+            crit=5.0e-2
 
 
         distribnorm = np.exp(b*(tau/taub)**2)*distrib
@@ -1527,7 +1529,7 @@ def longdistribution_decomp(taub,typelong='Gaussian'):
         coeff = []
         approx = np.zeros(len(tau2))
 
-        while np.trapz(np.abs(np.interp(tau2,tau,distrib)-approx),tau2)/np.trapz(distrib,tau)>5.0e-2:
+        while np.trapz(np.abs(np.interp(tau2,tau,distrib)-approx),tau2)/np.trapz(distrib,tau)>crit:
 
             coeff.append(np.trapz(distribnorm*np.exp(-a*(tau/taub)**2)*special.eval_genlaguerre(i,0,a*(tau/taub)**2),x=a*(tau/taub)**2))
             approx += coeff[i]*special.eval_genlaguerre(i,0,a*(tau2/taub)**2)*np.exp(-b*(tau2/taub)**2)
