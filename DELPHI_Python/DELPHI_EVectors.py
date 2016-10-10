@@ -415,12 +415,12 @@ def eigenmodesDELPHI_converged(nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,Z,freqZ,
 def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
 	omega0,Q,gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=0,
 	flag_trapz=0,flagdamperimp=0,d=None,freqd=None,
-	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False):
+	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,flageigenvect=False):
 	
     ''' encapsulate DELPHI calculations, with scans on coupled-bunch modes, damper gain,
     nb of particles, synchrotron tune and damper phase.
-    return tuneshifts (complex) for all these parameters scanned
-    and also the tuneshifts of the most unstable coupled-bunch modes '''
+    return tuneshifts (complex) for all these parameters scanned, tuneshifts of the most unstable coupled-bunch modes
+    and the eigenvectors corrsponding to each tunedhift'''
 
     f0=omega0/(2.*np.pi);
     Qfrac=Q-np.floor(Q);
@@ -433,6 +433,8 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
 
     tuneshiftnx=np.zeros((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
     tuneshift_most=np.zeros((len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
+    eigenvectors=np.empty((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=np.object_);
+    
     if flagm0:
         tuneshiftm0nx=np.zeros((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=complex);
 	tuneshiftm0=np.zeros((len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=complex);
@@ -469,7 +471,7 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
 				    M,omegaksi,omega0,Qfrac,a,b,taub,g,Z,freq,coefdamper,
 				    coefZ,omegas,flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,
 				    freqd=freqd,kmax=kmax,crit=crit,abseps=abseps,lmaxold=lmax,
-				    nmaxold=nmax,matdamperold=matdamper,matZold=matZ);
+				    nmaxold=nmax,matdamperold=matdamper,matZold=matZ,flageigenvect=flageigenvect);
 			    
 			    if flagm0:
 				# extract mode m=0 tuneshift
@@ -477,9 +479,12 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
 
 			    if (len(freqshift)>=kmaxplot):
 			        tuneshiftnx[iQp,inx,idamp,iNb,iomegas,idphase,:]=freqshift[:kmaxplot]/omega0;
+                                eigenvectors[iQp,inx,idamp,iNb,iomegas,idphase]=v
+
 			    else:
 			        tuneshiftnx[iQp,inx,idamp,iNb,iomegas,idphase,:len(freqshift)]=freqshift[:]/omega0;
-			        
+                                eigenvectors[iQp,inx,idamp,iNb,iomegas,idphase]=v
+
 			    #lambdax[iNb,:]=freqshift[:kmaxplot]/omegas;
 			    lmaxi=max(lmax,lmaxi);nmaxi=max(nmax,nmaxi);	
 
@@ -508,14 +513,14 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
 				print "   lmaxi=",lmaxi,", nmaxi=",nmaxi,", kmode=",kmode,", Most unstable coupled-bunch mode: ",nxscan[inx];
 			    tuneshiftm0[iQp,idamp,iNb,iomegas,idphase]=tuneshiftm0nx[iQp,inx,idamp,iNb,iomegas,idphase];
 
-    if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0;
-    else: return tuneshift_most,tuneshiftnx;
+    if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0,eigenvectors;
+    else: return tuneshift_most,tuneshiftnx,eigenvectors;
     
 
 def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
 	omega0,Q,gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=0,
 	flag_trapz=0,flagdamperimp=0,d=None,freqd=None,
-	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,
+	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,flageigenvect=False,
 	lxplusbatch=None,comment='',queue='1nh',dire=''):
 	
     ''' same as eigenmodesDELPHI_converged_scan with possibility to launch on lxplus
@@ -530,18 +535,20 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
     import commands;
     tuneshiftnx=np.zeros((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
     tuneshift_most=np.zeros((len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
+    eigenvectors=np.empty((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=np.object_);
+
     if flagm0: tuneshiftm0=np.zeros((len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=complex);
     
     if (lxplusbatch==None):
-        if flagm0: tuneshift_most,tuneshiftnx,tuneshiftm0=eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
+        if flagm0: tuneshift_most,tuneshiftnx,tuneshiftm0,eigenvectors=eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
 		omega0,Q,gamma,eta,a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 		flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=freqd,
-		kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0);
+		kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect);
 	
-	else: tuneshift_most,tuneshiftnx=eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
+	else: tuneshift_most,tuneshiftnx,eigenvectors=eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
 		omega0,Q,gamma,eta,a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 		flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=freqd,
-		kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0);
+		kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect);
 
     else:
     
@@ -556,7 +563,7 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
     	    listnames=['Qpscan','nxscan','dampscan','Nbscan','omegasscan','dphasescan','M',
 		    'omega0','Q','gamma','eta','a','b','taub','g','Z','freq',
 		    'particle','flagnorm','flag_trapz','flagdamperimp','d','freqd',
-		    'kmax','kmaxplot','crit','abseps','flagm0']
+		    'kmax','kmaxplot','crit','abseps','flageigenvect','flagm0']
     	    for name in listnames: eval('pick.dump('+name+',fileall)');
 	    fileall.close();
 
@@ -573,7 +580,7 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
 	    #print >> filejob, "cp "+here+"/C_complex.py .";
  	    #print >> filejob, "cp "+here+"/particle_param.py .";
             #print >> filejob, "chmod +x DELPHI_script.py";
-            print >> filejob, "DELPHI_script.py "+filename+" > out_"+comment;
+            print >> filejob, "DELPHI_script_EVectors.py "+filename+" > out_"+comment;
             print >> filejob, "cp out"+filename+" "+dire;
             print >> filejob, "cp out_"+comment+" "+dire;
             filejob.close();
@@ -588,6 +595,7 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
     		fileall=open(dire+'out'+filename,'r');
     		tuneshift_most=pick.load(fileall);
 		tuneshiftnx=pick.load(fileall);
+                eigenvectors=pick.load(fileall);
 		if flagm0: tuneshiftm0=pick.load(fileall);
 		fileall.close();
 	    
@@ -600,14 +608,14 @@ def eigenmodesDELPHI_converged_scan_lxplus(Qpscan,nxscan,dampscan,Nbscan,omegass
 	    
 	    os.system("rm -rf LSFJOB_* error1.out batch"+comment+".job");
 	
-    if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0;
-    else: return tuneshift_most,tuneshiftnx;
+    if flagm0: return tuneshift_most,tuneshiftnx,tuneshiftm0,eigenvectors;
+    else: return tuneshift_most,tuneshiftnx,eigenvectors;
 		
 	
 def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 	omega0,Qx,Qy,gamma,eta,a,b,taub,g,planes=['x','y'],nevery=1,particle='proton',flagnorm=0,
 	flagdamperimp=0,d=None,freqd=None,
-	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,
+	kmax=1,kmaxplot=10,crit=5.e-2,abseps=1.e-3,flagm0=False,flageigenvect=False,
 	lxplusbatch=None,comment='',queue='1nh',dire='',flagQpscan_outside=True):
 	
     ''' wrapper of eigenmodesDELPHI_converged_scan_lxplus, with more scans
@@ -632,6 +640,7 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
     strnorm=['','_norm_current_chroma'];
 
     tuneshiftQp=np.zeros((len(planes),len(Mscan),len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
+    eigenvectors=np.empty((len(planes),len(Mscan),len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=np.object_);
     if flagm0: tuneshiftm0Qp=np.zeros((len(planes),len(Mscan),len(Qpscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan)),dtype=complex);
 
     for iplane,plane in enumerate(planes):
@@ -660,20 +669,20 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 		for iQp,Qp in enumerate(Qpscan):
 		    tuneshiftnx=np.zeros((1,len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
 		    if flagm0:
-			tuneshiftQp[iplane,iM,iQp,:,:,:,:,:],tuneshiftnx,tuneshiftm0Qp[iplane,iM,iQp,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus([Qp],
+                        tuneshiftQp[iplane,iM,iQp,:,:,:,:,:],tuneshiftnx,tuneshiftm0Qp[iplane,iM,iQp,:,:,:,:],eigenvectors[iplane,iM,iQp,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus([Qp],
 			    nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,omega0,eval('Q'+plane),gamma,eta,
 			    a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			    flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
-			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
+			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect,
 			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+strnorm[flagnorm]+'_'+plane,
 			    queue=queue,dire=dire);
 
 		    else:
-			tuneshiftQp[iplane,iM,iQp,:,:,:,:,:],tuneshiftnx=eigenmodesDELPHI_converged_scan_lxplus([Qp],
+                        tuneshiftQp[iplane,iM,iQp,:,:,:,:,:],tuneshiftnx,eigenvectors[iplane,iM,iQp,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus([Qp],
 			    nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,omega0,eval('Q'+plane),gamma,eta,
 			    a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			    flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
-			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
+			    kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect,
 			    lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b_Qp'+str(Qp)+strnorm[flagnorm]+'_'+plane,
 			    queue=queue,dire=dire);
 	    
@@ -681,26 +690,26 @@ def DELPHI_wrapper(imp_mod,Mscan,Qpscan,dampscan,Nbscan,omegasscan,dphasescan,
 		# put loop on Qpscan inside the lxplus job
 		tuneshiftnx=np.zeros((len(Qpscan),len(nxscan),len(dampscan),len(Nbscan),len(omegasscan),len(dphasescan),kmaxplot),dtype=complex);
 		if flagm0:
-		    tuneshiftQp[iplane,iM,:,:,:,:,:,:],tuneshiftnx,tuneshiftm0Qp[iplane,iM,:,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus(Qpscan,
+                    tuneshiftQp[iplane,iM,:,:,:,:,:,:],tuneshiftnx,tuneshiftm0Qp[iplane,iM,:,:,:,:,:],eigenvectors[iplane,iM,:,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus(Qpscan,
 			nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,omega0,eval('Q'+plane),gamma,eta,
 			a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
-			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
+			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect,
 			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 
 		else:
-		    tuneshiftQp[iplane,iM,:,:,:,:,:,:],tuneshiftnx=eigenmodesDELPHI_converged_scan_lxplus(Qpscan,
+		    tuneshiftQp[iplane,iM,:,:,:,:,:,:],tuneshiftnx,eigenvectors[iplane,iM,:,:,:,:,:]=eigenmodesDELPHI_converged_scan_lxplus(Qpscan,
 			nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,omega0,eval('Q'+plane),gamma,eta,
 			a,b,taub,g,Z,freq,particle=particle,flagnorm=flagnorm,
 			flag_trapz=flag_trapz,flagdamperimp=flagdamperimp,d=d,freqd=d,
-			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,
+			kmax=kmax,kmaxplot=kmaxplot,crit=crit,abseps=abseps,flagm0=flagm0,flageigenvect=flageigenvect,
 			lxplusbatch=lxplusbatch,comment=comment+'_'+str(M)+'b'+strnorm[flagnorm]+'_'+plane,
 			queue=queue,dire=dire);
 	    
 
-    if flagm0: return tuneshiftQp,tuneshiftm0Qp;
-    else: return tuneshiftQp;
+    if flagm0: return tuneshiftQp,tuneshiftm0Qp,eigenvectors;
+    else: return tuneshiftQp,eigenvectors;
     
 
 def dispersion_integral_oct_2D(Q,bx,bxy,distribution='gaussian'):
