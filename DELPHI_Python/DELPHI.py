@@ -409,7 +409,7 @@ def eigenmodesDELPHI_converged(nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,Z,freqZ,
 	lmax+=1;nmax+=1;
 
 
-    return eigenval[ind],v[ind,:],lmaxold,nmaxold,matdamperold,matZold;
+    return eigenval[ind],v[:,ind],lmaxold,nmaxold,matdamperold,matZold;
 	
 
 def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,

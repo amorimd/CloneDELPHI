@@ -409,8 +409,9 @@ def eigenmodesDELPHI_converged(nx,M,omegaksi,omega0,tunefrac,a,b,taub,g,Z,freqZ,
 	lmax+=1;nmax+=1;
 
 
-    return eigenval[ind],v[ind,:],lmaxold,nmaxold,matdamperold,matZold;
-	
+    return eigenval[ind],v[:,ind],lmaxold,nmaxold,matdamperold,matZold;
+    #return eigenval,v,lmaxold,nmaxold,matdamperold,matZold,Mat;
+
 
 def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dphasescan,M,
 	omega0,Q,gamma,eta,a,b,taub,g,Z,freq,particle='proton',flagnorm=0,
@@ -420,7 +421,7 @@ def eigenmodesDELPHI_converged_scan(Qpscan,nxscan,dampscan,Nbscan,omegasscan,dph
     ''' encapsulate DELPHI calculations, with scans on coupled-bunch modes, damper gain,
     nb of particles, synchrotron tune and damper phase.
     return tuneshifts (complex) for all these parameters scanned, tuneshifts of the most unstable coupled-bunch modes
-    and the eigenvectors corrsponding to each tunedhift'''
+    and the eigenvectors corrsponding to each tuneshift'''
 
     f0=omega0/(2.*np.pi);
     Qfrac=Q-np.floor(Q);
